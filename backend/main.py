@@ -206,6 +206,10 @@ def load_fringe_settings() -> FringeSettings:
             pass
     return FringeSettings(**defaults)
 
+def save_fringe_settings(settings: FringeSettings):
+    with open(FRINGE_SETTINGS_FILE, 'w') as f:
+        json.dump(settings.model_dump(), f, indent=4)
+
 # --- API Endpoints ---
 
 @app.get("/api/projects")
@@ -626,7 +630,87 @@ def get_default_budget(session: Session = Depends(get_session)):
         session.commit()
         session.refresh(budget)
 
-        session.refresh(budget)
+    # Seed Standard Categories if missing
+    existing_cats = session.exec(select(BudgetCategory).where(BudgetCategory.budget_id == budget.id)).first()
+    if not existing_cats:
+        budget_data_file = os.path.join(BASE_DIR, "budget_data.json")
+        if os.path.exists(budget_data_file):
+            try:
+                with open(budget_data_file, "r") as f:
+                    seed_data = json.load(f)
+                
+                for i, cat_data in enumerate(seed_data):
+                    # Use provided ID or generate one
+                    db_cat = BudgetCategory(
+                        id=cat_data.get("id", str(uuid.uuid4())),
+                        code=cat_data.get("code", "??"),
+                        name=cat_data.get("name", "Untitled"),
+                        budget_id=budget.id,
+                        sort_order=i
+                    )
+                    session.add(db_cat)
+                    session.commit()
+                    session.refresh(db_cat)
+                    
+                    for grp_data in cat_data.get("groupings", []):
+                        db_grp = BudgetGrouping(
+                            id=grp_data.get("id", str(uuid.uuid4())),
+                            code=grp_data.get("code", ""),
+                            name=grp_data.get("name", "General"),
+                            category_id=db_cat.id
+                        )
+                        session.add(db_grp)
+                        session.commit()
+                        session.refresh(db_grp)
+                        
+                        for item_data in grp_data.get("items", []):
+                            db_item = LineItem(
+                                # Map frontend keys to backend names
+                                id=item_data.get("id", str(uuid.uuid4())),
+                                description=item_data.get("description", ""),
+                                rate=float(item_data.get("rate", 0)),
+                                quantity=(float(item_data.get("prep_qty", 0)) + 
+                                          float(item_data.get("shoot_qty", 0)) + 
+                                          float(item_data.get("post_qty", 0))),
+                                unit=item_data.get("unit", "day"),
+                                total=float(item_data.get("total", 0)),
+                                is_labor=bool(item_data.get("is_labor", False)),
+                                base_rate=float(item_data.get("base_hourly_rate", 0)),
+                                days_per_week=float(item_data.get("days_per_week", 5)),
+                                allowances_json=json.dumps(item_data.get("allowances", [])),
+                                labor_phases_json=item_data.get("labor_phases_json", "[]"),
+                                grouping_id=db_grp.id
+                            )
+                            session.add(db_item)
+                
+                session.commit()
+            except Exception as e:
+                print(f"Error seeding from budget_data.json: {e}")
+                session.rollback()
+        else:
+            # Fallback legacy seeding
+            cats = [
+                 ("A", "Above The Line"),
+                 ("B", "Producers & Staff"),
+                 ("C", "Production Crew"),
+                 ("D", "Equipment"),
+                 ("E", "Travel & Transport"),
+            ]
+            
+            for i, (code, name) in enumerate(cats):
+                c = BudgetCategory(code=code, name=name, budget_id=budget.id, sort_order=i)
+                session.add(c)
+                session.commit()
+                session.refresh(c)
+                
+                if code == "A":
+                    session.add(BudgetGrouping(code="A.1", name="Story & Rights", category_id=c.id))
+                elif code == "B":
+                     session.add(BudgetGrouping(code="B.1", name="Producers", category_id=c.id))
+                
+            session.commit()
+            
+    return _build_budget_response(session, budget.id)
 
 @app.post("/api/budget")
 def save_budget(categories: List[Dict], session: Session = Depends(get_session)):
@@ -702,88 +786,6 @@ def save_budget(categories: List[Dict], session: Session = Depends(get_session))
     session.commit()
     return {"status": "ok"}
 
-    # Seed Standard Categories if missing
-    existing_cats = session.exec(select(BudgetCategory).where(BudgetCategory.budget_id == budget.id)).first()
-    if not existing_cats:
-        budget_data_file = os.path.join(BASE_DIR, "budget_data.json")
-        if os.path.exists(budget_data_file):
-            try:
-                with open(budget_data_file, "r") as f:
-                    seed_data = json.load(f)
-                
-                for i, cat_data in enumerate(seed_data):
-                    # Use provided ID or generate one
-                    db_cat = BudgetCategory(
-                        id=cat_data.get("id", str(uuid.uuid4())),
-                        code=cat_data.get("id", "??"),
-                        name=cat_data.get("name", "Untitled"),
-                        budget_id=budget.id,
-                        sort_order=i
-                    )
-                    session.add(db_cat)
-                    session.commit()
-                    session.refresh(db_cat)
-                    
-                    for grp_data in cat_data.get("groupings", []):
-                        db_grp = BudgetGrouping(
-                            id=grp_data.get("id", str(uuid.uuid4())),
-                            code=grp_data.get("code", ""),
-                            name=grp_data.get("name", "General"),
-                            category_id=db_cat.id
-                        )
-                        session.add(db_grp)
-                        session.commit()
-                        session.refresh(db_grp)
-                        
-                        for item_data in grp_data.get("items", []):
-                            db_item = LineItem(
-                                # Map frontend keys to backend names
-                                id=item_data.get("id", str(uuid.uuid4())),
-                                description=item_data.get("description", ""),
-                                rate=float(item_data.get("rate", 0)),
-                                quantity=(float(item_data.get("prep_qty", 0)) + 
-                                          float(item_data.get("shoot_qty", 0)) + 
-                                          float(item_data.get("post_qty", 0))),
-                                unit=item_data.get("unit", "day"),
-                                total=float(item_data.get("total", 0)),
-                                is_labor=bool(item_data.get("is_labor", False)),
-                                base_rate=float(item_data.get("base_hourly_rate", 0)),
-                                days_per_week=float(item_data.get("days_per_week", 5)),
-                                allowances_json=json.dumps(item_data.get("allowances", [])),
-                                labor_phases_json=item_data.get("labor_phases_json", "[]"),
-                                grouping_id=db_grp.id
-                            )
-                            session.add(db_item)
-                
-                session.commit()
-            except Exception as e:
-                print(f"Error seeding from budget_data.json: {e}")
-                session.rollback()
-        else:
-            # Fallback legacy seeding
-            cats = [
-                 ("A", "Above The Line"),
-                 ("B", "Producers & Staff"),
-                 ("C", "Production Crew"),
-                 ("D", "Equipment"),
-                 ("E", "Travel & Transport"),
-            ]
-            
-            for i, (code, name) in enumerate(cats):
-                c = BudgetCategory(code=code, name=name, budget_id=budget.id, sort_order=i)
-                session.add(c)
-                session.commit()
-                session.refresh(c)
-                
-                if code == "A":
-                    session.add(BudgetGrouping(code="A.1", name="Story & Rights", category_id=c.id))
-                elif code == "B":
-                     session.add(BudgetGrouping(code="B.1", name="Producers", category_id=c.id))
-                
-            session.commit()
-            
-    return _build_budget_response(session, budget.id)
-
 @app.post("/api/budget/items")
 def add_line_item(item: LineItemBase, session: Session = Depends(get_session)):
     # Create new item
@@ -840,6 +842,15 @@ def calculate_labor(req: LaborCalcRequest):
         "weekly_rate": weekly_rate,
         "fringes": fringes
     }
+
+@app.get("/api/settings")
+def get_settings():
+    return load_fringe_settings()
+
+@app.post("/api/settings")
+def update_settings_endpoint(settings: FringeSettings = Body(...)):
+    save_fringe_settings(settings)
+    return settings
 
 # Removed duplicate search_rates
 

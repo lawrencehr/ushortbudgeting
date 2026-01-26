@@ -29,8 +29,8 @@ export default function AppSidebar() {
 
     return (
         <>
-            <aside className="w-64 bg-slate-100 border-r border-gray-200 flex-shrink-0 overflow-y-auto h-screen sticky top-0 flex flex-col justify-between">
-                <div className="p-4">
+            <aside className="w-64 bg-slate-100 border-r border-gray-200 flex-shrink-0 h-full flex flex-col">
+                <div className="p-4 flex-1 overflow-y-auto">
                     <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Departments</h2>
                     <nav className="space-y-1">
                         <Link
@@ -65,14 +65,20 @@ export default function AppSidebar() {
                     </nav>
                 </div>
 
-                {/* Bottom Actions */}
-                <div className="p-4 border-t border-gray-200 bg-slate-200/50">
+                {/* Bottom Actions - Fixed to bottom */}
+                <div className="p-4 border-t border-gray-200 bg-white/50 backdrop-blur-sm z-10 flex-shrink-0">
                     <Link
                         href="/settings/calendar"
-                        className="flex items-center gap-2 w-full px-3 py-2 text-sm font-medium text-slate-700 hover:bg-white hover:shadow-sm rounded transition-all"
+                        className={`flex items-center gap-2 w-full px-3 py-2 text-sm font-medium rounded transition-all ${pathname === '/settings/calendar'
+                            ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
+                            : "text-slate-700 hover:bg-white hover:shadow-sm"
+                            }`}
                     >
-                        <CalendarIcon size={16} className="text-indigo-600" />
+                        <CalendarIcon size={16} className={pathname === '/settings/calendar' ? "text-white" : "text-indigo-600"} />
                         <span>Project Calendar</span>
+                        {pathname !== '/settings/calendar' && (
+                            <span className="ml-auto text-[10px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded-full uppercase font-bold tracking-tight">New</span>
+                        )}
                     </Link>
                 </div>
             </aside>

@@ -133,14 +133,9 @@ export default function CalendarSettingsPage() {
     }
 
     // Prevent selecting same date in multiple phases?
-    // We can calculate 'disabled' for each phase based on others.
     const allPre = new Set(preProd.dates.map(d => d.toDateString()))
     const allShoot = new Set(shoot.dates.map(d => d.toDateString()))
     const allPost = new Set(postProd.dates.map(d => d.toDateString()))
-
-    // Disable logic
-    // Pre cannot start after shoot?? No, allow flexibility.
-    // Just disable checking other sets.
 
     if (loading) {
         return <div className="p-8 flex items-center justify-center text-zinc-500"><Loader2 className="animate-spin mr-2" /> Loading...</div>

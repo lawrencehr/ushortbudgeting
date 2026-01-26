@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { fetchSettings, updateSettings, FringeSettings } from "@/lib/api";
+import Link from "next/link";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<FringeSettings | null>(null);
@@ -44,8 +45,23 @@ export default function SettingsPage() {
 
   return (
     <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Fringe Settings</h2>
-      
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">Settings</h2>
+
+      <div className="mb-8 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+        <h3 className="text-lg font-semibold text-indigo-900 mb-2">Production Calendar</h3>
+        <p className="text-sm text-indigo-700 mb-4">Configure production phases, shooting days, and automated holiday detection.</p>
+        <Link
+          href="/settings/calendar"
+          className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded font-medium hover:bg-indigo-700 transition-colors"
+        >
+          Manage Calendar
+        </Link>
+      </div>
+
+      <div className="border-t border-gray-100 my-8"></div>
+
+      <h3 className="text-xl font-bold mb-4 text-gray-800">Fringe Settings</h3>
+
       {msg && (
         <div className={`mb-4 p-2 rounded ${msg.includes("Error") ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
           {msg}
