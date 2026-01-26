@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # 1. Database Service (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    container_name: shortkings-db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: shortkings
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  # 2. Backend API Service
+  api:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: shortkings-api
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/shortkings
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app  # Hot reload volume mount
+
+  # 3. Frontend Service
+  web:
+    build:
+      context: ./budget-app/frontend
+      dockerfile: Dockerfile
+    container_name: shortkings-web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    depends_on:
+      - api
+    volumes:
+      - ./budget-app/frontend:/app
+      - /app/node_modules
+
+volumes:
+  db_data:

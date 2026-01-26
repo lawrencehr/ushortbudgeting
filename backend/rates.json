@@ -1,0 +1,2667 @@
+{
+  "television_broadcasting": {
+    "full_time": {
+      "Supervising technician A+": {
+        "base": 38.03,
+        "ot_1_5": 57.05,
+        "ot_2_0": 76.06,
+        "weekly_rate": 1445.1,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Supervising technician A": {
+        "base": 36.43,
+        "ot_1_5": 54.64,
+        "ot_2_0": 72.86,
+        "weekly_rate": 1384.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Supervising technician B": {
+        "base": 35.1,
+        "ot_1_5": 52.65,
+        "ot_2_0": 70.2,
+        "weekly_rate": 1333.9,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior technician A": {
+        "base": 32.9,
+        "ot_1_5": 49.35,
+        "ot_2_0": 65.8,
+        "weekly_rate": 1250.1,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior technician B": {
+        "base": 31.54,
+        "ot_1_5": 47.31,
+        "ot_2_0": 63.08,
+        "weekly_rate": 1198.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Technician A+": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Technician A": {
+        "base": 29.88,
+        "ot_1_5": 44.82,
+        "ot_2_0": 59.76,
+        "weekly_rate": 1135.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Technician B+": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Technician B": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Assistant / trainee technician": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Supervisor audio": {
+        "base": 34.66,
+        "ot_1_5": 51.99,
+        "ot_2_0": 69.32,
+        "weekly_rate": 1316.9,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior audio director A": {
+        "base": 32.9,
+        "ot_1_5": 49.35,
+        "ot_2_0": 65.8,
+        "weekly_rate": 1250.1,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior audio director B": {
+        "base": 31.54,
+        "ot_1_5": 47.31,
+        "ot_2_0": 63.08,
+        "weekly_rate": 1198.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Audio operator A / Audio director": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Audio operator A": {
+        "base": 29.88,
+        "ot_1_5": 44.82,
+        "ot_2_0": 59.76,
+        "weekly_rate": 1135.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Audio operator B+": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Audio operator B": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee audio operator": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Supervisor lighting": {
+        "base": 34.66,
+        "ot_1_5": 51.99,
+        "ot_2_0": 69.32,
+        "weekly_rate": 1316.9,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior lighting director A": {
+        "base": 32.9,
+        "ot_1_5": 49.35,
+        "ot_2_0": 65.8,
+        "weekly_rate": 1250.1,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior lighting director B": {
+        "base": 31.54,
+        "ot_1_5": 47.31,
+        "ot_2_0": 63.08,
+        "weekly_rate": 1198.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Classification Weekly pay rate Hourly pay rate Saturday Sunday Public holiday Overtime - Monday to Friday - first": {
+        "base": 49.21,
+        "ot_1_5": 73.81,
+        "ot_2_0": 98.42,
+        "weekly_rate": 1869.98,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Overtime - Monday to Friday - after": {
+        "base": 46.73,
+        "ot_1_5": 70.09,
+        "ot_2_0": 93.46,
+        "weekly_rate": 1775.74,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Lighting operator A / Lighting director": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Lighting operator A": {
+        "base": 29.88,
+        "ot_1_5": 44.82,
+        "ot_2_0": 59.76,
+        "weekly_rate": 1135.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Lighting operator B+": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Lighting operator B": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee lighting operator": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "MC supervisor": {
+        "base": 35.1,
+        "ot_1_5": 52.65,
+        "ot_2_0": 70.2,
+        "weekly_rate": 1333.9,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior MC operator A": {
+        "base": 32.9,
+        "ot_1_5": 49.35,
+        "ot_2_0": 65.8,
+        "weekly_rate": 1250.1,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior MC operator B": {
+        "base": 31.54,
+        "ot_1_5": 47.31,
+        "ot_2_0": 63.08,
+        "weekly_rate": 1198.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "MC operator A+": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "MC operator A": {
+        "base": 29.88,
+        "ot_1_5": 44.82,
+        "ot_2_0": 59.76,
+        "weekly_rate": 1135.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "MC operator B+": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "MC operator B": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee MC operator / Assistant MC operator": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Vision switcher - major production": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Vision switcher": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee vision switcher": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Supervising presentation co- ordinator": {
+        "base": 34.66,
+        "ot_1_5": 51.99,
+        "ot_2_0": 69.32,
+        "weekly_rate": 1316.9,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Presentation co-ordinator": {
+        "base": 32.23,
+        "ot_1_5": 48.34,
+        "ot_2_0": 64.46,
+        "weekly_rate": 1224.9,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Assistant presentation co-ordinator": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee presentation co-ordinator": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Videotape supervisor": {
+        "base": 35.1,
+        "ot_1_5": 52.65,
+        "ot_2_0": 70.2,
+        "weekly_rate": 1333.9,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Post-production senior editor": {
+        "base": 35.1,
+        "ot_1_5": 52.65,
+        "ot_2_0": 70.2,
+        "weekly_rate": 1333.9,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Post-production editor A": {
+        "base": 32.9,
+        "ot_1_5": 49.35,
+        "ot_2_0": 65.8,
+        "weekly_rate": 1250.1,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior production videotape operator / Post-production editor B": {
+        "base": 31.54,
+        "ot_1_5": 47.31,
+        "ot_2_0": 63.08,
+        "weekly_rate": 1198.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Editor A": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Production videotape operator A / Editor B": {
+        "base": 29.88,
+        "ot_1_5": 44.82,
+        "ot_2_0": 59.76,
+        "weekly_rate": 1135.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Production videotape operator B": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Videotape operator": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee videotape operator": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Music / video library supervisor": {
+        "base": 31.54,
+        "ot_1_5": 47.31,
+        "ot_2_0": 63.08,
+        "weekly_rate": 1198.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Music / video librarian": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee music / video librarian": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Supervisor camera": {
+        "base": 34.66,
+        "ot_1_5": 51.99,
+        "ot_2_0": 69.32,
+        "weekly_rate": 1316.9,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior camera operator A": {
+        "base": 32.9,
+        "ot_1_5": 49.35,
+        "ot_2_0": 65.8,
+        "weekly_rate": 1250.1,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior camera operator B": {
+        "base": 31.54,
+        "ot_1_5": 47.31,
+        "ot_2_0": 63.08,
+        "weekly_rate": 1198.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Camera operator A": {
+        "base": 29.88,
+        "ot_1_5": 44.82,
+        "ot_2_0": 59.76,
+        "weekly_rate": 1135.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Camera operator B": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee camera operator": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Supervising ENG camera operator": {
+        "base": 38.03,
+        "ot_1_5": 57.05,
+        "ot_2_0": 76.06,
+        "weekly_rate": 1445.1,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Specialist ENG camera operator": {
+        "base": 36.43,
+        "ot_1_5": 54.64,
+        "ot_2_0": 72.86,
+        "weekly_rate": 1384.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior ENG camera operator": {
+        "base": 33.78,
+        "ot_1_5": 50.67,
+        "ot_2_0": 67.56,
+        "weekly_rate": 1283.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "ENG camera operator A": {
+        "base": 32.9,
+        "ot_1_5": 49.35,
+        "ot_2_0": 65.8,
+        "weekly_rate": 1250.1,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "ENG camera operator B": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior ENG camera assistant": {
+        "base": 29.88,
+        "ot_1_5": 44.82,
+        "ot_2_0": 59.76,
+        "weekly_rate": 1135.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "ENG camera assistant": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee ENG camera": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Supervising graphic artist": {
+        "base": 34.66,
+        "ot_1_5": 51.99,
+        "ot_2_0": 69.32,
+        "weekly_rate": 1316.9,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior / specialist graphic artist": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Graphic artist": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee graphic artist": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Supervising director": {
+        "base": 38.03,
+        "ot_1_5": 57.05,
+        "ot_2_0": 76.06,
+        "weekly_rate": 1445.1,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Director major production / Specialist": {
+        "base": 35.1,
+        "ot_1_5": 52.65,
+        "ot_2_0": 70.2,
+        "weekly_rate": 1333.9,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior director": {
+        "base": 33.78,
+        "ot_1_5": 50.67,
+        "ot_2_0": 67.56,
+        "weekly_rate": 1283.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Director": {
+        "base": 31.54,
+        "ot_1_5": 47.31,
+        "ot_2_0": 63.08,
+        "weekly_rate": 1198.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee director": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Producer / Director's assistant - major production": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "VCG operator - major production": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Producer / Director's assistant": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "VCG operator": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee producer": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee producer / Director's assistant": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee VCG operator": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Floor manager - major production": {
+        "base": 31.54,
+        "ot_1_5": 47.31,
+        "ot_2_0": 63.08,
+        "weekly_rate": 1198.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Floor manager": {
+        "base": 29.88,
+        "ot_1_5": 44.82,
+        "ot_2_0": 59.76,
+        "weekly_rate": 1135.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Assistant floor manager": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee floor manager": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Make-up supervisor / Hairdresser supervisor": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior make-up artist": {
+        "base": 29.88,
+        "ot_1_5": 44.82,
+        "ot_2_0": 59.76,
+        "weekly_rate": 1135.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Hair and make-up artist": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Hair or make-up artist": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Assistant hairdresser": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Assistant make-up artist": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior carpenter": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Carpenter trade level - television": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Carpenter trade level": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Carpenter's assistant": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Wardrobe supervisor": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Wardrobe person (Mistress / Master)": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Wardrobe assistant / keeper": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior still photographer": {
+        "base": 32.9,
+        "ot_1_5": 49.35,
+        "ot_2_0": 65.8,
+        "weekly_rate": 1250.1,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Still photographer trade level": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Assistant still photographer non- trade": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Set design supervisor": {
+        "base": 34.66,
+        "ot_1_5": 51.99,
+        "ot_2_0": 69.32,
+        "weekly_rate": 1316.9,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Senior set designer": {
+        "base": 31.54,
+        "ot_1_5": 47.31,
+        "ot_2_0": 63.08,
+        "weekly_rate": 1198.5,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Set designer": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee set designer": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Scenic artist": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Set and prop painter trade level": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Set and prop painter non-trade": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Property person / Senior studio hand": {
+        "base": 29.0,
+        "ot_1_5": 43.5,
+        "ot_2_0": 58.0,
+        "weekly_rate": 1102.0,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Studio hand A": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Set dresser A": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Property assistant / Studio hand / Prop and scenery storeperson / Set dresser": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee captioner / Audio describer": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Trainee subtitler / Subtitling editor": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Captioner / Audio describer": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Multi-skilled captioner / Audio describer": {
+        "base": 32.9,
+        "ot_1_5": 49.35,
+        "ot_2_0": 65.8,
+        "weekly_rate": 1250.1,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Advanced multi-skilled and specialised captioner / Audio describer": {
+        "base": 35.1,
+        "ot_1_5": 52.65,
+        "ot_2_0": 70.2,
+        "weekly_rate": 1333.9,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Subtitler": {
+        "base": 36.43,
+        "ot_1_5": 54.64,
+        "ot_2_0": 72.86,
+        "weekly_rate": 1384.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Subtitling editor": {
+        "base": 36.43,
+        "ot_1_5": 54.64,
+        "ot_2_0": 72.86,
+        "weekly_rate": 1384.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Captioning / Audio describing supervisor or trainer": {
+        "base": 36.43,
+        "ot_1_5": 54.64,
+        "ot_2_0": 72.86,
+        "weekly_rate": 1384.4,
+        "raw_source": "Television broadcasting - Full-time & part-time"
+      },
+      "Announcer class": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Radio broadcasting - Full-time & part-time"
+      },
+      "Broadcaster/Journalist class": {
+        "base": 30.68,
+        "ot_1_5": 46.02,
+        "ot_2_0": 61.36,
+        "weekly_rate": 1165.7,
+        "raw_source": "Radio broadcasting - Full-time & part-time"
+      },
+      "Broadcasting operator": {
+        "base": 26.7,
+        "ot_1_5": 40.05,
+        "ot_2_0": 53.4,
+        "weekly_rate": 1014.7,
+        "raw_source": "Radio broadcasting - Full-time & part-time"
+      },
+      "Chief engineer": {
+        "base": 32.9,
+        "ot_1_5": 49.35,
+        "ot_2_0": 65.8,
+        "weekly_rate": 1250.1,
+        "raw_source": "Radio broadcasting - Full-time & part-time"
+      },
+      "Engineer": {
+        "base": 32.23,
+        "ot_1_5": 48.34,
+        "ot_2_0": 64.46,
+        "weekly_rate": 1224.9,
+        "raw_source": "Radio broadcasting - Full-time & part-time"
+      },
+      "Technician": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Radio broadcasting - Full-time & part-time"
+      },
+      "Senior technician": {
+        "base": 29.88,
+        "ot_1_5": 44.82,
+        "ot_2_0": 59.76,
+        "weekly_rate": 1135.5,
+        "raw_source": "Radio broadcasting - Full-time & part-time"
+      },
+      "first": {
+        "base": 47.8,
+        "ot_1_5": 71.7,
+        "ot_2_0": 95.6,
+        "weekly_rate": 1816.4,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Overtime - after": {
+        "base": 47.8,
+        "ot_1_5": 71.7,
+        "ot_2_0": 95.6,
+        "weekly_rate": 1816.4,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Overtime - RDO Overtime (distant engagement) - first": {
+        "base": 30.37,
+        "ot_1_5": 45.55,
+        "ot_2_0": 60.74,
+        "weekly_rate": 1154.06,
+        "raw_source": "Radio broadcasting - Full-time & part-time"
+      },
+      "Overtime (distant engagement) - after": {
+        "base": 41.83,
+        "ot_1_5": 62.74,
+        "ot_2_0": 83.66,
+        "weekly_rate": 1589.54,
+        "raw_source": "Radio broadcasting - Full-time & part-time"
+      },
+      "Journalist grade": {
+        "base": 46.43,
+        "ot_1_5": 69.64,
+        "ot_2_0": 92.86,
+        "weekly_rate": 1764.2,
+        "raw_source": "Radio broadcasting - Full-time & part-time"
+      },
+      "Cadet 1st year": {
+        "base": 24.28,
+        "ot_1_5": 36.42,
+        "ot_2_0": 48.56,
+        "weekly_rate": 922.7,
+        "raw_source": "Radio broadcasting - Full-time & part-time"
+      },
+      "Cadet 2nd year": {
+        "base": 24.28,
+        "ot_1_5": 36.42,
+        "ot_2_0": 48.56,
+        "weekly_rate": 922.7,
+        "raw_source": "Radio broadcasting - Full-time & part-time"
+      },
+      "Cadet 3rd year": {
+        "base": 27.61,
+        "ot_1_5": 41.41,
+        "ot_2_0": 55.22,
+        "weekly_rate": 1049.13,
+        "raw_source": "Radio broadcasting - Full-time & part-time"
+      },
+      "Level": {
+        "base": 40.68,
+        "ot_1_5": 61.02,
+        "ot_2_0": 81.36,
+        "weekly_rate": 1545.9,
+        "raw_source": "Radio broadcasting - Full-time & part-time"
+      },
+      "- performance": {
+        "base": 49.07,
+        "ot_1_5": 73.61,
+        "ot_2_0": 98.14,
+        "weekly_rate": 1864.66,
+        "raw_source": "instrumentalist - television broadcasting -"
+      },
+      "- rehearsal": {
+        "base": 37.12,
+        "ot_1_5": 55.68,
+        "ot_2_0": 74.24,
+        "weekly_rate": 1410.56,
+        "raw_source": "instrumentalist - television broadcasting -"
+      },
+      "Ensemble singer - records for sale to the public": {
+        "base": 66.05,
+        "ot_1_5": 99.07,
+        "ot_2_0": 132.1,
+        "weekly_rate": 2509.9,
+        "raw_source": "television broadcasting - rehearsal"
+      },
+      "Ensemble singer - feature films, documentaries, telemovies, or television mini-series": {
+        "base": 89.94,
+        "ot_1_5": 134.91,
+        "ot_2_0": 179.88,
+        "weekly_rate": 3417.72,
+        "raw_source": "television broadcasting - rehearsal"
+      },
+      "performance": {
+        "base": 61.34,
+        "ot_1_5": 92.01,
+        "ot_2_0": 122.68,
+        "weekly_rate": 2330.92,
+        "raw_source": "television broadcasting - rehearsal"
+      },
+      "rehearsal": {
+        "base": 46.4,
+        "ot_1_5": 69.6,
+        "ot_2_0": 92.8,
+        "weekly_rate": 1763.2,
+        "raw_source": "television broadcasting - rehearsal"
+      },
+      "Leader - records for sale to the public": {
+        "base": 66.05,
+        "ot_1_5": 99.07,
+        "ot_2_0": 132.1,
+        "weekly_rate": 2509.9,
+        "raw_source": "television broadcasting - rehearsal"
+      },
+      "Leader - feature films, documentaries, telemovies, or television mini-series": {
+        "base": 89.94,
+        "ot_1_5": 134.91,
+        "ot_2_0": 179.88,
+        "weekly_rate": 3417.72,
+        "raw_source": "television broadcasting - rehearsal"
+      },
+      "Principal/Principal instrument/Principal instrumentalist - records for sale to the public": {
+        "base": 66.05,
+        "ot_1_5": 99.07,
+        "ot_2_0": 132.1,
+        "weekly_rate": 2509.9,
+        "raw_source": "television broadcasting - rehearsal"
+      },
+      "Principal/Principal instrument/Principal instrumentalist - feature films, documentaries, telemovies, or television mini-series": {
+        "base": 89.94,
+        "ot_1_5": 134.91,
+        "ot_2_0": 179.88,
+        "weekly_rate": 3417.72,
+        "raw_source": "television broadcasting - rehearsal"
+      },
+      "Session singer": {
+        "base": 109.15,
+        "ot_1_5": 163.73,
+        "ot_2_0": 218.3,
+        "weekly_rate": 4147.7,
+        "raw_source": "television broadcasting - rehearsal"
+      },
+      "16 years and under": {
+        "base": 22.14,
+        "ot_1_5": 33.21,
+        "ot_2_0": 44.28,
+        "weekly_rate": 841.32,
+        "raw_source": "Junior - Television broadcasting - Full-time & part-time"
+      },
+      "17 years": {
+        "base": 23.21,
+        "ot_1_5": 34.81,
+        "ot_2_0": 46.42,
+        "weekly_rate": 881.98,
+        "raw_source": "Junior - Television broadcasting - Full-time & part-time"
+      },
+      "18 years": {
+        "base": 27.42,
+        "ot_1_5": 41.13,
+        "ot_2_0": 54.84,
+        "weekly_rate": 1041.96,
+        "raw_source": "Junior - Television broadcasting - Full-time & part-time"
+      },
+      "19 years": {
+        "base": 21.09,
+        "ot_1_5": 31.63,
+        "ot_2_0": 42.18,
+        "weekly_rate": 801.42,
+        "raw_source": "Junior - Television broadcasting - Full-time & part-time"
+      },
+      "20 years": {
+        "base": 23.9,
+        "ot_1_5": 35.85,
+        "ot_2_0": 47.8,
+        "weekly_rate": 908.2,
+        "raw_source": "Junior - Television broadcasting - Full-time & part-time"
+      },
+      "hours Announcers and Broadcaster/Journalists": {
+        "base": 21.09,
+        "ot_1_5": 31.63,
+        "ot_2_0": 42.18,
+        "weekly_rate": 801.42,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Technical employees": {
+        "base": 23.9,
+        "ot_1_5": 35.85,
+        "ot_2_0": 47.8,
+        "weekly_rate": 908.2,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Announcers and Broadcaster/Journalists": {
+        "base": 23.9,
+        "ot_1_5": 35.85,
+        "ot_2_0": 47.8,
+        "weekly_rate": 908.2,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Saturday - first": {
+        "base": 21.09,
+        "ot_1_5": 31.63,
+        "ot_2_0": 42.18,
+        "weekly_rate": 801.42,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Stand-In/Double - not in a serial drama or serial comedy": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Stand-In/Double - in a serial drama or serial comedy - 1 or": {
+        "base": 20.88,
+        "ot_1_5": 31.32,
+        "ot_2_0": 41.76,
+        "weekly_rate": 793.44,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Stand-In/Double - in a serial drama or serial comedy -": {
+        "base": 25.26,
+        "ot_1_5": 37.89,
+        "ot_2_0": 50.52,
+        "weekly_rate": 959.88,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Stand-In/Double - in a serial drama or comedy -": {
+        "base": 40.64,
+        "ot_1_5": 60.96,
+        "ot_2_0": 81.28,
+        "weekly_rate": 1544.32,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Bit Player - not in a serial drama or serial comedy": {
+        "base": 37.35,
+        "ot_1_5": 56.03,
+        "ot_2_0": 74.7,
+        "weekly_rate": 1419.3,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Bit Player - in a serial drama or serial comedy - 1 or": {
+        "base": 52.72,
+        "ot_1_5": 79.08,
+        "ot_2_0": 105.44,
+        "weekly_rate": 2003.36,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Bit Player - in a serial drama or serial comedy -": {
+        "base": 26.85,
+        "ot_1_5": 40.28,
+        "ot_2_0": 53.7,
+        "weekly_rate": 1020.3,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Bit Player - in a serial drama or comedy -": {
+        "base": 43.19,
+        "ot_1_5": 64.78,
+        "ot_2_0": 86.38,
+        "weekly_rate": 1641.22,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Performer Class": {
+        "base": 46.59,
+        "ot_1_5": 69.89,
+        "ot_2_0": 93.18,
+        "weekly_rate": 1770.42,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "drama or serial comedy": {
+        "base": 40.3,
+        "ot_1_5": 60.45,
+        "ot_2_0": 80.6,
+        "weekly_rate": 1531.4,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "drama or serial comedy - 1 or": {
+        "base": 22.78,
+        "ot_1_5": 34.17,
+        "ot_2_0": 45.56,
+        "weekly_rate": 865.64,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "episodes": {
+        "base": 37.27,
+        "ot_1_5": 55.91,
+        "ot_2_0": 74.54,
+        "weekly_rate": 1416.26,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "drama or serial comedy -": {
+        "base": 56.04,
+        "ot_1_5": 84.06,
+        "ot_2_0": 112.08,
+        "weekly_rate": 2129.52,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "drama or comedy -": {
+        "base": 38.28,
+        "ot_1_5": 57.42,
+        "ot_2_0": 76.56,
+        "weekly_rate": 1454.64,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      },
+      "Classification Hourly pay rate Public holiday Saturday - feature films, TV programs and other content (not including other TV) Sunday Break between shifts Overtime - feature films, TV programs and other content (not including other TV) - Monday to Saturday - first": {
+        "base": 24.0,
+        "ot_1_5": 36.0,
+        "ot_2_0": 48.0,
+        "weekly_rate": 912.0,
+        "raw_source": "Junior - Television broadcasting - Directors - Full-time & part-time"
+      }
+    },
+    "casual": {
+      "hours Supervising technician A+": {
+        "base": 47.54,
+        "ot_1_5": 71.31,
+        "ot_2_0": 95.08,
+        "weekly_rate": 1806.52,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Supervising technician A": {
+        "base": 45.54,
+        "ot_1_5": 68.31,
+        "ot_2_0": 91.08,
+        "weekly_rate": 1730.52,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Supervising technician B": {
+        "base": 43.88,
+        "ot_1_5": 65.82,
+        "ot_2_0": 87.76,
+        "weekly_rate": 1667.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior technician A": {
+        "base": 41.13,
+        "ot_1_5": 61.7,
+        "ot_2_0": 82.26,
+        "weekly_rate": 1562.94,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior technician B": {
+        "base": 39.43,
+        "ot_1_5": 59.14,
+        "ot_2_0": 78.86,
+        "weekly_rate": 1498.34,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Technician A+": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Technician A": {
+        "base": 37.35,
+        "ot_1_5": 56.03,
+        "ot_2_0": 74.7,
+        "weekly_rate": 1419.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Technician B+": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Technician B": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Assistant/trainee technician": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Supervisor audio": {
+        "base": 43.33,
+        "ot_1_5": 65.0,
+        "ot_2_0": 86.66,
+        "weekly_rate": 1646.54,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior audio director A": {
+        "base": 41.13,
+        "ot_1_5": 61.7,
+        "ot_2_0": 82.26,
+        "weekly_rate": 1562.94,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior audio director B": {
+        "base": 39.43,
+        "ot_1_5": 59.14,
+        "ot_2_0": 78.86,
+        "weekly_rate": 1498.34,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Audio operator A/Audio director": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Audio operator A": {
+        "base": 37.35,
+        "ot_1_5": 56.03,
+        "ot_2_0": 74.7,
+        "weekly_rate": 1419.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Audio operator B+": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Audio operator B": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee audio operator": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Supervisor lighting": {
+        "base": 43.33,
+        "ot_1_5": 65.0,
+        "ot_2_0": 86.66,
+        "weekly_rate": 1646.54,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior lighting director A": {
+        "base": 41.13,
+        "ot_1_5": 61.7,
+        "ot_2_0": 82.26,
+        "weekly_rate": 1562.94,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior lighting director B": {
+        "base": 39.43,
+        "ot_1_5": 59.14,
+        "ot_2_0": 78.86,
+        "weekly_rate": 1498.34,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Lighting operator A/Lighting director": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Lighting operator A": {
+        "base": 37.35,
+        "ot_1_5": 56.03,
+        "ot_2_0": 74.7,
+        "weekly_rate": 1419.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Lighting operator B+": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Lighting operator B": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee lighting operator": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "MC supervisor": {
+        "base": 43.88,
+        "ot_1_5": 65.82,
+        "ot_2_0": 87.76,
+        "weekly_rate": 1667.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Classification Hourly pay rate Saturday Sunday Public holiday Overtime - Monday to Friday - first": {
+        "base": 79.69,
+        "ot_1_5": 119.53,
+        "ot_2_0": 159.38,
+        "weekly_rate": 3028.22,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "hours Overtime - Monday to Friday - after": {
+        "base": 58.41,
+        "ot_1_5": 87.61,
+        "ot_2_0": 116.82,
+        "weekly_rate": 2219.58,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "hours Senior MC operator A": {
+        "base": 41.13,
+        "ot_1_5": 61.7,
+        "ot_2_0": 82.26,
+        "weekly_rate": 1562.94,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior MC operator B": {
+        "base": 39.43,
+        "ot_1_5": 59.14,
+        "ot_2_0": 78.86,
+        "weekly_rate": 1498.34,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "MC operator A+": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "MC operator A": {
+        "base": 37.35,
+        "ot_1_5": 56.03,
+        "ot_2_0": 74.7,
+        "weekly_rate": 1419.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "MC operator B+": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "MC operator B": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee MC operator/Assistant MC operator": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Vision switcher - major production": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Vision switcher": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee vision switcher": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Supervising presentation co-ordinator": {
+        "base": 43.33,
+        "ot_1_5": 65.0,
+        "ot_2_0": 86.66,
+        "weekly_rate": 1646.54,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Presentation co-ordinator": {
+        "base": 40.29,
+        "ot_1_5": 60.44,
+        "ot_2_0": 80.58,
+        "weekly_rate": 1531.02,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Assistant presentation co-ordinator": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee presentation co-ordinator": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Videotape supervisor": {
+        "base": 43.88,
+        "ot_1_5": 65.82,
+        "ot_2_0": 87.76,
+        "weekly_rate": 1667.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Post-production senior editor": {
+        "base": 43.88,
+        "ot_1_5": 65.82,
+        "ot_2_0": 87.76,
+        "weekly_rate": 1667.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Post-production editor A": {
+        "base": 41.13,
+        "ot_1_5": 61.7,
+        "ot_2_0": 82.26,
+        "weekly_rate": 1562.94,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior production videotape operator/Post-production editor B": {
+        "base": 39.43,
+        "ot_1_5": 59.14,
+        "ot_2_0": 78.86,
+        "weekly_rate": 1498.34,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Editor A": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Production videotape operator A/Editor B": {
+        "base": 37.35,
+        "ot_1_5": 56.03,
+        "ot_2_0": 74.7,
+        "weekly_rate": 1419.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Production videotape operator B": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Videotape operator": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee videotape operator": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Music/video library supervisor": {
+        "base": 39.43,
+        "ot_1_5": 59.14,
+        "ot_2_0": 78.86,
+        "weekly_rate": 1498.34,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Music/video librarian": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee music/video librarian": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Supervisor camera": {
+        "base": 43.33,
+        "ot_1_5": 65.0,
+        "ot_2_0": 86.66,
+        "weekly_rate": 1646.54,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior camera operator A": {
+        "base": 41.13,
+        "ot_1_5": 61.7,
+        "ot_2_0": 82.26,
+        "weekly_rate": 1562.94,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior camera operator B": {
+        "base": 39.43,
+        "ot_1_5": 59.14,
+        "ot_2_0": 78.86,
+        "weekly_rate": 1498.34,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Camera operator A": {
+        "base": 37.35,
+        "ot_1_5": 56.03,
+        "ot_2_0": 74.7,
+        "weekly_rate": 1419.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Camera operator B": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "hours Trainee camera operator": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Supervising ENG camera operator": {
+        "base": 47.54,
+        "ot_1_5": 71.31,
+        "ot_2_0": 95.08,
+        "weekly_rate": 1806.52,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Specialist ENG camera operator": {
+        "base": 45.54,
+        "ot_1_5": 68.31,
+        "ot_2_0": 91.08,
+        "weekly_rate": 1730.52,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior ENG camera operator": {
+        "base": 42.23,
+        "ot_1_5": 63.34,
+        "ot_2_0": 84.46,
+        "weekly_rate": 1604.74,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "ENG camera operator A": {
+        "base": 41.13,
+        "ot_1_5": 61.7,
+        "ot_2_0": 82.26,
+        "weekly_rate": 1562.94,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "ENG camera operator B": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior ENG camera assistant": {
+        "base": 37.35,
+        "ot_1_5": 56.03,
+        "ot_2_0": 74.7,
+        "weekly_rate": 1419.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "ENG camera assistant": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee ENG camera": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Supervising graphic artist": {
+        "base": 43.33,
+        "ot_1_5": 65.0,
+        "ot_2_0": 86.66,
+        "weekly_rate": 1646.54,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior/specialist graphic artist": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Graphic artist": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee graphic artist": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Supervising director": {
+        "base": 47.54,
+        "ot_1_5": 71.31,
+        "ot_2_0": 95.08,
+        "weekly_rate": 1806.52,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Director major production/Specialist": {
+        "base": 43.88,
+        "ot_1_5": 65.82,
+        "ot_2_0": 87.76,
+        "weekly_rate": 1667.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior director": {
+        "base": 42.23,
+        "ot_1_5": 63.34,
+        "ot_2_0": 84.46,
+        "weekly_rate": 1604.74,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Director": {
+        "base": 39.43,
+        "ot_1_5": 59.14,
+        "ot_2_0": 78.86,
+        "weekly_rate": 1498.34,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee director": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Producer/Director's assistant - major production": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "VCG operator - major production": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Producer/Director's assistant": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "VCG operator": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee producer": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee producer/Director's assistant": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee VCG operator": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Floor manager - major production": {
+        "base": 39.43,
+        "ot_1_5": 59.14,
+        "ot_2_0": 78.86,
+        "weekly_rate": 1498.34,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Floor manager": {
+        "base": 37.35,
+        "ot_1_5": 56.03,
+        "ot_2_0": 74.7,
+        "weekly_rate": 1419.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Assistant floor manager": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee floor manager": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Make-up supervisor/Hairdresser supervisor": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior make-up artist": {
+        "base": 37.35,
+        "ot_1_5": 56.03,
+        "ot_2_0": 74.7,
+        "weekly_rate": 1419.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Hair and make-up artist": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "hours Hair or make-up artist": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Assistant hairdresser": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Assistant make-up artist": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior carpenter": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Carpenter trade level - television": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Carpenter trade level": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Carpenter's assistant": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Wardrobe supervisor": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Wardrobe person (Mistress/Master)": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Wardrobe assistant/keeper": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior still photographer": {
+        "base": 41.13,
+        "ot_1_5": 61.7,
+        "ot_2_0": 82.26,
+        "weekly_rate": 1562.94,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Still photographer trade level": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Assistant still photographer non-trade": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Set design supervisor": {
+        "base": 43.33,
+        "ot_1_5": 65.0,
+        "ot_2_0": 86.66,
+        "weekly_rate": 1646.54,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Senior set designer": {
+        "base": 39.43,
+        "ot_1_5": 59.14,
+        "ot_2_0": 78.86,
+        "weekly_rate": 1498.34,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Set designer": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee set designer": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Scenic artist": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Set and prop painter trade level": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Set and prop painter non-trade": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Property person/Senior studio hand": {
+        "base": 36.25,
+        "ot_1_5": 54.38,
+        "ot_2_0": 72.5,
+        "weekly_rate": 1377.5,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Studio hand A": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Set dresser A": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Property assistant/Studio hand/Prop and scenery storeperson/Set dresser": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee captioner/Audio describer": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Trainee subtitler/Subtitling editor": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Captioner/Audio describer": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Multi-skilled captioner/Audio describer": {
+        "base": 41.13,
+        "ot_1_5": 61.7,
+        "ot_2_0": 82.26,
+        "weekly_rate": 1562.94,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Advanced multi-skilled and specialised captioner/Audio describer": {
+        "base": 43.88,
+        "ot_1_5": 65.82,
+        "ot_2_0": 87.76,
+        "weekly_rate": 1667.44,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Subtitler": {
+        "base": 45.54,
+        "ot_1_5": 68.31,
+        "ot_2_0": 91.08,
+        "weekly_rate": 1730.52,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "Subtitling editor": {
+        "base": 45.54,
+        "ot_1_5": 68.31,
+        "ot_2_0": 91.08,
+        "weekly_rate": 1730.52,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "hours Captioning/Audio describing supervisor or trainer": {
+        "base": 45.54,
+        "ot_1_5": 68.31,
+        "ot_2_0": 91.08,
+        "weekly_rate": 1730.52,
+        "raw_source": "Television broadcasting - Casual"
+      },
+      "first": {
+        "base": 20.25,
+        "ot_1_5": 30.38,
+        "ot_2_0": 40.5,
+        "weekly_rate": 769.5,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Overtime - Monday to Friday - first": {
+        "base": 67.23,
+        "ot_1_5": 100.84,
+        "ot_2_0": 134.46,
+        "weekly_rate": 2554.74,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "hours Announcer class": {
+        "base": 37.35,
+        "ot_1_5": 56.03,
+        "ot_2_0": 74.7,
+        "weekly_rate": 1419.3,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "Announcer class": {
+        "base": 38.35,
+        "ot_1_5": 57.53,
+        "ot_2_0": 76.7,
+        "weekly_rate": 1457.3,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "Broadcaster/Journalist class": {
+        "base": 67.23,
+        "ot_1_5": 100.84,
+        "ot_2_0": 134.46,
+        "weekly_rate": 2554.74,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "Broadcasting operator": {
+        "base": 33.38,
+        "ot_1_5": 50.07,
+        "ot_2_0": 66.76,
+        "weekly_rate": 1268.44,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "Chief engineer": {
+        "base": 41.13,
+        "ot_1_5": 61.7,
+        "ot_2_0": 82.26,
+        "weekly_rate": 1562.94,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "Engineer": {
+        "base": 40.29,
+        "ot_1_5": 60.44,
+        "ot_2_0": 80.58,
+        "weekly_rate": 1531.02,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "Technician": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "Senior technician": {
+        "base": 37.35,
+        "ot_1_5": 56.03,
+        "ot_2_0": 74.7,
+        "weekly_rate": 1419.3,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "Classification Hourly pay rate Overtime - first": {
+        "base": 41.42,
+        "ot_1_5": 62.13,
+        "ot_2_0": 82.84,
+        "weekly_rate": 1573.96,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "hours Overtime - after": {
+        "base": 44.42,
+        "ot_1_5": 66.63,
+        "ot_2_0": 88.84,
+        "weekly_rate": 1687.96,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "hours Overtime - RDO Overtime (distant engagement) - first": {
+        "base": 49.18,
+        "ot_1_5": 73.77,
+        "ot_2_0": 98.36,
+        "weekly_rate": 1868.84,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "Overtime (distant engagement) - after": {
+        "base": 51.34,
+        "ot_1_5": 77.01,
+        "ot_2_0": 102.68,
+        "weekly_rate": 1950.92,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "Journalist grade": {
+        "base": 58.04,
+        "ot_1_5": 87.06,
+        "ot_2_0": 116.08,
+        "weekly_rate": 2205.52,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "on weekend before Monday to Thursday -": {
+        "base": 62.38,
+        "ot_1_5": 93.57,
+        "ot_2_0": 124.76,
+        "weekly_rate": 2370.44,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "midnight Tuesday to Friday - 12.01am to": {
+        "base": 64.63,
+        "ot_1_5": 96.94,
+        "ot_2_0": 129.26,
+        "weekly_rate": 2455.94,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "Level": {
+        "base": 50.85,
+        "ot_1_5": 76.28,
+        "ot_2_0": 101.7,
+        "weekly_rate": 1932.3,
+        "raw_source": "Radio broadcasting - Casual"
+      },
+      "16 years and under": {
+        "base": 22.14,
+        "ot_1_5": 33.21,
+        "ot_2_0": 44.28,
+        "weekly_rate": 841.32,
+        "raw_source": "Junior - Television broadcasting - Casual"
+      },
+      "17 years": {
+        "base": 27.07,
+        "ot_1_5": 40.61,
+        "ot_2_0": 54.14,
+        "weekly_rate": 1028.66,
+        "raw_source": "Junior - Television broadcasting - Casual"
+      },
+      "18 years": {
+        "base": 22.85,
+        "ot_1_5": 34.28,
+        "ot_2_0": 45.7,
+        "weekly_rate": 868.3,
+        "raw_source": "Junior - Television broadcasting - Casual"
+      },
+      "19 years": {
+        "base": 26.36,
+        "ot_1_5": 39.54,
+        "ot_2_0": 52.72,
+        "weekly_rate": 1001.68,
+        "raw_source": "Junior - Television broadcasting - Casual"
+      },
+      "20 years": {
+        "base": 29.88,
+        "ot_1_5": 44.82,
+        "ot_2_0": 59.76,
+        "weekly_rate": 1135.44,
+        "raw_source": "Junior - Television broadcasting - Casual"
+      },
+      "Overtime - after": {
+        "base": 25.31,
+        "ot_1_5": 37.96,
+        "ot_2_0": 50.62,
+        "weekly_rate": 961.78,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "hours Announcers and Broadcaster/Journalists": {
+        "base": 29.88,
+        "ot_1_5": 44.82,
+        "ot_2_0": 59.76,
+        "weekly_rate": 1135.44,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Technical employees": {
+        "base": 29.88,
+        "ot_1_5": 44.82,
+        "ot_2_0": 59.76,
+        "weekly_rate": 1135.44,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Saturday - first": {
+        "base": 20.04,
+        "ot_1_5": 30.06,
+        "ot_2_0": 40.08,
+        "weekly_rate": 761.52,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "hours Bit Player - Content other than feature films and advertising films": {
+        "base": 46.63,
+        "ot_1_5": 69.95,
+        "ot_2_0": 93.26,
+        "weekly_rate": 1771.94,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Extra - Advertising": {
+        "base": 21.45,
+        "ot_1_5": 32.17,
+        "ot_2_0": 42.9,
+        "weekly_rate": 815.1,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Extra - Feature films": {
+        "base": 48.1,
+        "ot_1_5": 72.15,
+        "ot_2_0": 96.2,
+        "weekly_rate": 1827.8,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Extra - Content other than advertising and feature films": {
+        "base": 43.79,
+        "ot_1_5": 65.69,
+        "ot_2_0": 87.58,
+        "weekly_rate": 1664.02,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Performer Class 1 - Advertising": {
+        "base": 26.02,
+        "ot_1_5": 39.03,
+        "ot_2_0": 52.04,
+        "weekly_rate": 988.76,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Performer Class": {
+        "base": 40.82,
+        "ot_1_5": 61.23,
+        "ot_2_0": 81.64,
+        "weekly_rate": 1551.16,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "(performer is not required to speak more than two lines of dialogue)": {
+        "base": 25.72,
+        "ot_1_5": 38.58,
+        "ot_2_0": 51.44,
+        "weekly_rate": 977.36,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Performer Class 2 - Advertising": {
+        "base": 26.02,
+        "ot_1_5": 39.03,
+        "ot_2_0": 52.04,
+        "weekly_rate": 988.76,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Stand-In/Double - Advertising": {
+        "base": 43.79,
+        "ot_1_5": 65.69,
+        "ot_2_0": 87.58,
+        "weekly_rate": 1664.02,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Stand-In/Double - Feature films": {
+        "base": 43.79,
+        "ot_1_5": 65.69,
+        "ot_2_0": 87.58,
+        "weekly_rate": 1664.02,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Stand-In/Double - Content other than advertising and feature films": {
+        "base": 43.79,
+        "ot_1_5": 65.69,
+        "ot_2_0": 87.58,
+        "weekly_rate": 1664.02,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "hours Extra": {
+        "base": 128.22,
+        "ot_1_5": 192.33,
+        "ot_2_0": 256.44,
+        "weekly_rate": 4872.36,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Stand-In/Double": {
+        "base": 128.22,
+        "ot_1_5": 192.33,
+        "ot_2_0": 256.44,
+        "weekly_rate": 4872.36,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Performer Class 1 - Feature films": {
+        "base": 163.24,
+        "ot_1_5": 244.86,
+        "ot_2_0": 326.48,
+        "weekly_rate": 6203.12,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Performer Class 2 - Feature films": {
+        "base": 171.51,
+        "ot_1_5": 257.26,
+        "ot_2_0": 343.02,
+        "weekly_rate": 6517.38,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "than advertising and feature films": {
+        "base": 147.01,
+        "ot_1_5": 220.51,
+        "ot_2_0": 294.02,
+        "weekly_rate": 5586.38,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Overtime - RDO Overtime (distant engagement) - first": {
+        "base": 30.37,
+        "ot_1_5": 45.55,
+        "ot_2_0": 60.74,
+        "weekly_rate": 1154.06,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Cadet 1st year": {
+        "base": 27.62,
+        "ot_1_5": 41.43,
+        "ot_2_0": 55.24,
+        "weekly_rate": 1049.56,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Cadet 2nd year": {
+        "base": 23.01,
+        "ot_1_5": 34.52,
+        "ot_2_0": 46.02,
+        "weekly_rate": 874.28,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      },
+      "Cadet 3rd year": {
+        "base": 27.61,
+        "ot_1_5": 41.41,
+        "ot_2_0": 55.22,
+        "weekly_rate": 1049.13,
+        "raw_source": "Junior - Television broadcasting - Directors - Casual"
+      }
+    }
+  },
+  "artists": {
+    "full_time": {
+      "Saturday - first": {
+        "base": 35.15,
+        "ot_1_5": 52.72,
+        "ot_2_0": 70.3,
+        "weekly_rate": 1335.7,
+        "raw_source": "Artists - Full-time & part-time"
+      },
+      "hours Stand-In/Double - not in a serial drama or serial comedy": {
+        "base": 28.12,
+        "ot_1_5": 42.18,
+        "ot_2_0": 56.24,
+        "weekly_rate": 1068.4,
+        "raw_source": "Artists - Full-time & part-time"
+      },
+      "Stand-In/Double - in a serial drama or serial comedy -": {
+        "base": 56.24,
+        "ot_1_5": 84.36,
+        "ot_2_0": 112.48,
+        "weekly_rate": 2137.12,
+        "raw_source": "Artists - Full-time & part-time"
+      },
+      "episodes": {
+        "base": 74.54,
+        "ot_1_5": 111.81,
+        "ot_2_0": 149.08,
+        "weekly_rate": 2832.6,
+        "raw_source": "Artists - Full-time & part-time"
+      },
+      "Stand-In/Double - in a serial drama or comedy -": {
+        "base": 81.28,
+        "ot_1_5": 121.92,
+        "ot_2_0": 162.56,
+        "weekly_rate": 3088.64,
+        "raw_source": "Artists - Full-time & part-time"
+      },
+      "Bit Player - not in a serial drama or serial comedy": {
+        "base": 29.88,
+        "ot_1_5": 44.82,
+        "ot_2_0": 59.76,
+        "weekly_rate": 1135.5,
+        "raw_source": "Artists - Full-time & part-time"
+      },
+      "Bit Player - in a serial drama or serial comedy - 1 or": {
+        "base": 105.44,
+        "ot_1_5": 158.16,
+        "ot_2_0": 210.88,
+        "weekly_rate": 4006.72,
+        "raw_source": "Artists - Full-time & part-time"
+      },
+      "Bit Player - in a serial drama or serial comedy -": {
+        "base": 130.04,
+        "ot_1_5": 195.06,
+        "ot_2_0": 260.08,
+        "weekly_rate": 4941.52,
+        "raw_source": "Artists - Full-time & part-time"
+      },
+      "Bit Player - in a serial drama or comedy -": {
+        "base": 86.38,
+        "ot_1_5": 129.57,
+        "ot_2_0": 172.76,
+        "weekly_rate": 3282.44,
+        "raw_source": "Artists - Full-time & part-time"
+      },
+      "Performer Class": {
+        "base": 81.62,
+        "ot_1_5": 122.43,
+        "ot_2_0": 163.24,
+        "weekly_rate": 3101.56,
+        "raw_source": "Artists - Daily"
+      },
+      "serial drama or serial comedy": {
+        "base": 32.23,
+        "ot_1_5": 48.34,
+        "ot_2_0": 64.46,
+        "weekly_rate": 1224.9,
+        "raw_source": "Artists - Full-time & part-time"
+      },
+      "Classification Weekly pay rate Hourly pay rate Public holiday Saturday - feature films, TV programs and other content (not including other TV) Sunday Break between shifts Overtime - feature films, TV programs and other content (not including other TV) - Monday to Saturday - first": {
+        "base": 51.83,
+        "ot_1_5": 77.75,
+        "ot_2_0": 103.66,
+        "weekly_rate": 1969.54,
+        "raw_source": "Artists - Full-time & part-time"
+      },
+      "hours Performer Class": {
+        "base": 138.2,
+        "ot_1_5": 207.3,
+        "ot_2_0": 276.4,
+        "weekly_rate": 5251.6,
+        "raw_source": "Artists - Full-time & part-time"
+      },
+      "drama or serial comedy -": {
+        "base": 141.88,
+        "ot_1_5": 212.82,
+        "ot_2_0": 283.76,
+        "weekly_rate": 5391.44,
+        "raw_source": "Artists - Full-time & part-time"
+      },
+      "drama or comedy -": {
+        "base": 76.56,
+        "ot_1_5": 114.84,
+        "ot_2_0": 153.12,
+        "weekly_rate": 2909.28,
+        "raw_source": "Artists - Full-time & part-time"
+      },
+      "first": {
+        "base": 40.06,
+        "ot_1_5": 60.09,
+        "ot_2_0": 80.12,
+        "weekly_rate": 1522.28,
+        "raw_source": "Artists - Daily"
+      },
+      "Extra": {
+        "base": 80.13,
+        "ot_1_5": 120.19,
+        "ot_2_0": 160.26,
+        "weekly_rate": 3044.94,
+        "raw_source": "Artists - Daily"
+      },
+      "Stand-In/Double": {
+        "base": 80.13,
+        "ot_1_5": 120.19,
+        "ot_2_0": 160.26,
+        "weekly_rate": 3044.94,
+        "raw_source": "Artists - Daily"
+      },
+      "Performer Class 1 - Feature films": {
+        "base": 102.03,
+        "ot_1_5": 153.05,
+        "ot_2_0": 204.06,
+        "weekly_rate": 3877.14,
+        "raw_source": "Artists - Daily"
+      },
+      "Performer Class 2 - Feature films": {
+        "base": 107.2,
+        "ot_1_5": 160.8,
+        "ot_2_0": 214.4,
+        "weekly_rate": 4073.6,
+        "raw_source": "Artists - Daily"
+      },
+      "than advertising and feature films": {
+        "base": 91.88,
+        "ot_1_5": 137.82,
+        "ot_2_0": 183.76,
+        "weekly_rate": 3491.44,
+        "raw_source": "Artists - Daily"
+      }
+    },
+    "casual": {
+      "Saturday - first": {
+        "base": 46.63,
+        "ot_1_5": 69.95,
+        "ot_2_0": 93.26,
+        "weekly_rate": 1771.94,
+        "raw_source": "Artists - Casual"
+      },
+      "hours Bit Player - Content other than feature films and advertising films": {
+        "base": 37.3,
+        "ot_1_5": 55.95,
+        "ot_2_0": 74.6,
+        "weekly_rate": 1417.4,
+        "raw_source": "Artists - Casual"
+      },
+      "Extra - Advertising": {
+        "base": 42.9,
+        "ot_1_5": 64.35,
+        "ot_2_0": 85.8,
+        "weekly_rate": 1630.2,
+        "raw_source": "Artists - Casual"
+      },
+      "Extra - Feature films": {
+        "base": 38.48,
+        "ot_1_5": 57.72,
+        "ot_2_0": 76.96,
+        "weekly_rate": 1462.24,
+        "raw_source": "Artists - Casual"
+      },
+      "Extra - Content other than advertising and feature films": {
+        "base": 35.03,
+        "ot_1_5": 52.55,
+        "ot_2_0": 70.06,
+        "weekly_rate": 1331.14,
+        "raw_source": "Artists - Casual"
+      },
+      "Performer Class 1 - Advertising": {
+        "base": 52.03,
+        "ot_1_5": 78.05,
+        "ot_2_0": 104.06,
+        "weekly_rate": 1977.14,
+        "raw_source": "Artists - Casual"
+      },
+      "Performer Class": {
+        "base": 130.08,
+        "ot_1_5": 195.12,
+        "ot_2_0": 260.16,
+        "weekly_rate": 4943.04,
+        "raw_source": "Artists - Casual"
+      },
+      "(performer is not required to speak more than two lines of dialogue)": {
+        "base": 51.43,
+        "ot_1_5": 77.14,
+        "ot_2_0": 102.86,
+        "weekly_rate": 1954.34,
+        "raw_source": "Artists - Casual"
+      },
+      "Performer Class 2 - Advertising": {
+        "base": 52.03,
+        "ot_1_5": 78.05,
+        "ot_2_0": 104.06,
+        "weekly_rate": 1977.14,
+        "raw_source": "Artists - Casual"
+      },
+      "Stand-In/Double - Advertising": {
+        "base": 35.03,
+        "ot_1_5": 52.55,
+        "ot_2_0": 70.06,
+        "weekly_rate": 1331.14,
+        "raw_source": "Artists - Casual"
+      },
+      "Stand-In/Double - Feature films": {
+        "base": 35.03,
+        "ot_1_5": 52.55,
+        "ot_2_0": 70.06,
+        "weekly_rate": 1331.14,
+        "raw_source": "Artists - Casual"
+      },
+      "Stand-In/Double - Content other than advertising and feature films": {
+        "base": 35.03,
+        "ot_1_5": 52.55,
+        "ot_2_0": 70.06,
+        "weekly_rate": 1331.14,
+        "raw_source": "Artists - Casual"
+      }
+    }
+  }
+}

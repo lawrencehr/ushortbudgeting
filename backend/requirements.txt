@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+sqlmodel
+alembic
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+pandas
+openpyxl
