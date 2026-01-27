@@ -165,14 +165,21 @@ export async function fetchCatalog(): Promise<CatalogItem[]> {
 
 export async function addBudgetLineItem(
   groupingId: string,
-  description: string,
-  rate: number,
-  isLabor: boolean
+  itemData: Partial<BudgetLineItem>
 ): Promise<any> {
   const res = await fetch(`${API_URL}/budget/items`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ grouping_id: groupingId, description, rate, is_labor: isLabor }),
+    body: JSON.stringify({
+      ...itemData,
+      grouping_id: groupingId,
+      // Default fallbacks if missing
+      rate: itemData.rate || 0,
+      description: itemData.description || '',
+      is_labor: itemData.is_labor || false,
+      quantity: (itemData.prep_qty || 0) + (itemData.shoot_qty || 0) + (itemData.post_qty || 0),
+      total: itemData.total || 0
+    }),
   });
   if (!res.ok) throw new Error('Failed to add item');
   return res.json();

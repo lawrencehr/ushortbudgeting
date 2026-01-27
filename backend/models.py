@@ -1,5 +1,5 @@
-from typing import Optional, List
-from sqlmodel import Field, SQLModel, Relationship
+from typing import Optional, List, Dict, Any
+from sqlmodel import Field, SQLModel, Relationship, JSON, Column
 from datetime import datetime
 import uuid
 
@@ -65,6 +65,9 @@ class LineItemBase(SQLModel):
     description: str
     rate: float = 0.0
     quantity: float = 0.0 # Total qty (prep + shoot + post)
+    prep_qty: float = 0.0
+    shoot_qty: float = 0.0
+    post_qty: float = 0.0
     unit: str = "day" # day, week, allow
     total: float = 0.0
     is_labor: bool = False
@@ -153,3 +156,18 @@ class ScheduleDay(SQLModel, table=True):
     
     schedule: Optional[LaborSchedule] = Relationship(back_populates="schedule_days")
     calendar_day: Optional[CalendarDay] = Relationship(back_populates="schedule_days")
+
+# --- Template Models ---
+
+class BudgetTemplate(SQLModel, table=True):
+    id: Optional[str] = Field(default_factory=generate_uuid, primary_key=True)
+    name: str = Field(index=True)
+    description: Optional[str] = None
+    created_by: str = Field(index=True) # User ID
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    source_budget_id: Optional[str] = None
+    # Store the full budget structure as a JSON blob
+    snapshot: Dict[str, Any] = Field(default={}, sa_column=Column(JSON))
+    item_count: int = 0
+    category_count: int = 0
+

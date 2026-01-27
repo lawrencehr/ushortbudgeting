@@ -46,6 +46,9 @@ from crew_router import router as crew_router
 
 app.include_router(crew_router, prefix="/api/crew", tags=["crew"])
 
+from template_router import router as template_router
+app.include_router(template_router, prefix="/api", tags=["templates"])
+
 from pydantic import BaseModel
 
 class LaborAllowance(BaseModel):
@@ -675,6 +678,9 @@ def get_default_budget(session: Session = Depends(get_session)):
                                 unit=item_data.get("unit", "day"),
                                 total=float(item_data.get("total", 0)),
                                 is_labor=bool(item_data.get("is_labor", False)),
+                                prep_qty=float(item_data.get("prep_qty", 0)),
+                                shoot_qty=float(item_data.get("shoot_qty", 0)),
+                                post_qty=float(item_data.get("post_qty", 0)),
                                 base_rate=float(item_data.get("base_hourly_rate", 0)),
                                 days_per_week=float(item_data.get("days_per_week", 5)),
                                 allowances_json=json.dumps(item_data.get("allowances", [])),
@@ -757,6 +763,11 @@ def save_budget(categories: List[Dict], session: Session = Depends(get_session))
                         db_item.total = float(item_data.get("total", 0))
                         db_item.is_labor = bool(item_data.get("is_labor", False))
                         db_item.notes = item_data.get("notes", None)
+                        
+                        # Persist Quantities
+                        db_item.prep_qty = float(item_data.get("prep_qty", 0))
+                        db_item.shoot_qty = float(item_data.get("shoot_qty", 0))
+                        db_item.post_qty = float(item_data.get("post_qty", 0))
                         
                         # Labor specific
                         db_item.base_rate = float(item_data.get("base_hourly_rate", 0))
