@@ -12,7 +12,12 @@ interface CalendarPickerProps {
     disabled?: Date[]
     modifiers?: Record<string, Date[]>
     modifierStyles?: Record<string, React.CSSProperties>
+    modifiersClassNames?: Record<string, string>
+    onDayClick?: DayClickEventHandler
+    month?: Date
+    onMonthChange?: (month: Date) => void
     className?: string
+    compact?: boolean
 }
 
 export function CalendarPicker({
@@ -21,51 +26,49 @@ export function CalendarPicker({
     disabled,
     modifiers,
     modifierStyles,
+    modifiersClassNames,
+    onDayClick,
+    month,
+    onMonthChange,
     className,
+    compact = false, // Default to normal size
 }: CalendarPickerProps) {
 
     return (
-        <div className={cn("p-4 bg-zinc-900 border border-zinc-800 rounded-lg", className)}>
+        <div className={cn("bg-white border border-gray-200 rounded-lg shadow-sm", className, compact ? "p-2" : "p-4")}>
             <DayPicker
                 mode="multiple"
+                weekStartsOn={1}
                 selected={selected}
                 onSelect={onSelect}
+                onDayClick={onDayClick}
+                month={month}
+                onMonthChange={onMonthChange}
                 disabled={disabled}
                 modifiers={modifiers}
                 modifiersStyles={modifierStyles}
+                modifiersClassNames={modifiersClassNames}
                 showOutsideDays
-                className="p-3"
+                className={compact ? "p-0" : "p-3"}
                 classNames={{
-                    months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
-                    month: "space-y-4",
-                    caption: "flex justify-center pt-1 relative items-center",
-                    caption_label: "text-sm font-medium text-zinc-100",
+                    month_caption: compact ? "flex justify-center pt-1 mb-2 relative items-center" : "flex justify-center pt-1 mb-8 relative items-center",
+                    caption_label: compact ? "text-sm font-bold text-gray-900" : "text-lg font-semibold text-gray-900",
                     nav: "space-x-1 flex items-center",
-                    nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 text-zinc-400 hover:text-white transition-opacity",
-                    nav_button_previous: "absolute left-1",
-                    nav_button_next: "absolute right-1",
-                    table: "w-full border-collapse space-y-1",
-                    head_row: "flex",
-                    head_cell: "text-zinc-500 rounded-md w-9 font-normal text-[0.8rem]",
-                    row: "flex w-full mt-2",
-                    cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-zinc-800 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                    day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-zinc-800 rounded-md transition-colors text-zinc-300",
-                    day_selected:
-                        "bg-blue-600 text-white hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white",
-                    day_today: "bg-zinc-800 text-zinc-100",
-                    day_outside: "text-zinc-600 opacity-50",
-                    day_disabled: "text-zinc-600 opacity-50",
-                    day_range_middle: "aria-selected:bg-zinc-800 aria-selected:text-zinc-100",
-                    day_hidden: "invisible",
+                    button_previous: compact ? "absolute left-0 h-6 w-6 bg-transparent p-0 opacity-50 hover:opacity-100 text-gray-400" : "absolute left-1 h-9 w-9 bg-transparent p-0 opacity-50 hover:opacity-100 text-gray-400",
+                    button_next: compact ? "absolute right-0 h-6 w-6 bg-transparent p-0 opacity-50 hover:opacity-100 text-gray-400" : "absolute right-1 h-9 w-9 bg-transparent p-0 opacity-50 hover:opacity-100 text-gray-400",
+                    month_grid: "w-full border-collapse",
+                    weekdays: compact ? "flex mb-1 justify-between" : "flex mb-4 gap-2",
+                    weekday: compact ? "text-gray-400 w-8 h-8 flex items-center justify-center font-bold text-[10px] uppercase tracking-tighter" : "text-gray-500 w-14 h-14 flex items-center justify-center font-medium text-sm uppercase tracking-wider",
+                    week: compact ? "flex w-full mt-0 justify-between" : "flex w-full mt-2 gap-2",
+                    day: compact ? "relative p-0 h-8 w-8 flex items-center justify-center text-[10px]" : "relative p-0 h-14 w-14 flex items-center justify-center", // The TD container
+                    day_button: compact ? "h-7 w-7 p-0 rounded-full transition-all text-gray-900 flex items-center justify-center hover:bg-gray-100 focus:outline-none text-[10px]" : "h-12 w-12 p-0 rounded-full transition-all text-gray-900 flex items-center justify-center hover:bg-gray-100 focus:outline-none text-base", // The clickable button
+                    today: "font-bold text-indigo-600 ring-2 ring-indigo-100 bg-indigo-50/30",
+                    outside: "text-gray-300 opacity-40",
+                    disabled: "text-gray-300 opacity-40",
+                    hidden: "invisible",
+                    selected: "bg-indigo-600 text-white hover:bg-indigo-700",
                 }}
             />
-            <div className="mt-4 flex gap-4 text-xs text-zinc-400">
-                <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-blue-600"></div>
-                    <span>Selected</span>
-                </div>
-                {/* Add legend items dynamically if needed */}
-            </div>
         </div>
     )
 }

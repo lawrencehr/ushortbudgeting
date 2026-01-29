@@ -1,8 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { PhaseConfiguration } from "@/components/PhaseConfiguration"
-import { Loader2, Save, AlertCircle } from "lucide-react"
+import { CalendarPicker } from "@/components/CalendarPicker"
+import { Loader2, Save, AlertCircle, Clock, Check } from "lucide-react"
+import { format } from "date-fns"
+import { cn } from "@/lib/utils"
 
 interface PhaseData {
     defaultHours: number
@@ -19,6 +21,8 @@ interface CalendarResponse {
     calendarDays: any[]
 }
 
+type PhaseType = 'preProd' | 'shoot' | 'postProd'
+
 export default function CalendarSettingsPage() {
     const [projectId, setProjectId] = React.useState<string | null>(null)
     const [loading, setLoading] = React.useState(true)
@@ -26,11 +30,15 @@ export default function CalendarSettingsPage() {
     const [error, setError] = React.useState<string | null>(null)
 
     // State for phases
-    const [preProd, setPreProd] = React.useState<{ dates: Date[], hours: number }>({ dates: [], hours: 8 })
-    const [shoot, setShoot] = React.useState<{ dates: Date[], hours: number }>({ dates: [], hours: 10 })
-    const [postProd, setPostProd] = React.useState<{ dates: Date[], hours: number }>({ dates: [], hours: 8 })
+    const [phases, setPhases] = React.useState({
+        preProd: { dates: [] as Date[], hours: 8 },
+        shoot: { dates: [] as Date[], hours: 10 },
+        postProd: { dates: [] as Date[], hours: 8 }
+    })
 
+    const [activePhase, setActivePhase] = React.useState<PhaseType>('shoot')
     const [holidays, setHolidays] = React.useState<Array<{ date: string, name: string }>>([])
+    const [currentMonth, setCurrentMonth] = React.useState<Date>(new Date())
 
     // Load Project and Calendar
     React.useEffect(() => {
@@ -53,27 +61,21 @@ export default function CalendarSettingsPage() {
                 if (calRes.ok) {
                     const calData: CalendarResponse = await calRes.json()
 
-                    // Map Response to State
-                    if (calData.phases.preProd) {
-                        setPreProd({
-                            dates: calData.phases.preProd.dates.map(d => new Date(d)),
-                            hours: calData.phases.preProd.defaultHours
-                        })
-                    }
-                    if (calData.phases.shoot) {
-                        setShoot({
-                            dates: calData.phases.shoot.dates.map(d => new Date(d)),
-                            hours: calData.phases.shoot.defaultHours
-                        })
-                    }
-                    if (calData.phases.postProd) {
-                        setPostProd({
-                            dates: calData.phases.postProd.dates.map(d => new Date(d)),
-                            hours: calData.phases.postProd.defaultHours
-                        })
-                    }
+                    setPhases({
+                        preProd: {
+                            dates: calData.phases.preProd?.dates.map(d => new Date(d)) || [],
+                            hours: calData.phases.preProd?.defaultHours || 8
+                        },
+                        shoot: {
+                            dates: calData.phases.shoot?.dates.map(d => new Date(d)) || [],
+                            hours: calData.phases.shoot?.defaultHours || 10
+                        },
+                        postProd: {
+                            dates: calData.phases.postProd?.dates.map(d => new Date(d)) || [],
+                            hours: calData.phases.postProd?.defaultHours || 8
+                        }
+                    })
 
-                    // Set Holidays if any (for display eventually)
                     setHolidays(calData.holidays || [])
                 }
 
@@ -97,16 +99,16 @@ export default function CalendarSettingsPage() {
             const payload = {
                 phases: {
                     preProd: {
-                        defaultHours: preProd.hours,
-                        dates: preProd.dates.map(d => d.toISOString())
+                        defaultHours: phases.preProd.hours,
+                        dates: phases.preProd.dates.map(d => format(d, 'yyyy-MM-dd'))
                     },
                     shoot: {
-                        defaultHours: shoot.hours,
-                        dates: shoot.dates.map(d => d.toISOString())
+                        defaultHours: phases.shoot.hours,
+                        dates: phases.shoot.dates.map(d => format(d, 'yyyy-MM-dd'))
                     },
                     postProd: {
-                        defaultHours: postProd.hours,
-                        dates: postProd.dates.map(d => d.toISOString())
+                        defaultHours: phases.postProd.hours,
+                        dates: phases.postProd.dates.map(d => format(d, 'yyyy-MM-dd'))
                     }
                 }
             }
@@ -132,89 +134,214 @@ export default function CalendarSettingsPage() {
         }
     }
 
-    // Prevent selecting same date in multiple phases?
-    const allPre = new Set(preProd.dates.map(d => d.toDateString()))
-    const allShoot = new Set(shoot.dates.map(d => d.toDateString()))
-    const allPost = new Set(postProd.dates.map(d => d.toDateString()))
+    // Interaction Logic
+    const handleDayClick = (day: Date, modifiers: any) => {
+        // Check if day is already in the ACTIVE phase
+        const isActivePhase = phases[activePhase].dates.some(d => d.toDateString() === day.toDateString())
+
+        setPhases(prev => {
+            const newPhases = { ...prev }
+
+            // Remove from ALL phases first (to ensure no overlap)
+            Object.keys(newPhases).forEach((key) => {
+                const k = key as PhaseType
+                newPhases[k].dates = newPhases[k].dates.filter(d => d.toDateString() !== day.toDateString())
+            })
+
+            // If it wasn't already in the active phase, add it
+            // (If it WAS in the active phase, we just removed it above, effectively toggling off)
+            if (!isActivePhase) {
+                newPhases[activePhase].dates.push(day)
+            }
+
+            return newPhases
+        })
+    }
 
     if (loading) {
-        return <div className="p-8 flex items-center justify-center text-zinc-500"><Loader2 className="animate-spin mr-2" /> Loading...</div>
+        return <div className="h-screen w-full flex items-center justify-center text-gray-500"><Loader2 className="animate-spin mr-2" /> Loading...</div>
     }
 
     return (
-        <div className="p-8 max-w-5xl mx-auto pb-32">
-            <header className="mb-8 flex items-center justify-between">
+        <div className="h-full flex flex-col overflow-hidden bg-gray-50">
+            {/* Header */}
+            <header className="flex-none px-6 py-4 border-b border-gray-200 bg-white flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-zinc-100 mb-2">Production Calendar</h1>
-                    <p className="text-zinc-400">Configure production phases and dates. Holidays are automatically detected.</p>
+                    <h1 className="text-xl font-bold text-gray-900">Production Calendar</h1>
+                    <p className="text-gray-500 text-sm">Configure production phases and dates.</p>
                 </div>
 
-                <button
-                    onClick={handleSave}
-                    disabled={saving || !projectId}
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md font-medium transition-colors disabled:opacity-50"
-                >
-                    {saving ? <Loader2 className="animate-spin w-4 h-4" /> : <Save className="w-4 h-4" />}
-                    {saving ? "Saving..." : "Save Changes"}
-                </button>
+                <div className="flex items-center gap-4">
+                    {error && (
+                        <div className="text-red-600 text-sm flex items-center gap-2">
+                            <AlertCircle className="w-4 h-4" />
+                            {error}
+                        </div>
+                    )}
+                    <button
+                        onClick={handleSave}
+                        disabled={saving || !projectId}
+                        className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-medium text-sm transition-colors disabled:opacity-50"
+                    >
+                        {saving ? <Loader2 className="animate-spin w-3.5 h-3.5" /> : <Save className="w-3.5 h-3.5" />}
+                        {saving ? "Saving..." : "Save Changes"}
+                    </button>
+                </div>
             </header>
 
-            {error && (
-                <div className="bg-red-900/20 border border-red-900/50 p-4 rounded-md text-red-400 mb-6 flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4" />
-                    {error}
-                </div>
-            )}
+            {/* Content Grid */}
+            <div className="flex-1 overflow-hidden p-6 flex justify-center">
+                <div className="grid grid-cols-[1fr_300px] divide-x divide-gray-200 overflow-hidden max-w-5xl w-full bg-white border border-gray-200 rounded-lg shadow-sm h-full max-h-[800px]">
 
-            <div className="grid grid-cols-1 gap-6">
-                <PhaseConfiguration
-                    title="Pre-Production"
-                    color="bg-green-500"
-                    defaultHours={preProd.hours}
-                    selectedDates={preProd.dates}
-                    onHoursChange={(h) => setPreProd(prev => ({ ...prev, hours: h }))}
-                    onDatesChange={(d) => setPreProd(prev => ({ ...prev, dates: d }))}
-                    disabledDates={[...shoot.dates, ...postProd.dates]}
-                />
+                    {/* Left: Calendar */}
+                    <div className="p-6 overflow-y-auto bg-white flex flex-col items-center justify-start pt-8">
+                        <CalendarPicker
+                            selected={undefined}
+                            onSelect={() => { }}
+                            modifiers={{
+                                preProd: phases.preProd.dates,
+                                shoot: phases.shoot.dates,
+                                postProd: phases.postProd.dates,
+                                holiday: holidays.map(h => new Date(h.date))
+                            }}
+                            modifiersClassNames={{
+                                preProd: "bg-green-500 text-white hover:bg-green-600 hover:text-white rounded-full",
+                                shoot: "bg-red-500 text-white hover:bg-red-600 hover:text-white rounded-full",
+                                postProd: "bg-purple-500 text-white hover:bg-purple-600 hover:text-white rounded-full",
+                                holiday: "bg-amber-100 text-amber-900 ring-1 ring-amber-400 rounded-full !font-bold !underline underline-offset-2 decoration-2",
+                            }}
+                            onDayClick={handleDayClick}
+                            month={currentMonth}
+                            onMonthChange={setCurrentMonth}
+                            className="bg-white border-none p-4"
+                        />
+                    </div>
 
-                <PhaseConfiguration
-                    title="Shoot"
-                    color="bg-red-500"
-                    defaultHours={shoot.hours}
-                    selectedDates={shoot.dates}
-                    onHoursChange={(h) => setShoot(prev => ({ ...prev, hours: h }))}
-                    onDatesChange={(d) => setShoot(prev => ({ ...prev, dates: d }))}
-                    disabledDates={[...preProd.dates, ...postProd.dates]}
-                />
+                    {/* Right: Tools */}
+                    <div className="bg-gray-50/50 p-6 space-y-6 overflow-y-auto border-l border-gray-100">
+                        <div>
+                            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Phase Tools</h3>
+                            <div className="space-y-3">
 
-                <PhaseConfiguration
-                    title="Post-Production"
-                    color="bg-purple-500"
-                    defaultHours={postProd.hours}
-                    selectedDates={postProd.dates}
-                    onHoursChange={(h) => setPostProd(prev => ({ ...prev, hours: h }))}
-                    onDatesChange={(d) => setPostProd(prev => ({ ...prev, dates: d }))}
-                    disabledDates={[...preProd.dates, ...shoot.dates]}
-                />
-            </div>
+                                {/* Pre-Prod Card */}
+                                <button
+                                    onClick={() => setActivePhase('preProd')}
+                                    className={cn(
+                                        "w-full text-left p-4 rounded-lg border transition-all relative group items-start",
+                                        activePhase === 'preProd'
+                                            ? "bg-white border-green-500 ring-1 ring-green-500/20 shadow-md"
+                                            : "bg-white border-gray-200 hover:border-gray-300 shadow-sm"
+                                    )}
+                                >
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center gap-2">
+                                            <div className={cn("w-2 h-2 rounded-full", activePhase === 'preProd' ? "bg-green-500 shadow-sm" : "bg-green-200")} />
+                                            <span className={cn("font-medium text-sm", activePhase === 'preProd' ? "text-gray-900" : "text-gray-500")}>Pre-Production</span>
+                                        </div>
+                                        {activePhase === 'preProd' && <Check className="w-3 h-3 text-green-500" />}
+                                    </div>
+                                    <div className="flex items-center justify-between mt-4">
+                                        <div className="text-xs text-gray-500">{phases.preProd.dates.length} days</div>
+                                        <div className="flex items-center gap-1 bg-gray-50 rounded px-2 py-1 border border-gray-200" onClick={e => e.stopPropagation()}>
+                                            <Clock className="w-3 h-3 text-gray-400" />
+                                            <input
+                                                type="number"
+                                                value={phases.preProd.hours}
+                                                onChange={(e) => setPhases(p => ({ ...p, preProd: { ...p.preProd, hours: parseFloat(e.target.value) || 0 } }))}
+                                                className="w-8 bg-transparent text-xs text-right focus:outline-none text-gray-700"
+                                            />
+                                            <span className="text-[10px] text-gray-500">h</span>
+                                        </div>
+                                    </div>
+                                </button>
 
-            {holidays.length > 0 && (
-                <div className="mt-8 border text-sm border-zinc-800 rounded-lg p-6 bg-zinc-900/50">
-                    <h2 className="text-zinc-400 font-medium mb-4 flex items-center gap-2">
-                        <span>NSW Public Holidays Detected</span>
-                        <span className="text-xs bg-zinc-800 px-2 py-0.5 rounded-full text-zinc-500">{holidays.length}</span>
-                    </h2>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        {holidays.map((h, i) => (
-                            <div key={i} className="flex flex-col">
-                                <span className="text-zinc-200 font-medium">{h.name}</span>
-                                <span className="text-zinc-500 text-xs">{h.date}</span>
+                                {/* Shoot Card */}
+                                <button
+                                    onClick={() => setActivePhase('shoot')}
+                                    className={cn(
+                                        "w-full text-left p-4 rounded-lg border transition-all relative group",
+                                        activePhase === 'shoot'
+                                            ? "bg-white border-red-500 ring-1 ring-red-500/20 shadow-md"
+                                            : "bg-white border-gray-200 hover:border-gray-300 shadow-sm"
+                                    )}
+                                >
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center gap-2">
+                                            <div className={cn("w-2 h-2 rounded-full", activePhase === 'shoot' ? "bg-red-500 shadow-sm" : "bg-red-200")} />
+                                            <span className={cn("font-medium text-sm", activePhase === 'shoot' ? "text-gray-900" : "text-gray-500")}>Shooting</span>
+                                        </div>
+                                        {activePhase === 'shoot' && <Check className="w-3 h-3 text-red-500" />}
+                                    </div>
+                                    <div className="flex items-center justify-between mt-4">
+                                        <div className="text-xs text-gray-500">{phases.shoot.dates.length} days</div>
+                                        <div className="flex items-center gap-1 bg-gray-50 rounded px-2 py-1 border border-gray-200" onClick={e => e.stopPropagation()}>
+                                            <Clock className="w-3 h-3 text-gray-400" />
+                                            <input
+                                                type="number"
+                                                value={phases.shoot.hours}
+                                                onChange={(e) => setPhases(p => ({ ...p, shoot: { ...p.shoot, hours: parseFloat(e.target.value) || 0 } }))}
+                                                className="w-8 bg-transparent text-xs text-right focus:outline-none text-gray-700"
+                                            />
+                                            <span className="text-[10px] text-gray-500">h</span>
+                                        </div>
+                                    </div>
+                                </button>
+
+                                {/* Post-Prod Card */}
+                                <button
+                                    onClick={() => setActivePhase('postProd')}
+                                    className={cn(
+                                        "w-full text-left p-4 rounded-lg border transition-all relative group",
+                                        activePhase === 'postProd'
+                                            ? "bg-white border-purple-500 ring-1 ring-purple-500/20 shadow-md"
+                                            : "bg-white border-gray-200 hover:border-gray-300 shadow-sm"
+                                    )}
+                                >
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center gap-2">
+                                            <div className={cn("w-2 h-2 rounded-full", activePhase === 'postProd' ? "bg-purple-500 shadow-sm" : "bg-purple-200")} />
+                                            <span className={cn("font-medium text-sm", activePhase === 'postProd' ? "text-gray-900" : "text-gray-500")}>Post-Production</span>
+                                        </div>
+                                        {activePhase === 'postProd' && <Check className="w-3 h-3 text-purple-500" />}
+                                    </div>
+                                    <div className="flex items-center justify-between mt-4">
+                                        <div className="text-xs text-gray-500">{phases.postProd.dates.length} days</div>
+                                        <div className="flex items-center gap-1 bg-gray-50 rounded px-2 py-1 border border-gray-200" onClick={e => e.stopPropagation()}>
+                                            <Clock className="w-3 h-3 text-gray-400" />
+                                            <input
+                                                type="number"
+                                                value={phases.postProd.hours}
+                                                onChange={(e) => setPhases(p => ({ ...p, postProd: { ...p.postProd, hours: parseFloat(e.target.value) || 0 } }))}
+                                                className="w-8 bg-transparent text-xs text-right focus:outline-none text-gray-700"
+                                            />
+                                            <span className="text-[10px] text-gray-500">h</span>
+                                        </div>
+                                    </div>
+                                </button>
                             </div>
-                        ))}
+                        </div>
+
+                        <div className="pt-6 border-t border-gray-200">
+                            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Holidays</h3>
+                            <div className="space-y-2">
+                                {holidays.filter(h => {
+                                    const d = new Date(h.date);
+                                    return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
+                                }).length === 0 && <p className="text-xs text-gray-400 italic">No holidays in {format(currentMonth, 'MMMM')}.</p>}
+                                {holidays.filter(h => {
+                                    const d = new Date(h.date);
+                                    return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
+                                }).map((h, i) => (
+                                    <div key={i} className="flex justify-between items-center text-xs">
+                                        <span className="text-gray-600">{h.name}</span>
+                                        <span className="text-gray-400 font-mono">{format(new Date(h.date), "dd MMM")}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
-            )}
-
+            </div>
         </div>
     )
 }

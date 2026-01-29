@@ -1,11 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchBudget, BudgetCategory, BudgetGrouping, BudgetLineItem, addBudgetLineItem, deleteBudgetLineItem, CatalogItem, calculateLaborRate } from "@/lib/api";
+import { fetchBudget, BudgetCategory, BudgetGrouping, BudgetLineItem, addBudgetLineItem, deleteBudgetLineItem, CatalogItem, calculateLaborRate, createTemplate } from "@/lib/api";
+import { motion, AnimatePresence } from "framer-motion";
 import CatalogSearch from "@/components/CatalogSearch";
 import InspectorPanel from "@/components/InspectorPanel";
 import ItemTypeModal from "@/components/ItemTypeModal";
 import InlineItemEditor, { InlineItemData } from "@/components/InlineItemEditor";
+import { UnsavedChangesIndicator } from "@/components/UnsavedChangesIndicator";
+import { DepartmentSettingsPopover } from "@/components/DepartmentSettingsPopover"; // Saved correctly
+import BudgetRow from "@/components/BudgetRow";
+import BudgetHeader from "@/components/BudgetHeader";
 
 const API_URL = 'http://localhost:8000/api';
 
@@ -21,6 +26,13 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
     const [activeTab, setActiveTab] = useState<"ATL" | "BTL">(propActiveTab || "ATL");
     const [saving, setSaving] = useState(false);
 
+    // Template Modal State
+    const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+    const [newTemplateName, setNewTemplateName] = useState("");
+    const [newTemplateDesc, setNewTemplateDesc] = useState("");
+    const [resetQuantities, setResetQuantities] = useState(true);
+    const [creatingTemplate, setCreatingTemplate] = useState(false);
+
     // Inline Adding State
     const [addingToGroupingId, setAddingToGroupingId] = useState<string | null>(null);
     const [isItemTypeModalOpen, setIsItemTypeModalOpen] = useState(false);
@@ -28,6 +40,10 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
 
     // Inspector State
     const [inspectorItem, setInspectorItem] = useState<{ catIdx: number, grpIdx: number, itemIdx: number } | null>(null);
+
+    // Unsaved Changes State
+    const [unsavedChangesCount, setUnsavedChangesCount] = useState(0);
+    const [lastSavedAt, setLastSavedAt] = useState<Date>();
 
     // Collapsed Categories State
     const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
@@ -46,6 +62,7 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
             .then((data) => {
                 const cats = data || [];
                 setCategories(cats);
+                setUnsavedChangesCount(0);
 
                 // Initialize collapsed state: Empty categories (total == 0) collapsed by default
                 const initialCollapsed: Record<string, boolean> = {};
@@ -95,115 +112,106 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
             post_qty: data.post_qty,
             total: data.total,
             is_labor: data.is_labor,
-            apply_fringes: data.is_labor, // Logic? usually yes if labor
+            apply_fringes: data.is_labor,
             grouping_id: addingToGroupingId,
             notes: "",
-            // Enhanced fields
             base_hourly_rate: data.base_rate,
             daily_hours: data.daily_hours,
             days_per_week: data.days_per_week,
-            is_casual: false, // Default
-            labor_phases_json: "[]",
+            is_casual: false, // Editor doesn't have casual toggle yet
+            calendar_mode: data.calendar_mode || 'inherit',
+            phase_details: data.phase_details || {},
+            award_classification_id: data.award_classification_id,
+            role_history_id: data.role_history_id,
+            labor_phases_json: JSON.stringify(data.phase_details?.active_phases || []),
             allowances: [],
             fringes_json: undefined
         };
 
         // Insert into local state
-        const newCats = [...categories];
-        // Find grouping
+        const newCats = JSON.parse(JSON.stringify(categories));
         for (const cat of newCats) {
-            const grp = cat.groupings.find(g => g.id === addingToGroupingId);
+            const grp = cat.groupings.find((g: BudgetGrouping) => g.id === addingToGroupingId);
             if (grp) {
                 grp.items.push(newItem);
-                // Update grouping total
+                // Simple total update (recalc happens on save or explicit update usually, but let's keep it sync)
                 grp.sub_total += newItem.total;
                 cat.total += newItem.total;
                 break;
             }
         }
         setCategories(newCats);
+        setUnsavedChangesCount(prev => prev + 1);
 
         // Close editor
         handleCancelAdd();
-
-        // Async Save to Backend
-        try {
-            // We use the existing API which takes (groupingId, description, rate, isLabor).
-            // But we have MORE data now. 
-            // The existing `addBudgetLineItem` API is too simple.
-            // We should use `addBudgetLineItem` but it needs to support the full payload 
-            // OR update the existing item after creation?
-            // Ideally backend endpoint `/api/budget/items` accepts LineItemBase.
-            // Let's check api.ts `addBudgetLineItem`.
-            // It calls POST /api/budget/items with body { grouping_id, description, rate, is_labor }.
-            // The backend `add_line_item` expects `LineItemBase`.
-            // So if checking api.ts, it only sends 4 fields???
-            // Let's verify api.ts.
-            // Confirmed: api.ts `addBudgetLineItem` only sends 4 fields.
-            // I need to update api.ts to send full object if I want to save everything.
-            // For now, I will use the simple add, but assume I'll fix api.ts later or right now?
-            // PHASE 2 plan includes "Integrate into GroupingHeader".
-            // I should technically fix the API call too. 
-            // Let's call a new function or update `addBudgetLineItem`.
-
-            // For this step, I'll pass everything I can.
-            // API updated to accept partial BudgetLineItem
-            await addBudgetLineItem(addingToGroupingId, {
-                description: data.description,
-                rate: data.rate,
-                is_labor: data.is_labor,
-                unit: data.unit,
-                prep_qty: data.prep_qty,
-                shoot_qty: data.shoot_qty,
-                post_qty: data.post_qty,
-                total: data.total,
-                base_hourly_rate: data.base_rate,
-                daily_hours: data.daily_hours,
-                days_per_week: data.days_per_week,
-                labor_phases_json: "[]", // Default
-                fringes_json: undefined
-            });
-
-            // Reload to get real ID and full calc?
-            // Or update local ID with real ID?
-            // For MVP, reloading is safer to ensure consistency.
-            loadBudget();
-
-        } catch (e) {
-            console.error(e);
-            alert("Failed to save item");
-        }
     };
 
     const handleAdd = async (item: CatalogItem) => {
+        // Legacy catalog add - adapted for local update
         try {
             // Find a target grouping
             let targetGroupingId = "";
+            let targetCatIdx = -1;
+            let targetGrpIdx = -1;
 
             // 1. Try to find a grouping that matches defaults or vaguely intelligent placement
-            const allGroupings: { id: string, name: string, catId: string }[] = [];
-            categories.forEach(c => {
-                c.groupings.forEach(g => allGroupings.push({ ...g, catId: c.id }));
+            categories.forEach((c, cIdx) => {
+                c.groupings.forEach((g, gIdx) => {
+                    if (!targetGroupingId) {
+                        if (item.is_labor) {
+                            if (g.name.includes("Camera") || g.name.includes("Crew")) {
+                                targetGroupingId = g.id;
+                                targetCatIdx = cIdx;
+                                targetGrpIdx = gIdx;
+                            }
+                        } else {
+                            targetGroupingId = g.id;
+                            targetCatIdx = cIdx;
+                            targetGrpIdx = gIdx;
+                        }
+                    }
+                });
             });
 
-            if (allGroupings.length > 0) {
-                if (item.is_labor) {
-                    const crewGrp = allGroupings.find(g => g.name.includes("Camera") || g.name.includes("Crew"));
-                    targetGroupingId = crewGrp ? crewGrp.id : allGroupings[0].id;
-                } else {
-                    targetGroupingId = allGroupings[0].id;
-                }
-            } else {
+            if (!targetGroupingId && categories.length > 0 && categories[0].groupings.length > 0) {
+                targetGroupingId = categories[0].groupings[0].id;
+                targetCatIdx = 0;
+                targetGrpIdx = 0;
+            }
+
+            if (!targetGroupingId) {
                 alert("No groupings found in budget. Cannot add item.");
                 return;
             }
 
-            await addBudgetLineItem(targetGroupingId, {
+            const tempId = "temp-" + Date.now();
+            const newItem: BudgetLineItem = {
+                id: tempId,
                 description: item.description,
                 rate: item.default_rate,
-                is_labor: item.is_labor
-            });
-            loadBudget();
+                unit: 'day',
+                prep_qty: 0,
+                shoot_qty: 0,
+                post_qty: 0,
+                total: 0,
+                is_labor: item.is_labor,
+                apply_fringes: item.is_labor,
+                grouping_id: targetGroupingId,
+                base_hourly_rate: item.default_rate,
+                daily_hours: 10,
+                days_per_week: 5,
+                is_casual: false
+            };
+
+            const newCats = JSON.parse(JSON.stringify(categories));
+            const cat = newCats[targetCatIdx];
+            const grp = cat.groupings[targetGrpIdx];
+            grp.items.push(newItem);
+
+            setCategories(newCats);
+            setUnsavedChangesCount(prev => prev + 1);
+
         } catch (err) {
             console.error(err);
             alert("Failed to add item");
@@ -212,12 +220,26 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
 
     const handleDelete = async (itemId: string) => {
         if (!confirm("Are you sure you want to delete this line item?")) return;
-        try {
-            await deleteBudgetLineItem(itemId);
-            loadBudget();
-        } catch (err) {
-            console.error(err);
-            alert("Failed to delete item");
+
+        const newCats = JSON.parse(JSON.stringify(categories));
+        let found = false;
+        for (const cat of newCats) {
+            for (const grp of cat.groupings) {
+                const idx = grp.items.findIndex((i: any) => i.id === itemId);
+                if (idx !== -1) {
+                    const removed = grp.items.splice(idx, 1)[0];
+                    grp.sub_total -= removed.total;
+                    cat.total -= removed.total;
+                    found = true;
+                    break;
+                }
+            }
+            if (found) break;
+        }
+
+        if (found) {
+            setCategories(newCats);
+            setUnsavedChangesCount(prev => prev + 1);
         }
     };
 
@@ -230,7 +252,11 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
                 body: JSON.stringify(categories),
             });
             if (res.ok) {
-                alert("Budget saved!");
+                setUnsavedChangesCount(0);
+                setLastSavedAt(new Date());
+                // Optional: Reload to align state with backend (ids etc)
+                // But only if we want to confirm structure.
+                loadBudget();
             } else {
                 alert("Error saving budget");
             }
@@ -242,62 +268,205 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
         }
     };
 
-    const updateItemLocal = (catIdx: number, grpIdx: number, itemIdx: number, updates: Partial<BudgetLineItem> | string, value?: any) => {
-        const newCategories = JSON.parse(JSON.stringify(categories));
-        const item = newCategories[catIdx].groupings[grpIdx].items[itemIdx];
+    const handleCreateTemplate = async () => {
+        if (!newTemplateName) return;
+        const budgetId = categories.length > 0 ? (categories[0] as any).budget_id : null;
 
-        if (typeof updates === "string") {
-            (item as any)[updates] = value;
-        } else {
-            Object.assign(item, updates);
+        if (!budgetId) {
+            // Fallback or alert?
+            // If new budget, maybe no budget_id yet? But fetchBudget returns categories which usually have budget_id attached if normalized.
+            // If not check categories[0].groupings[0].items[0]... a bit risky.
+            alert("Cannot create template: Budget ID not found.");
+            return;
         }
 
-        const qty = (parseFloat(item.prep_qty as any) || 0) + (parseFloat(item.shoot_qty as any) || 0) + (parseFloat(item.post_qty as any) || 0);
-        const rate = parseFloat(item.rate as any) || 0;
-
-        // If updates contains a total, respect it (Phased Labor scenario)
-        if (typeof updates !== "string" && (updates as any).total !== undefined) {
-            item.total = (updates as any).total;
-        } else {
-            const finalQty = (qty === 0 && rate > 0) ? 1 : qty;
-            item.total = rate * finalQty;
+        setCreatingTemplate(true);
+        try {
+            await createTemplate({
+                name: newTemplateName,
+                description: newTemplateDesc,
+                budget_id: budgetId,
+                reset_quantities: resetQuantities
+            });
+            alert("Template created successfully!");
+            setIsTemplateModalOpen(false);
+            setNewTemplateName("");
+            setNewTemplateDesc("");
+        } catch (e) {
+            console.error(e);
+            alert("Failed to create template");
+        } finally {
+            setCreatingTemplate(false);
         }
-
-        // Calculate Sub-total including fringes
-        newCategories[catIdx].groupings[grpIdx].sub_total = newCategories[catIdx].groupings[grpIdx].items.reduce((acc: number, curr: BudgetLineItem) => {
-            let itemTotal = curr.total || 0;
-            if (curr.is_labor && curr.apply_fringes && curr.fringes_json) {
-                try {
-                    const f = JSON.parse(curr.fringes_json);
-                    itemTotal += (f.total_fringes || 0) * (curr.shoot_qty || 0); // Fringes applied per week/unit? Usually fringes are calculated on the singular rate, so we multiply by Qty.
-                    // Wait, calculateLaborRate returns fringes for ONE WEEK (weekly_rate).
-                    // So total fringes = fringes.total_fringes * (prep + shoot + post quantities).
-                    const totalQty = (parseFloat(curr.prep_qty as any) || 0) + (parseFloat(curr.shoot_qty as any) || 0) + (parseFloat(curr.post_qty as any) || 0);
-                    itemTotal += (f.total_fringes || 0) * (totalQty || 1);
-                } catch { }
-            }
-            return acc + itemTotal;
-        }, 0);
-        newCategories[catIdx].total = newCategories[catIdx].groupings.reduce((acc: number, curr: BudgetGrouping) => acc + (curr.sub_total || 0), 0);
-
-        setCategories(newCategories);
     };
 
-    const handleLaborRecalc = async (catIdx: number, grpIdx: number, itemIdx: number) => {
+    const updateItemLocal = (catIdx: number, grpIdx: number, itemIdx: number, updates: Partial<BudgetLineItem> | string, value?: any) => {
+        setCategories(prevCategories => {
+            const newCategories = JSON.parse(JSON.stringify(prevCategories));
+            // Safety check in case indices are out of bounds (though unlikely with strict passing)
+            if (!newCategories[catIdx]?.groupings[grpIdx]?.items[itemIdx]) return prevCategories;
+
+            const item = newCategories[catIdx].groupings[grpIdx].items[itemIdx];
+
+            if (typeof updates === "string") {
+                (item as any)[updates] = value;
+            } else {
+                Object.assign(item, updates);
+            }
+
+            // Recalculate Total
+            const qty = (parseFloat(item.prep_qty as any) || 0) + (parseFloat(item.shoot_qty as any) || 0) + (parseFloat(item.post_qty as any) || 0);
+            const rate = parseFloat(item.rate as any) || 0;
+
+            if (typeof updates !== "string" && (updates as any).total !== undefined) {
+                // If the update explicitly includes a new total (e.g. from backend calc or direct override), use it.
+                item.total = (updates as any).total;
+            } else {
+                // Calculation Logic for Local Updates (e.g. Rate change without explicit total)
+
+                // If it's a "Calendar Based" Hourly item, do NOT auto-recalculate total blindly using old weekly logic.
+                // We should assume the backend total is still valid *unless* rate/qty changed, 
+                // in which case handleLaborRecalc usually triggers properly.
+                // But updateItemLocal runs synchronously on keystrokes.
+
+                if (item.is_labor && item.unit === 'hour') {
+                    // For "Hourly" items (which are effectively Calendar Based now),
+                    // we avoid overwriting total with legacy "Weekly Rate" logic.
+                    // If rate changed, we trust onRecalcLabor to fix the total in a moment.
+                    // So we do NOTHING here for Total, preserving the last known valid total.
+                    // Exception: If quantity multiplier logic is desired (e.g. 2 x Camera Ops), 
+                    // we might need to multiply the "breakdown cost" by quantity-multiplier?
+                    // Currently V1 Spec implies Single Person per Line Item or explicit Quantity field?
+                    // "prep_qty" is days.
+                    // If we have a 'Quantity' column for "Count of People", that's different.
+                    // The current quantity fields are DAYS.
+                    // So Total is Total. We skip local legacy recalc.
+
+                } else {
+                    // Standard / Materials / Flat Rates / Weekly Legacy
+                    // Legacy Weekly logic:
+                    if (item.unit === 'week' && item.is_labor) {
+                        const dailyHours = parseFloat(item.daily_hours as any) || 10;
+                        const daysPerWeek = parseFloat(item.days_per_week as any) || 5;
+                        const rate = parseFloat(item.rate as any) || 0;
+                        // If rate is weekly rate, just rate * (qty / 5)? 
+                        // Or rate is hourly?
+                        // Let's stick to simple: Total = Rate * Qty for non-hourly.
+                        item.total = rate * (qty || 0); // If qty 0, total 0
+                    } else {
+                        item.total = rate * (qty || (item.is_labor ? 0 : 1));
+                    }
+                }
+            }
+
+            // Calculate Sub-total including fringes
+            newCategories[catIdx].groupings[grpIdx].sub_total = newCategories[catIdx].groupings[grpIdx].items.reduce((acc: number, curr: BudgetLineItem) => {
+                // Total is now expected to be INCLUSIVE of fringes for Labor items
+                return acc + (curr.total || 0);
+            }, 0);
+            newCategories[catIdx].total = newCategories[catIdx].groupings.reduce((acc: number, curr: BudgetGrouping) => acc + (curr.sub_total || 0), 0);
+
+            return newCategories;
+        });
+        setUnsavedChangesCount(prev => prev + 1);
+    };
+
+    const handleLaborRecalc = async (catIdx: number, grpIdx: number, itemIdx: number, overrides?: Partial<BudgetLineItem>) => {
+        // Use current state to get baseline, but apply overrides for calc
         const item = categories[catIdx].groupings[grpIdx].items[itemIdx];
-        if (!item.is_labor) return;
-        const base = item.base_hourly_rate || 0;
-        const hours = item.daily_hours || 10;
-        const days = item.days_per_week || 5;
-        const casual = item.is_casual || false;
+        if (!item && !overrides) return;
+
+        // Merge current item with overrides for calculation parameters
+        const effectiveItem = { ...item, ...overrides };
+
+        if (!effectiveItem.is_labor) {
+            // Material items will be handled later or simple calc
+            // For now, if non-labor, just strict update
+            if (overrides) updateItemLocal(catIdx, grpIdx, itemIdx, overrides);
+            return;
+        }
+
         try {
-            const res = await calculateLaborRate(base, hours, days, casual);
-            updateItemLocal(catIdx, grpIdx, itemIdx, {
-                rate: res.weekly_rate,
-                fringes_json: JSON.stringify(res.fringes)
-            });
+            // Construct Request for New API
+            const req = {
+                line_item_id: effectiveItem.id.startsWith('temp') ? undefined : effectiveItem.id,
+                base_hourly_rate: effectiveItem.base_hourly_rate || effectiveItem.rate || 0,
+                is_casual: effectiveItem.is_casual || false,
+                is_artist: (categories[catIdx].name.includes('Artist') || categories[catIdx].name.includes('Cast')),
+                calendar_mode: effectiveItem.calendar_mode || 'inherit',
+                phase_details: effectiveItem.phase_details,
+                grouping_id: effectiveItem.grouping_id,
+                project_id: projectId,
+                award_classification_id: effectiveItem.award_classification_id
+            };
+
+            // Call API
+            const { calculateLaborCost } = await import('@/lib/api');
+
+            const res = await calculateLaborCost(req as any);
+
+            // Calculate active total based on enabled phases (qty > 0)
+            let activeGross = 0;
+            const prepQty = Number(effectiveItem.prep_qty) || 0;
+            const shootQty = Number(effectiveItem.shoot_qty) || 0;
+            const postQty = Number(effectiveItem.post_qty) || 0;
+
+            if (prepQty > 0 && res.breakdown.preProd) {
+                activeGross += res.breakdown.preProd.cost;
+            }
+            if (shootQty > 0 && res.breakdown.shoot) {
+                activeGross += res.breakdown.shoot.cost;
+            }
+            if (postQty > 0 && res.breakdown.postProd) {
+                activeGross += res.breakdown.postProd.cost;
+            }
+
+            // Calculate Fringes proportional to ActiveGross
+            // (Backend returns fringes for Total Calendar, we need to scale it if only partial phases are active)
+            let activeFringesObj = res.fringes;
+            let activeFringeAmount = res.fringes.total_fringes || 0;
+
+            if (res.total_cost > 0 && activeGross !== res.total_cost) {
+                const ratio = activeGross / res.total_cost;
+                activeFringeAmount = activeFringeAmount * ratio;
+
+                // Scale the detail object
+                activeFringesObj = {
+                    super: (res.fringes.super || 0) * ratio,
+                    holiday_pay: (res.fringes.holiday_pay || 0) * ratio,
+                    payroll_tax: (res.fringes.payroll_tax || 0) * ratio,
+                    workers_comp: (res.fringes.workers_comp || 0) * ratio,
+                    total_fringes: activeFringeAmount
+                };
+            }
+
+            const updates: any = {
+                ...overrides,
+                total: activeGross + activeFringeAmount, // INCLUSIVE TOTAL
+                fringes_json: JSON.stringify(activeFringesObj),
+                breakdown_json: JSON.stringify(res.breakdown)
+            };
+
+            // Update Total
+            // Note: We ignore "Unit" multiplier logic because "Hourly" is now "Calendar based".
+            // If Unit is "Week", we might display "Rate" differently, but Total is Total.
+            updates.total = activeGross + activeFringeAmount;
+
+            // If Unit is Hour, Rate field shows Base Hourly.
+            // If Unit is Week, Rate field *could* show Weekly Rate.
+            // Backend res doesn't purely return "Weekly Rate".
+            // Implementation Decision: Maintain Base Hourly in "Rate" column for consistency in Hourly Mode.
+            if (effectiveItem.unit === 'hour') {
+                if (overrides?.base_hourly_rate) updates.rate = overrides.base_hourly_rate;
+                // If no override, rate remains as is (base hourly)
+            } else if (effectiveItem.unit === 'day') {
+                // If daily, maybe show daily rate.
+            }
+
+            updateItemLocal(catIdx, grpIdx, itemIdx, updates);
         } catch (err) {
             console.error("Error calculating labor rate", err);
+            if (overrides) updateItemLocal(catIdx, grpIdx, itemIdx, overrides);
         }
     };
 
@@ -343,10 +512,57 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
                     </h2>
                     {!categoryId && <CatalogSearch onAdd={handleAdd} />}
                 </div>
-                <button onClick={handleSave} disabled={saving} className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:opacity-50 h-10 text-sm font-semibold shadow-sm transition-all">
-                    {saving ? "Saving..." : "Save Changes"}
-                </button>
+                <div className="flex gap-2 items-center">
+                    <button
+                        onClick={() => setIsTemplateModalOpen(true)}
+                        className="text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded h-10 text-sm font-semibold transition-colors"
+                    >
+                        Save as Template
+                    </button>
+                    <UnsavedChangesIndicator
+                        unsavedCount={unsavedChangesCount}
+                        isSaving={saving}
+                        onSave={handleSave}
+                        lastSavedAt={lastSavedAt}
+                    />
+                </div>
             </div>
+
+            <AnimatePresence>
+                {isTemplateModalOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="p-6">
+                                <h3 className="text-lg font-bold text-slate-800 mb-4">Save Budget as Template</h3>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">Template Name</label>
+                                        <input type="text" value={newTemplateName} onChange={(e) => setNewTemplateName(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-md outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Master Template v1" autoFocus />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">Description (Optional)</label>
+                                        <textarea value={newTemplateDesc} onChange={(e) => setNewTemplateDesc(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-md outline-none focus:ring-2 focus:ring-indigo-500" rows={2} />
+                                    </div>
+                                    <div className="flex items-center gap-2 bg-slate-50 p-2 rounded border border-slate-100">
+                                        <input type="checkbox" id="resetQ" checked={resetQuantities} onChange={(e) => setResetQuantities(e.target.checked)} className="h-4 w-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500" />
+                                        <label htmlFor="resetQ" className="text-sm text-slate-700">Reset all quantities to zero</label>
+                                    </div>
+                                </div>
+                                <div className="mt-6 flex justify-end gap-3">
+                                    <button onClick={() => setIsTemplateModalOpen(false)} className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded text-sm font-medium">Cancel</button>
+                                    <button onClick={handleCreateTemplate} disabled={creatingTemplate || !newTemplateName} className="px-4 py-2 bg-indigo-600 text-white rounded text-sm font-medium hover:bg-indigo-700 disabled:opacity-50">{creatingTemplate ? "Creating..." : "Create Template"}</button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
 
             {!categoryId && (
                 <div className="border-b border-gray-200">
@@ -361,206 +577,89 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
                 {filteredCategories.length === 0 && !loading && (
                     <div className="text-center p-8 text-gray-500 italic">No budget data for this category.</div>
                 )}
-                {filteredCategories.map((cat, _) => {
+                {filteredCategories.map((cat, catIdx) => {
+                    // Note: finding strict index in full array if filtered?
+                    // updateItemLocal needs global index.
+                    // The map key calls 'catIdx' which is index in 'filteredCategories'.
+                    // We need explicit global index.
+                    const catGlobalIdx = categories.findIndex(c => c.id === cat.id);
                     const isCollapsed = collapsedCategories[cat.id];
-                    // Determine if empty (simplified for now: total == 0 or empty lists, but total is safer)
                     const isEmpty = cat.total === 0;
 
                     return (
-                        <div key={cat.id} className={`bg-white shadow-lg rounded-xl overflow-hidden border border-slate-200 transition-all ${isCollapsed && isEmpty ? 'opacity-70' : ''}`}>
-                            <div
-                                className="bg-slate-800 text-white px-4 py-2.5 flex justify-between items-center text-sm font-bold tracking-tight cursor-pointer hover:bg-slate-700 transition-colors"
-                                onClick={() => toggleCollapse(cat.id)}
-                            >
+                        <motion.div key={cat.id} layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className={`bg-white shadow-lg rounded-xl border border-slate-200 transition-all ${isCollapsed && isEmpty ? 'opacity-70' : ''}`}>
+                            <div className="bg-slate-800 text-white px-4 py-2.5 flex justify-between items-center text-sm font-bold tracking-tight cursor-pointer hover:bg-slate-700 transition-colors rounded-t-xl" onClick={() => toggleCollapse(cat.id)}>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-slate-400 text-xs w-4">
-                                        {isCollapsed ? '▶' : '▼'}
-                                    </span>
+                                    <span className="text-slate-400 text-xs w-4">{isCollapsed ? '▶' : '▼'}</span>
                                     <span>{cat.code} - {cat.name}</span>
-                                    {isEmpty && (
-                                        <span className="bg-slate-600 text-slate-300 text-[10px] px-2 py-0.5 rounded-full ml-2">
-                                            EMPTY
-                                        </span>
-                                    )}
+                                    {isEmpty && <span className="bg-slate-600 text-slate-300 text-[10px] px-2 py-0.5 rounded-full ml-2">EMPTY</span>}
                                 </div>
-                                {!isCollapsed && (
-                                    <span className="bg-slate-700 px-3 py-1 rounded text-emerald-400 font-mono">
-                                        Total: ${cat.total.toLocaleString()}
-                                    </span>
-                                )}
+                                {!isCollapsed && <span className="bg-slate-700 px-3 py-1 rounded text-emerald-400 font-mono">Total: ${cat.total.toLocaleString()}</span>}
                             </div>
 
-                            {!isCollapsed && (
-                                <div className="p-4 space-y-6 bg-slate-50/30">
-                                    {cat.groupings.map((grp, grpIdx) => (
-                                        <div key={grp.id} className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
-                                            <div className="bg-slate-50 px-3 py-1.5 flex justify-between items-center font-bold text-slate-700 border-b border-slate-200">
-                                                <span>{grp.code} - {grp.name}</span>
-                                                <div className="flex items-center gap-4">
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleInitiateAdd(grp.id);
-                                                        }}
-                                                        className="text-xs flex items-center gap-1 text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded transition-colors"
-                                                    >
-                                                        <span>+ Add Item</span>
-                                                    </button>
-                                                    <span className="text-slate-500">Sub-total: ${grp.sub_total.toLocaleString()}</span>
-                                                </div>
-                                            </div>
+                            <AnimatePresence>
+                                {!isCollapsed && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0, overflow: "hidden" }}
+                                        animate={{ height: "auto", opacity: 1, overflow: "visible" }}
+                                        exit={{ height: 0, opacity: 0, overflow: "hidden" }}
+                                        transition={{ duration: 0.3, ease: "easeOut" }}
+                                    >
+                                        <div className="p-4 space-y-6 bg-slate-50/30 rounded-b-xl overflow-visible">
+                                            {cat.groupings.map((grp, grpIdx) => (
+                                                <motion.div key={grp.id} layout className="bg-white border border-slate-200 rounded-lg shadow-sm !overflow-visible">
 
-                                            {/* Inline Editor Area */}
-                                            {addingToGroupingId === grp.id && addingType && (
-                                                <div className="bg-slate-50 p-2 border-b border-indigo-100">
-                                                    <InlineItemEditor
-                                                        isLabor={addingType === 'labor'}
-                                                        onSave={handleSaveNewItem}
-                                                        onCancel={handleCancelAdd}
-                                                    />
-                                                </div>
-                                            )}
 
-                                            <table className="min-w-full divide-y divide-slate-100 table-fixed">
-                                                <thead className="bg-slate-50/50">
-                                                    <tr>
-                                                        <th className="px-2 py-1.5 text-left font-bold text-slate-400 uppercase text-[10px] w-auto">Description</th>
-                                                        <th className="px-2 py-1.5 text-left font-bold text-slate-400 uppercase text-[10px] w-32">Notes</th>
-                                                        <th className="px-2 py-1.5 text-right font-bold text-slate-400 uppercase text-[10px] w-20">$/Hr</th>
-                                                        <th className="px-2 py-1.5 text-right font-bold text-slate-400 uppercase text-[10px] w-12">Hrs</th>
-                                                        <th className="px-2 py-1.5 text-right font-bold text-slate-400 uppercase text-[10px] w-12">Days</th>
-                                                        <th className="px-2 py-1.5 text-center font-bold text-slate-400 uppercase text-[10px] w-10">Cas</th>
-                                                        <th className="px-2 py-1.5 text-right font-bold text-slate-700 uppercase text-[10px] w-24 bg-slate-100">Weekly Rate</th>
-                                                        <th className="px-2 py-1.5 text-right font-bold text-slate-400 uppercase text-[10px] w-12">Prp</th>
-                                                        <th className="px-2 py-1.5 text-right font-bold text-slate-400 uppercase text-[10px] w-12">Sht</th>
-                                                        <th className="px-2 py-1.5 text-right font-bold text-slate-400 uppercase text-[10px] w-12">Pst</th>
-                                                        <th className="px-2 py-1.5 text-right font-bold text-slate-700 uppercase text-[10px] w-28 bg-indigo-50/30">Total</th>
-                                                        <th className="px-2 py-1.5 text-center font-bold text-slate-400 uppercase text-[10px] w-10">Lbr</th>
-                                                        <th className="px-2 py-1.5 w-8"></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="bg-white divide-y divide-slate-100">
-                                                    {grp.items.map((item, itemIdx) => {
-                                                        const isLabor = item.is_labor;
-                                                        const isPhased = item.labor_phases_json && item.labor_phases_json.length > 2;
-                                                        const catGlobalIdx = categories.findIndex(c => c.id === cat.id);
-                                                        const fringes = getFringes(item);
-                                                        const totalQty = (item.prep_qty || 0) + (item.shoot_qty || 0) + (item.post_qty || 0);
-                                                        const qtyMult = totalQty || 1;
 
-                                                        // Calculate fringe totals for display
-                                                        const fSuper = fringes ? (fringes.super * qtyMult) : 0;
-                                                        const fTax = fringes ? (fringes.payroll_tax * qtyMult) : 0;
-                                                        const fWorkCover = fringes ? (fringes.workers_comp * qtyMult) : 0;
-                                                        const fHoliday = fringes ? (fringes.holiday_pay * qtyMult) : 0;
+                                                    <div className="bg-slate-50 px-3 py-1.5 flex justify-between items-center font-bold text-slate-700 border-b border-slate-200">
+                                                        <div className="flex items-center gap-2">
+                                                            <span>{grp.code} - {grp.name}</span>
+                                                            <DepartmentSettingsPopover groupingId={grp.id} groupingName={grp.name} />
+                                                        </div>
+                                                        <div className="flex items-center gap-4">
+                                                            <button onClick={(e) => { e.stopPropagation(); handleInitiateAdd(grp.id); }} className="text-xs flex items-center gap-1 text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded transition-colors"><span>+ Add Item</span></button>
+                                                            <span className="text-slate-500">Sub-total: ${grp.sub_total.toLocaleString()}</span>
+                                                        </div>
+                                                    </div>
 
-                                                        return (
-                                                            <div style={{ display: 'contents' }} key={item.id}>
-                                                                <tr className="hover:bg-indigo-50/20 group transition-colors">
-                                                                    <td className="px-2 py-1">
-                                                                        <div className="flex items-center gap-2">
-                                                                            <input
-                                                                                value={item.description}
-                                                                                onChange={(e) => updateItemLocal(catGlobalIdx, grpIdx, itemIdx, 'description', e.target.value)}
-                                                                                className="w-full border-none focus:ring-0 p-0 bg-transparent font-medium text-slate-700"
-                                                                            />
-                                                                            {isLabor && (
-                                                                                <>
-                                                                                    {item.crew_member_id && (
-                                                                                        <span className="text-indigo-600 text-[10px] bg-indigo-50 px-1 rounded border border-indigo-200 font-bold" title="Crew Member Linked">
-                                                                                            CREW
-                                                                                        </span>
-                                                                                    )}
-                                                                                    <button
-                                                                                        onClick={() => setInspectorItem({ catIdx: catGlobalIdx, grpIdx, itemIdx })}
-                                                                                        className="text-slate-300 hover:text-indigo-600 px-1 opacity-0 group-hover:opacity-100 transition-all transform hover:scale-110"
-                                                                                        title="Open Inspector"
-                                                                                    >
-                                                                                        ℹ️
-                                                                                    </button>
-                                                                                </>
-                                                                            )}
-                                                                        </div>
-                                                                    </td>
-                                                                    <td className="px-2 py-1">
-                                                                        <input
-                                                                            value={item.notes || ''}
-                                                                            placeholder="..."
-                                                                            onChange={(e) => updateItemLocal(catGlobalIdx, grpIdx, itemIdx, 'notes', e.target.value)}
-                                                                            className="w-full border-none focus:ring-0 p-0 bg-transparent text-xs text-slate-500 italic placeholder-slate-200"
-                                                                        />
-                                                                    </td>
-                                                                    <td className="px-2 py-1">
-                                                                        <input
-                                                                            type="number"
-                                                                            disabled={!!(!isLabor || isPhased)}
-                                                                            value={item.base_hourly_rate || ''}
-                                                                            onChange={(e) => updateItemLocal(catGlobalIdx, grpIdx, itemIdx, 'base_hourly_rate', parseFloat(e.target.value))}
-                                                                            onBlur={() => handleLaborRecalc(catGlobalIdx, grpIdx, itemIdx)}
-                                                                            className={`w-full text-right rounded border-slate-200 p-0.5 font-mono ${!isLabor || isPhased ? "bg-slate-50 text-slate-400" : "text-slate-700"}`}
-                                                                        />
-                                                                    </td>
-                                                                    <td className="px-2 py-1"><input type="number" disabled={!!(!isLabor || isPhased)} value={item.daily_hours || ''} onChange={(e) => updateItemLocal(catGlobalIdx, grpIdx, itemIdx, 'daily_hours', parseFloat(e.target.value))} onBlur={() => handleLaborRecalc(catGlobalIdx, grpIdx, itemIdx)} className={`w-full text-right rounded border-slate-200 p-0.5 font-mono ${!isLabor || isPhased ? "bg-slate-50 text-slate-400" : "text-slate-700"}`} /></td>
-                                                                    <td className="px-2 py-1"><input type="number" disabled={!!(!isLabor || isPhased)} value={item.days_per_week || ''} onChange={(e) => updateItemLocal(catGlobalIdx, grpIdx, itemIdx, 'days_per_week', parseFloat(e.target.value))} onBlur={() => handleLaborRecalc(catGlobalIdx, grpIdx, itemIdx)} className={`w-full text-right rounded border-slate-200 p-0.5 font-mono ${!isLabor || isPhased ? "bg-slate-50 text-slate-400" : "text-slate-700"}`} /></td>
-                                                                    <td className="px-2 py-1 text-center"><input type="checkbox" disabled={!!(!isLabor || isPhased)} checked={item.is_casual || false} onChange={(e) => { updateItemLocal(catGlobalIdx, grpIdx, itemIdx, 'is_casual', e.target.checked); calculateLaborRate(item.base_hourly_rate, item.daily_hours, item.days_per_week, e.target.checked).then(res => { updateItemLocal(catGlobalIdx, grpIdx, itemIdx, { rate: res.weekly_rate }); }); }} className="h-3 w-3 accent-indigo-600" /></td>
-                                                                    <td className="px-2 py-1 bg-slate-50 font-bold text-slate-700">
-                                                                        {isPhased ? (
-                                                                            <div
-                                                                                className="w-full text-right text-[10px] font-bold text-indigo-600 bg-indigo-50/50 px-1 py-0.5 rounded cursor-pointer border border-indigo-100 hover:bg-indigo-100 transition-colors"
-                                                                                onClick={() => setInspectorItem({ catIdx: catGlobalIdx, grpIdx, itemIdx })}
-                                                                                title="Phased Rates Active (Click to view)"
-                                                                            >
-                                                                                MIXED ⚙️
-                                                                            </div>
-                                                                        ) : (
-                                                                            <input type="number" value={item.rate} onChange={(e) => updateItemLocal(catGlobalIdx, grpIdx, itemIdx, 'rate', parseFloat(e.target.value))} className="w-full text-right border-none bg-transparent p-0 focus:ring-0 font-mono text-emerald-600" />
-                                                                        )}
-                                                                    </td>
-                                                                    <td className="px-2 py-1"><input type="number" disabled={!!isPhased} value={item.prep_qty} onChange={(e) => updateItemLocal(catGlobalIdx, grpIdx, itemIdx, 'prep_qty', parseFloat(e.target.value))} className={`w-full text-right rounded border-slate-200 p-0.5 font-mono ${isPhased ? "bg-slate-50 text-slate-300" : "text-slate-600"}`} /></td>
-                                                                    <td className="px-2 py-1"><input type="number" disabled={!!isPhased} value={item.shoot_qty} onChange={(e) => updateItemLocal(catGlobalIdx, grpIdx, itemIdx, 'shoot_qty', parseFloat(e.target.value))} className={`w-full text-right rounded border-slate-200 p-0.5 font-mono ${isPhased ? "bg-slate-50 text-slate-300" : "text-slate-600"}`} /></td>
-                                                                    <td className="px-2 py-1"><input type="number" disabled={!!isPhased} value={item.post_qty} onChange={(e) => updateItemLocal(catGlobalIdx, grpIdx, itemIdx, 'post_qty', parseFloat(e.target.value))} className={`w-full text-right rounded border-slate-200 p-0.5 font-mono ${isPhased ? "bg-slate-50 text-slate-300" : "text-slate-600"}`} /></td>
-                                                                    <td className="px-2 py-1 text-right font-bold text-slate-800 bg-indigo-50/10 font-mono">${item.total.toLocaleString()}</td>
-                                                                    <td className="px-2 py-1 text-center"><input type="checkbox" checked={item.is_labor} onChange={(e) => { updateItemLocal(catGlobalIdx, grpIdx, itemIdx, { is_labor: e.target.checked, apply_fringes: e.target.checked }); }} className="h-3 w-3 accent-slate-600" /></td>
-                                                                    <td className="px-2 py-1 text-right"><button onClick={() => handleDelete(item.id)} className="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity p-1" title="Delete Item">✕</button></td>
-                                                                </tr>
-                                                                {isLabor && item.apply_fringes && fringes && (
-                                                                    <>
-                                                                        <tr className="bg-slate-50 text-[10px] text-slate-500 border-l-4 border-l-amber-400">
-                                                                            <td className="px-2 py-0.5 text-right font-medium">↳  Superannuation</td>
-                                                                            <td colSpan={8}></td>
-                                                                            <td className="px-2 py-0.5 text-right font-mono text-slate-600">${fSuper.toLocaleString()}</td>
-                                                                            <td colSpan={2}></td>
-                                                                        </tr>
-                                                                        <tr className="bg-slate-50 text-[10px] text-slate-500 border-l-4 border-l-amber-400">
-                                                                            <td className="px-2 py-0.5 text-right font-medium">↳  Payroll Tax</td>
-                                                                            <td colSpan={8}></td>
-                                                                            <td className="px-2 py-0.5 text-right font-mono text-slate-600">${fTax.toLocaleString()}</td>
-                                                                            <td colSpan={2}></td>
-                                                                        </tr>
-                                                                        <tr className="bg-slate-50 text-[10px] text-slate-500 border-l-4 border-l-amber-400">
-                                                                            <td className="px-2 py-0.5 text-right font-medium">↳  Workers Comp</td>
-                                                                            <td colSpan={8}></td>
-                                                                            <td className="px-2 py-0.5 text-right font-mono text-slate-600">${fWorkCover.toLocaleString()}</td>
-                                                                            <td colSpan={2}></td>
-                                                                        </tr>
-                                                                        <tr className="bg-slate-50 text-[10px] text-slate-500 border-l-4 border-l-amber-400">
-                                                                            <td className="px-2 py-0.5 text-right font-medium">↳  Holiday Pay</td>
-                                                                            <td colSpan={8}></td>
-                                                                            <td className="px-2 py-0.5 text-right font-mono text-slate-600">${fHoliday.toLocaleString()}</td>
-                                                                            <td colSpan={2}></td>
-                                                                        </tr>
-                                                                    </>
-                                                                )}
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </tbody>
-                                            </table>
+                                                    <AnimatePresence>
+                                                        {addingToGroupingId === grp.id && addingType && (
+                                                            <motion.div
+                                                                initial={{ height: 0, opacity: 0, y: -10, overflow: "hidden" }}
+                                                                animate={{ height: "auto", opacity: 1, y: 0, transitionEnd: { overflow: "visible" } }}
+                                                                exit={{ height: 0, opacity: 0, y: -10, overflow: "hidden" }}
+                                                                transition={{ duration: 0.2 }}
+                                                                className="bg-slate-50 p-2 border-b border-indigo-100"
+                                                            >
+                                                                <InlineItemEditor isLabor={addingType === 'labor'} groupingId={grp.id} onSave={handleSaveNewItem} onCancel={handleCancelAdd} />
+                                                            </motion.div>
+                                                        )}
+                                                    </AnimatePresence>
+
+                                                    <div className="mt-2 text-xs">
+                                                        <BudgetHeader />
+                                                        <div className="space-y-1 mt-1">
+                                                            <AnimatePresence mode='popLayout'>
+                                                                {grp.items.map((item, itemIdx) => (
+                                                                    <BudgetRow
+                                                                        key={item.id}
+                                                                        item={item}
+                                                                        onChange={(updates) => updateItemLocal(catGlobalIdx, grpIdx, itemIdx, updates)}
+                                                                        onDelete={() => handleDelete(item.id)}
+                                                                        onExpandInspector={() => setInspectorItem({ catIdx: catGlobalIdx, grpIdx, itemIdx })}
+                                                                        onRecalcLabor={(overrides) => handleLaborRecalc(catGlobalIdx, grpIdx, itemIdx, overrides)}
+                                                                    />
+                                                                ))}
+                                                            </AnimatePresence>
+                                                        </div>
+                                                    </div>
+                                                </motion.div>
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </motion.div>
                     );
                 })}
             </div>

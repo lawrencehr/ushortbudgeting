@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Project, fetchProjects, fetchBudget, BudgetCategory } from "@/lib/api";
 import ProjectSettings from "@/components/ProjectSettings";
+import { BudgetWizard } from "@/components/BudgetWizard";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 export default function AppSidebar() {
@@ -27,10 +28,28 @@ export default function AppSidebar() {
             .catch(console.error);
     }, []);
 
+    const [isWizardOpen, setIsWizardOpen] = useState(false);
+
+    // Refresh handler for when a new budget is created
+    const handleBudgetCreated = (id: string) => {
+        setIsWizardOpen(false);
+        window.location.href = `/budget/${id}`;
+    };
+
     return (
         <>
             <aside className="w-64 bg-slate-100 border-r border-gray-200 flex-shrink-0 h-full flex flex-col">
                 <div className="p-4 flex-1 overflow-y-auto">
+                    <div className="mb-6">
+                        <button
+                            onClick={() => setIsWizardOpen(true)}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+                        >
+                            <span className="text-lg leading-none">+</span>
+                            New Budget
+                        </button>
+                    </div>
+
                     <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Departments</h2>
                     <nav className="space-y-1">
                         <Link
@@ -41,6 +60,16 @@ export default function AppSidebar() {
                                 }`}
                         >
                             All Departments
+                        </Link>
+
+                        <Link
+                            href="/templates"
+                            className={`block px-3 py-2 text-sm font-medium rounded-md ${pathname === "/templates"
+                                ? "bg-indigo-50 text-indigo-700"
+                                : "text-gray-700 hover:bg-gray-200"
+                                }`}
+                        >
+                            Templates
                         </Link>
 
                         <div className="pt-2" />
@@ -88,6 +117,13 @@ export default function AppSidebar() {
                     isOpen={isSettingsOpen}
                     onClose={() => setIsSettingsOpen(false)}
                     project={project}
+                />
+            )}
+
+            {isWizardOpen && (
+                <BudgetWizard
+                    onClose={() => setIsWizardOpen(false)}
+                    onBudgetCreated={handleBudgetCreated}
                 />
             )}
         </>

@@ -6,6 +6,26 @@ export interface FringeSettings {
   contingency: number;
 }
 
+export interface LaborAllowance {
+  name: string;
+  amount: number;
+  frequency: 'day' | 'week';
+}
+
+export interface ShiftInput {
+  hours: number;
+  type: string; // "Standard", "Saturday", "Sunday", "PublicHoliday"
+  count: number;
+}
+
+export interface FringeBreakdown {
+  super: number;
+  payroll_tax: number;
+  workers_comp: number;
+  holiday_pay: number;
+  total_fringes: number;
+}
+
 export interface BudgetLineItem {
   id: string;
   code?: string;
@@ -20,6 +40,7 @@ export interface BudgetLineItem {
   apply_fringes: boolean;
   grouping_id: string;
   notes?: string;
+
   // Enhanced Labor Fields
   base_hourly_rate: number;
   daily_hours: number;
@@ -29,9 +50,16 @@ export interface BudgetLineItem {
   allowances?: LaborAllowance[];
   ot_threshold_15?: number;
   ot_threshold_20?: number;
-  labor_phases_json?: string;
+  labor_phases_json?: string; // JSON of active phases ["prep", "shoot"]
   fringes_json?: string; // Stores FringeBreakdown
+  breakdown_json?: string; // Stores Breakdown Detail
   shifts_json?: string; // Stores ShiftInput[]
+
+  // Labor V2 Fields
+  calendar_mode?: 'inherit' | 'custom';
+  phase_details?: Record<string, any>; // JSON structure for overrides
+  award_classification_id?: string;
+  role_history_id?: string;
 }
 
 export interface BudgetGrouping {
@@ -40,6 +68,7 @@ export interface BudgetGrouping {
   name: string;
   items: BudgetLineItem[];
   sub_total: number;
+  calendar_overrides?: Record<string, any>;
 }
 
 export interface BudgetCategory {
@@ -82,6 +111,55 @@ export interface Project {
   end_date?: string;
 }
 
+export interface CrewMember {
+  id: string;
+  name: string;
+  role: string;
+  base_rate: number;
+  overtime_rule_set?: string;
+  default_allowances: LaborAllowance[];
+}
+
+export interface ProjectPhase {
+  id: string;
+  project_id: string;
+  name: string;
+  type: string;
+  start_date: string;
+  end_date: string;
+}
+
+export interface BudgetTemplate {
+  id: string;
+  name: string;
+  description?: string;
+  created_at: string;
+  item_count: number;
+  category_count: number;
+}
+
+// --- Requests ---
+export interface LaborCostRequest {
+  line_item_id?: string;
+  base_hourly_rate: number;
+  is_casual: boolean;
+  is_artist: boolean;
+  calendar_mode: 'inherit' | 'custom';
+  phase_details?: Record<string, any>;
+  grouping_id?: string;
+  project_id: string;
+  award_classification_id?: string;
+}
+
+export interface LaborCostResponse {
+  total_cost: number;
+  breakdown: Record<string, any>;
+  fringes: FringeBreakdown;
+}
+
+
+// --- API Functions ---
+
 const API_URL = '/api';
 
 export async function fetchProjects(): Promise<Project[]> {
@@ -96,20 +174,10 @@ export async function fetchAwardRates(): Promise<AwardRate[]> {
   return res.json();
 }
 
-
 export async function fetchBudget(): Promise<BudgetCategory[]> {
   const res = await fetch(`${API_URL}/budget`);
   if (!res.ok) throw new Error('Failed to fetch budget');
   return res.json();
-}
-
-export interface ProjectPhase {
-  id: string;
-  project_id: string;
-  name: string;
-  type: string;
-  start_date: string;
-  end_date: string;
 }
 
 export async function fetchProjectPhases(projectId: string): Promise<ProjectPhase[]> {
@@ -193,20 +261,21 @@ export async function deleteBudgetLineItem(itemId: string): Promise<any> {
   return res.json();
 }
 
-export interface FringeBreakdown {
-  super: number;
-  payroll_tax: number;
-  workers_comp: number;
-  holiday_pay: number;
-  total_fringes: number;
+// --- New Calculation API ---
+export async function calculateLaborCost(req: LaborCostRequest): Promise<LaborCostResponse> {
+  const res = await fetch(`${API_URL}/calculate-labor-cost`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(req),
+  });
+  if (!res.ok) throw new Error('Failed to calculate labor');
+  return res.json();
 }
 
-export interface ShiftInput {
-  hours: number;
-  type: string; // "Standard", "Saturday", "Sunday", "PublicHoliday"
-  count: number;
-}
 
+/**
+ * @deprecated Use calculateLaborCost instead
+ */
 export async function calculateLaborRate(
   base_hourly_rate: number,
   daily_hours: number,
@@ -235,23 +304,6 @@ export async function calculateLaborRate(
   return res.json();
 }
 
-// --- Crew API ---
-
-export interface LaborAllowance {
-  name: string;
-  amount: number;
-  frequency: 'day' | 'week';
-}
-
-export interface CrewMember {
-  id: string;
-  name: string;
-  role: string;
-  base_rate: number;
-  overtime_rule_set?: string;
-  default_allowances: LaborAllowance[];
-}
-
 export async function fetchCrew(): Promise<CrewMember[]> {
   const res = await fetch(`${API_URL}/crew`);
   if (!res.ok) throw new Error('Failed to fetch crew');
@@ -262,8 +314,7 @@ export async function addCrewMember(crew: Omit<CrewMember, 'id'>): Promise<CrewM
   const res = await fetch(`${API_URL}/crew`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...crew, id: '' }), // Backend handles ID if empty, or we can look at backend logic. 
-    // Backend: if not crew_member.id: crew_member.id = uuid
+    body: JSON.stringify({ ...crew, id: '' }),
   });
   if (!res.ok) throw new Error('Failed to add crew member');
   return res.json();
@@ -284,4 +335,37 @@ export async function deleteCrewMember(id: string): Promise<void> {
     method: 'DELETE',
   });
   if (!res.ok) throw new Error('Failed to delete crew member');
+}
+
+export async function fetchTemplates(): Promise<BudgetTemplate[]> {
+  const res = await fetch(`${API_URL}/templates`);
+  if (!res.ok) throw new Error('Failed to fetch templates');
+  return res.json();
+}
+
+export async function createTemplate(data: { name: string; description?: string; budget_id: string; reset_quantities: boolean }): Promise<BudgetTemplate> {
+  const res = await fetch(`${API_URL}/templates`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Failed to create template');
+  return res.json();
+}
+
+export async function deleteTemplate(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/templates/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Failed to delete template');
+}
+
+export async function initializeBudget(data: { name: string; project_id?: string; template_id?: string; reset_quantities: boolean }): Promise<{ budget_id: string; project_id: string }> {
+  const res = await fetch(`${API_URL}/budget/initialize`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Failed to initialize budget');
+  return res.json();
 }

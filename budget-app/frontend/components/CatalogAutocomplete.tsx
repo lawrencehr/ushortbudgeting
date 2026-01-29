@@ -13,20 +13,29 @@ interface Props {
 
 // Dummy fetcher until we wire up full API search
 // In real app, import fetchCatalog or searchCatalog from api.ts
-const searchCatalogMock = async (query: string): Promise<CatalogItem[]> => {
-    // Simulated delay
-    await new Promise(r => setTimeout(r, 200));
-    const db: CatalogItem[] = [
-        { description: "Camera Operator", default_rate: 800, default_category_id: "C", default_category_name: "Production Crew", is_labor: true },
-        { description: "Director of Photography", default_rate: 1200, default_category_id: "C", default_category_name: "Production Crew", is_labor: true },
-        { description: "1st Assistant Camera", default_rate: 650, default_category_id: "C", default_category_name: "Production Crew", is_labor: true },
-        { description: "2nd Assistant Camera", default_rate: 500, default_category_id: "C", default_category_name: "Production Crew", is_labor: true },
-        { description: "Boom Operator", default_rate: 550, default_category_id: "C", default_category_name: "Production Crew", is_labor: true },
-        { description: "Sound Mixer", default_rate: 850, default_category_id: "C", default_category_name: "Production Crew", is_labor: true },
-        { description: "Camera Package (Alexa)", default_rate: 2500, default_category_id: "D", default_category_name: "Equipment", is_labor: false },
-        { description: "Lighting Package (5-Ton)", default_rate: 1500, default_category_id: "D", default_category_name: "Equipment", is_labor: false },
-    ];
-    return db.filter(i => i.description.toLowerCase().includes(query.toLowerCase()));
+// Real API Search
+const searchCatalog = async (query: string): Promise<CatalogItem[]> => {
+    try {
+        // Parallel search: Catalog + Roles History
+        // For MVP, lets just hit Roles if it's labor? 
+        // Or create a unified endpoint.
+        // Let's hitting the new /api/roles/search endpoint
+        const res = await fetch(`http://localhost:8000/api/roles/search?q=${encodeURIComponent(query)}`);
+        if (!res.ok) return [];
+        const roles = await res.json();
+
+        // Map RoleHistory to CatalogItem
+        return roles.map((r: any) => ({
+            description: r.role_name,
+            default_rate: r.base_rate,
+            default_category_id: "LABOR",
+            default_category_name: "History",
+            is_labor: true
+        }));
+    } catch (err) {
+        console.error("Search failed", err);
+        return [];
+    }
 };
 
 export default function CatalogAutocomplete({ value, onChange, onSelect, className, placeholder, autoFocus }: Props) {
@@ -54,7 +63,7 @@ export default function CatalogAutocomplete({ value, onChange, onSelect, classNa
 
         const timer = setTimeout(() => {
             setLoading(true);
-            searchCatalogMock(value).then(results => {
+            searchCatalog(value).then(results => {
                 setSuggestions(results);
                 setIsOpen(true);
                 setLoading(false);
