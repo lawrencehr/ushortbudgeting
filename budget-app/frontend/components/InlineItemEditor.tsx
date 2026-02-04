@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, AlertCircle, Lock, Unlock, Search, Calendar } from 'lucide-react';
 import { CatalogItem } from '@/lib/api';
@@ -6,6 +7,8 @@ import { CatalogItem } from '@/lib/api';
 import CatalogAutocomplete from './CatalogAutocomplete';
 import { useLaborContextSafe } from '@/lib/labor-context';
 import { calculateLineItemTotal } from '@/lib/labor-calculation'; // Added import
+
+import { CategoryRuleType } from '@/lib/labor-calculation/pay-rules';
 
 export interface InlineItemData {
     description: string;
@@ -26,17 +29,19 @@ export interface InlineItemData {
     phase_details?: Record<string, any>;
     award_classification_id?: string;
     role_history_id?: string;
+    breakdown_json?: string;
 }
 
 interface Props {
     initialData?: Partial<InlineItemData>;
     isLabor: boolean;
     groupingId?: string; // Need grouping ID for context inheritance
+    categoryType?: CategoryRuleType; // Support Artist vs Crew logic
     onSave: (data: InlineItemData) => void;
     onCancel: () => void;
 }
 
-export default function InlineItemEditor({ initialData, isLabor, groupingId, onSave, onCancel }: Props) {
+export default function InlineItemEditor({ initialData, isLabor, groupingId, categoryType = 'crew', onSave, onCancel }: Props) {
     // --- Context ---
     // Unconditional Hook Call (Safe Version)
     const laborContext = useLaborContextSafe();
@@ -74,6 +79,27 @@ export default function InlineItemEditor({ initialData, isLabor, groupingId, onS
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [touched, setTouched] = useState<Record<string, boolean>>({});
 
+    // Tooltip Portal State
+    const [tooltipPos, setTooltipPos] = useState<{ top: number, right: number } | null>(null);
+
+    const handleTooltipEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        console.log('Tooltip Enter:', {
+            unit,
+            hasCtx: !!laborContext,
+            breakdown: calculationResult.breakdown,
+            useCalendar: (isLabor || unit === 'day' || unit === 'week') && !!laborContext
+        });
+        setTooltipPos({
+            top: rect.bottom + 5,
+            right: window.innerWidth - rect.right
+        });
+    };
+
+    const handleTooltipLeave = () => {
+        setTooltipPos(null);
+    };
+
 
 
     // ... inside component ...
@@ -82,43 +108,93 @@ export default function InlineItemEditor({ initialData, isLabor, groupingId, onS
     // --- Derived ---
     const calculationResult = React.useMemo(() => {
         const r = parseFloat(rate) || 0;
-        const hourlyRate = r;
+        const useCalendar = (isLabor || unit === 'day' || unit === 'week') && laborContext;
 
-        if (isLabor && effectiveContext) {
-            // Real Logic via Engine
+        if (useCalendar) {
             // Resolve Configs
             const phaseConfigs = {
-                pre: effectiveContext.getEffectivePhaseConfig(groupingId, 'preProd'),
-                shoot: effectiveContext.getEffectivePhaseConfig(groupingId, 'shoot'),
-                post: effectiveContext.getEffectivePhaseConfig(groupingId, 'postProd'),
+                pre: laborContext!.getEffectivePhaseConfig(groupingId, 'preProd'),
+                shoot: laborContext!.getEffectivePhaseConfig(groupingId, 'shoot'),
+                post: laborContext!.getEffectivePhaseConfig(groupingId, 'postProd'),
             };
 
-            const res = calculateLineItemTotal({
-                rate: hourlyRate,
-                isCasual: false, // TODO: Add casual toggle to UI or prop
-                categoryType: 'crew', // TODO: Derive from Category Parent
-                activePhases: {
-                    pre: activePhases.pre,
-                    shoot: activePhases.shoot,
-                    post: activePhases.post
-                },
-                phaseConfigs: phaseConfigs
-            });
+            const phaseDays = {
+                pre: phaseConfigs.pre?.dates.length || 0,
+                shoot: phaseConfigs.shoot?.dates.length || 0,
+                post: phaseConfigs.post?.dates.length || 0
+            };
 
-            // If unit is Allow/Flat, ignore above? Spec 6.1 says "Unit = Flat" overrides logic.
-            if (unit === 'allow') return { grandTotal: r, breakdown: null };
+            const totalDays = (activePhases.pre ? phaseDays.pre : 0) +
+                (activePhases.shoot ? phaseDays.shoot : 0) +
+                (activePhases.post ? phaseDays.post : 0);
 
-            return { grandTotal: res.grandTotal, breakdown: res.breakdown };
+            if (unit === 'allow') {
+                // FLAT RATE LOGIC
+                // Labor: Total is fixed to Rate
+                if (isLabor) {
+                    // Still calculate phases for breakdown display purposes, but ignore costs
+                    const breakdown = {
+                        type: 'labor',
+                        base: r, // Flat rate is the base
+                        overtime: 0,
+                        fringes: { totalOnCosts: 0, super: 0, levies: 0, payrollTax: 0, workcover: 0 }, // Simplified for flat
+                        active_phases: activePhases
+                    };
+                    return { grandTotal: r, breakdown, phaseDays };
+                }
+
+                // Material: Total is fixed to Rate
+                const breakdown = {
+                    type: 'material_flat',
+                    pre: { days: (activePhases.pre ? phaseDays.pre : 0), cost: 0 }, // Cost not relevant for flat breakdown split? Or split evenly?
+                    shoot: { days: (activePhases.shoot ? phaseDays.shoot : 0), cost: 0 },
+                    post: { days: (activePhases.post ? phaseDays.post : 0), cost: 0 },
+                    flat_total: r
+                };
+                return { grandTotal: r, breakdown, phaseDays };
+            }
+
+            if (isLabor) {
+                const res = calculateLineItemTotal({
+                    rate: r,
+                    isCasual: false,
+                    categoryType: categoryType,
+                    activePhases: activePhases,
+                    phaseConfigs: phaseConfigs
+                });
+                // Tag generic labor breakdown
+                return { grandTotal: res.grandTotal, breakdown: { type: 'labor', ...res.breakdown }, phaseDays };
+            } else {
+                // Material Breakdown (Per Day/Week)
+                const dpw = parseFloat(daysPerWeek) || 5;
+                const getCost = (days: number) => {
+                    if (unit === 'week') return r * (days / dpw);
+                    return r * days;
+                };
+
+                const breakdown = {
+                    type: 'material',
+                    pre: { days: (activePhases.pre ? phaseDays.pre : 0), cost: getCost(activePhases.pre ? phaseDays.pre : 0) },
+                    shoot: { days: (activePhases.shoot ? phaseDays.shoot : 0), cost: getCost(activePhases.shoot ? phaseDays.shoot : 0) },
+                    post: { days: (activePhases.post ? phaseDays.post : 0), cost: getCost(activePhases.post ? phaseDays.post : 0) }
+                };
+
+                const total = breakdown.pre.cost + breakdown.shoot.cost + breakdown.post.cost;
+                console.log('Material Breakdown Generated:', breakdown, 'Total:', total);
+                return { grandTotal: total, breakdown, phaseDays };
+            }
         } else {
-            // ... Material Fallback (unchanged) ...
-            const totalQty = (parseFloat(prepQty) || 0) + (parseFloat(shootQty) || 0) + (parseFloat(postQty) || 0);
-            let total = 0;
-            if (totalQty === 0 && parseFloat(quantity) > 0) total = r * parseFloat(quantity);
-            else total = r * totalQty;
-
-            return { grandTotal: total, breakdown: null };
+            // Material Fallback (No Calendar or Simple Qty) - Simple Mode
+            // Check if flat
+            const rVal = parseFloat(rate) || 0;
+            if (unit === 'allow') {
+                return { grandTotal: rVal, breakdown: null, phaseDays: null };
+            }
+            // Material Fallback (Qty * Rate)
+            const qVal = parseFloat(quantity) || 1;
+            return { grandTotal: rVal * qVal, breakdown: null, phaseDays: null };
         }
-    }, [rate, prepQty, shootQty, postQty, quantity, isLabor, activePhases, unit, effectiveContext, groupingId]);
+    }, [rate, quantity, isLabor, activePhases, unit, laborContext, groupingId, daysPerWeek]);
 
     const totalDisplay = calculationResult.grandTotal;
 
@@ -139,26 +215,26 @@ export default function InlineItemEditor({ initialData, isLabor, groupingId, onS
         if (Object.keys(newErrors).length > 0) return;
 
         // Construct Payload
-        const finalQty = 1; // Simplified for V2
-
         const data: InlineItemData = {
             description,
             rate: parseFloat(rate) || 0,
-            quantity: finalQty,
-            prep_qty: activePhases.pre ? 1 : 0, // Mock placeholders
-            shoot_qty: activePhases.shoot ? 1 : 0,
-            post_qty: activePhases.post ? 1 : 0,
+            quantity: calculationResult.phaseDays ? 1 : (parseFloat(quantity) || 1),
+            prep_qty: activePhases.pre ? (calculationResult.phaseDays?.pre || 0) : 0,
+            shoot_qty: activePhases.shoot ? (calculationResult.phaseDays?.shoot || 0) : 0,
+            post_qty: activePhases.post ? (calculationResult.phaseDays?.post || 0) : 0,
             unit,
             total: totalDisplay,
             is_labor: isLabor,
             base_rate: parseFloat(baseRate) || 0,
             days_per_week: parseFloat(daysPerWeek) || 5,
             daily_hours: parseFloat(dailyHours) || 8,
-            calendar_mode: initialData?.calendar_mode || 'inherit', // Preserve or Inherit
-            phase_details: { active_phases: activePhases, ...initialData?.phase_details }, // Merge
+            calendar_mode: initialData?.calendar_mode || 'inherit',
+            phase_details: { active_phases: activePhases, ...initialData?.phase_details },
             grouping_id: groupingId,
             award_classification_id: initialData?.award_classification_id,
-            role_history_id: initialData?.role_history_id
+            role_history_id: initialData?.role_history_id,
+            // Persist the calculated breakdown (Labor OR Material)
+            breakdown_json: JSON.stringify(calculationResult.breakdown)
         };
 
         onSave(data);
@@ -254,7 +330,7 @@ export default function InlineItemEditor({ initialData, isLabor, groupingId, onS
 
             {/* Phase Selection (Span 3) - The Hybrid Toggles */}
             <div className="col-span-3 flex items-center gap-1 justify-center bg-white/40 rounded-lg p-0.5 border border-indigo-100/50">
-                {isLabor ? (
+                {(isLabor || unit === 'day' || unit === 'week') ? (
                     <>
                         <motion.button
                             layout
@@ -286,22 +362,24 @@ export default function InlineItemEditor({ initialData, isLabor, groupingId, onS
                         >
                             Post
                         </motion.button>
-                        <motion.button
-                            className="ml-1 p-1 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 rounded"
-                            whileHover={{ rotate: 15 }}
-                            title="Custom Calendar"
-                        >
-                            <Calendar className="w-3.5 h-3.5" />
-                        </motion.button>
+                        {(isLabor) && (
+                            <motion.button
+                                className="ml-1 p-1 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 rounded"
+                                whileHover={{ rotate: 15 }}
+                                title="Custom Calendar"
+                            >
+                                <Calendar className="w-3.5 h-3.5" />
+                            </motion.button>
+                        )}
                     </>
                 ) : (
-                    // Material Fallback
-                    <div className="flex gap-1 w-full">
+                    // Material Fallback (Simple Qty mode)
+                    <div className="flex gap-1 w-full px-2">
                         <input
                             type="number"
                             value={quantity}
                             onChange={e => setQuantity(e.target.value)}
-                            className="w-full text-center text-sm bg-transparent border-b border-gray-300 focus:border-indigo-500 outline-none"
+                            className="w-full text-center text-sm bg-white border border-indigo-100 rounded focus:border-indigo-500 outline-none p-1"
                             placeholder="Qty"
                         />
                     </div>
@@ -309,34 +387,12 @@ export default function InlineItemEditor({ initialData, isLabor, groupingId, onS
             </div>
 
             {/* Total (Span 1) */}
-            <div className="col-span-1 text-right font-mono font-bold text-gray-700 px-0 flex items-center justify-end h-full text-sm relative group/total">
+            <div
+                className="col-span-1 text-right font-mono font-bold text-gray-700 px-0 flex items-center justify-end h-full text-sm cursor-help relative"
+                onMouseEnter={handleTooltipEnter}
+                onMouseLeave={handleTooltipLeave}
+            >
                 ${totalDisplay.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-
-                {/* Cost Breakdown Tooltip */}
-                <AnimatePresence>
-                    {calculationResult.breakdown && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                            transition={{ duration: 0.15 }}
-                            className="absolute bottom-full right-0 mb-3 w-56 bg-gray-900/95 backdrop-blur-sm text-white text-xs rounded-lg shadow-xl p-3 z-50 hidden group-hover/total:block pointer-events-none border border-white/10"
-                        >
-                            <div className="flex justify-between border-b border-gray-700 pb-2 mb-2">
-                                <span className="text-gray-400 font-medium">Base Pay</span>
-                                <span className="font-mono">${calculationResult.breakdown.base.toFixed(2)}</span>
-                            </div>
-                            <div className="flex justify-between mb-1">
-                                <span className="text-gray-400">Overtime</span>
-                                <span className="text-amber-400 font-mono">${calculationResult.breakdown.overtime.toFixed(2)}</span>
-                            </div>
-                            <div className="flex justify-between pt-2 border-t border-gray-800">
-                                <span className="text-gray-400">Fringes (Super/Tax)</span>
-                                <span className="text-blue-300 font-mono">${calculationResult.breakdown.fringes.totalOnCosts.toFixed(2)}</span>
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
             </div>
 
             {/* Actions (Span 1) */}
@@ -362,6 +418,97 @@ export default function InlineItemEditor({ initialData, isLabor, groupingId, onS
                 <div className="absolute top-full left-[60%] mt-1 bg-white border border-indigo-200 shadow-lg rounded px-2 py-1 text-[10px] text-indigo-600 z-50 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
                     Inherited from Camera Dept
                 </div>
+            )}
+
+            {/* COST BREAKDOWN TOOLTIP */}
+            {tooltipPos && calculationResult.breakdown && createPortal(
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: tooltipPos.top,
+                        right: tooltipPos.right,
+                        zIndex: 9999
+                    }}
+                    className="pointer-events-none"
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                >
+                    <div className="bg-slate-800 text-white text-xs rounded shadow-lg border border-slate-700 p-2 w-48 z-50">
+                        <div className="font-bold mb-1 border-b border-slate-600 pb-1 flex justify-between">
+                            <span>Cost Breakdown</span>
+                            <span className="text-slate-400 font-mono italic">
+                                {unit === 'allow' ? 'FLAT' : (unit === 'week' ? '/wk' : '/day')}
+                            </span>
+                        </div>
+
+                        {/* LABOR BREAKDOWN */}
+                        {calculationResult.breakdown.type === 'labor' && (
+                            <div className="space-y-1">
+                                <div className="flex justify-between">
+                                    <span className="text-slate-300">Base Pay:</span>
+                                    <span>${(calculationResult.breakdown as any).base?.toFixed(2)}</span>
+                                </div>
+                                {(calculationResult.breakdown as any).overtime > 0 && (
+                                    <div className="flex justify-between text-yellow-300">
+                                        <span>OT/Penalties:</span>
+                                        <span>${(calculationResult.breakdown as any).overtime?.toFixed(2)}</span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between text-indigo-300 border-t border-slate-700 pt-1 mt-1">
+                                    <span>Fringes:</span>
+                                    <span>${(calculationResult.breakdown as any).fringes?.totalOnCosts?.toFixed(2)}</span>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* MATERIAL BREAKDOWN */}
+                        {calculationResult.breakdown.type === 'material' && (
+                            <div className="space-y-1">
+                                <div className="grid grid-cols-3 gap-1 text-[10px] text-slate-400 mb-1">
+                                    <span>Phs</span>
+                                    <span className="text-center">Days</span>
+                                    <span className="text-right">Cost</span>
+                                </div>
+                                {['pre', 'shoot', 'post'].map(phase => {
+                                    const pData = (calculationResult.breakdown as any)[phase];
+                                    if (!pData || pData.days <= 0) return null;
+                                    return (
+                                        <div key={phase} className="grid grid-cols-3 gap-1">
+                                            <span className="capitalize text-slate-300">{phase}</span>
+                                            <span className="text-center text-slate-400">{pData.days}</span>
+                                            <span className="text-right text-emerald-300">${pData.cost.toFixed(0)}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        {/* FLAT RATE MATERIAL BREAKDOWN */}
+                        {calculationResult.breakdown.type === 'material_flat' && (
+                            <div className="space-y-1">
+                                <div className="text-emerald-300 font-medium text-center mb-1">
+                                    Fixed Rate: ${calculationResult.grandTotal.toFixed(2)}
+                                </div>
+                                {calculationResult.phaseDays && (
+                                    <div className="text-[10px] text-slate-400 text-center">
+                                        Active in:
+                                        {Object.entries(calculationResult.phaseDays).map(([p, d]) => {
+                                            if ((activePhases as any)[p] && d > 0) return <span key={p} className="mx-1 text-slate-300 uppercase">{p}</span>
+                                            return null;
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        <div className="mt-2 pt-1 border-t border-slate-600 flex justify-between font-bold text-emerald-400">
+                            <span>Total</span>
+                            <span>${calculationResult.grandTotal?.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>,
+                document.body
             )}
         </div>
     );

@@ -87,6 +87,25 @@ export interface BudgetSummary {
   grand_total: number;
   fringe_breakdown: Record<string, number>;
 }
+// ...
+export interface DepartmentBreakdown {
+  id?: string;
+  name: string;
+  total: number;
+  percentage: number;
+}
+
+export interface PhaseBreakdown {
+  name: string;
+  total: number;
+  percentage: number;
+}
+
+export interface ProjectSummaryResponse {
+  total_cost: number;
+  department_breakdown: DepartmentBreakdown[];
+  phase_breakdown: PhaseBreakdown[];
+}
 
 export interface CatalogItem {
   description: string;
@@ -174,8 +193,9 @@ export async function fetchAwardRates(): Promise<AwardRate[]> {
   return res.json();
 }
 
-export async function fetchBudget(): Promise<BudgetCategory[]> {
-  const res = await fetch(`${API_URL}/budget`);
+export async function fetchBudget(projectId?: string): Promise<BudgetCategory[]> {
+  const url = projectId ? `${API_URL}/projects/${projectId}/budget` : `${API_URL}/budget`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error('Failed to fetch budget');
   return res.json();
 }
@@ -206,6 +226,12 @@ export async function deleteProjectPhase(phaseId: string): Promise<void> {
 export async function fetchSummary(): Promise<BudgetSummary> {
   const res = await fetch(`${API_URL}/summary`);
   if (!res.ok) throw new Error('Failed to fetch summary');
+  return res.json();
+}
+
+export async function fetchProjectSummary(projectId: string): Promise<ProjectSummaryResponse> {
+  const res = await fetch(`${API_URL}/projects/${projectId}/summary`);
+  if (!res.ok) throw new Error('Failed to fetch project summary');
   return res.json();
 }
 
@@ -258,6 +284,21 @@ export async function deleteBudgetLineItem(itemId: string): Promise<any> {
     method: 'DELETE',
   });
   if (!res.ok) throw new Error('Failed to delete item');
+  return res.json();
+}
+
+interface BudgetGroupingUpdate {
+  name?: string;
+  calendar_overrides?: Record<string, any>;
+}
+
+export async function updateBudgetGrouping(groupingId: string, updates: BudgetGroupingUpdate): Promise<BudgetGrouping> {
+  const res = await fetch(`${API_URL}/budget/groupings/${groupingId}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updates),
+  });
+  if (!res.ok) throw new Error('Failed to update grouping');
   return res.json();
 }
 
@@ -358,6 +399,32 @@ export async function deleteTemplate(id: string): Promise<void> {
     method: 'DELETE',
   });
   if (!res.ok) throw new Error('Failed to delete template');
+}
+
+export interface BudgetSaveRequest {
+  categories: BudgetCategory[];
+  deleted_item_ids: string[];
+  deleted_grouping_ids: string[];
+  deleted_category_ids: string[];
+}
+
+export async function saveBudget(req: BudgetSaveRequest): Promise<void> {
+  const res = await fetch(`${API_URL}/budget`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(req),
+  });
+  if (!res.ok) throw new Error('Failed to save budget');
+}
+
+export async function createProject(data: { name: string, client: string, template_id?: string }): Promise<Project> {
+  const res = await fetch(`${API_URL}/projects`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Failed to create project');
+  return res.json();
 }
 
 export async function initializeBudget(data: { name: string; project_id?: string; template_id?: string; reset_quantities: boolean }): Promise<{ budget_id: string; project_id: string }> {

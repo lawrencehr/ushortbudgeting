@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 
 import ProjectHeader from "@/components/ProjectHeader";
 import AppSidebar from "@/components/AppSidebar";
+import TopNav from "@/components/TopNav";
 
 export default function RootLayout({
   children,
@@ -27,12 +28,7 @@ export default function RootLayout({
               <span className="text-xl">🎬</span>
               <h1 className="text-lg font-bold tracking-tight text-slate-100">ShortKingz <span className="text-slate-400 font-normal">Production Budget</span></h1>
             </div>
-            <nav className="space-x-1 flex text-sm">
-              <Link href="/" className="px-3 py-2 rounded hover:bg-slate-800 transition-colors">Dashboard</Link>
-              <Link href="/budget" className="px-3 py-2 rounded hover:bg-slate-800 transition-colors bg-slate-800 text-white">Budget</Link>
-              <Link href="/crew" className="px-3 py-2 rounded hover:bg-slate-800 transition-colors">Crew</Link>
-              <Link href="/settings" className="px-3 py-2 rounded hover:bg-slate-800 transition-colors">Settings</Link>
-            </nav>
+            <TopNav />
           </div>
         </header>
 

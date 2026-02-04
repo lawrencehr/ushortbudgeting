@@ -60,6 +60,11 @@ class BudgetGrouping(BudgetGroupingBase, table=True):
     id: Optional[str] = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
     category: Optional[BudgetCategory] = Relationship(back_populates="groupings")
     items: List["LineItem"] = Relationship(back_populates="grouping")
+    
+    # LABOR ENTRY V2: Department-level implementation of calendar settings
+    # Stores overrides for this specific grouping (e.g. Camera Dept works 12h on Shoot)
+    # Structure mirrors ProductionCalendar but sparse: { "shoot": { "defaultHours": 12 } }
+    calendar_overrides: Optional[Dict] = Field(default={}, sa_column=Column(JSON))
 
 class LineItemBase(SQLModel):
     description: str
@@ -74,8 +79,10 @@ class LineItemBase(SQLModel):
     notes: Optional[str] = None
     
     # Labor specifics
-    base_rate: float = 0.0
+    base_hourly_rate: float = 0.0 # Renamed from base_rate to match frontend
+    daily_hours: float = 10.0     # Added
     days_per_week: float = 5.0
+    is_casual: bool = False       # Added
     overtime_rule_set: str = "Standard"
     crew_member_id: Optional[str] = None
     # Store allowances as a JSON string for MVP simplicity in LineItem
@@ -83,6 +90,25 @@ class LineItemBase(SQLModel):
     # Store phases as JSON string (Prep/Shoot/Post properties)
     labor_phases_json: Optional[str] = "[]"
     
+    # LABOR ENTRY V2 FIELDS
+    # "inherit" = uses Defaults (Global > Category > Grouping)
+    # "custom" = uses phase_details specific to this line item
+    calendar_mode: str = "inherit" 
+    
+    # Stores custom configuration when mode="custom"
+    # e.g. { "active_phases": ["shoot"], "shoot": { "hours": 10, "dates": [...] } }
+    phase_details: Optional[Dict] = Field(default={}, sa_column=Column(JSON))
+    
+    # Links to a payguide classification (Reference only, no logic lock)
+    award_classification_id: Optional[str] = None
+    
+    # Metadata for auto-suggest learning
+    role_history_id: Optional[str] = None
+    
+    # Computed breakdown storage
+    breakdown_json: Optional[str] = None # Stores { "preProd": { "days": 10, "cost": 5000 } }
+    fringes_json: Optional[str] = None   # Stores { "super": 11.5 ... }
+
     grouping_id: Optional[str] = Field(default=None, foreign_key="budgetgrouping.id")
 
 class LineItem(LineItemBase, table=True):
@@ -121,7 +147,7 @@ class ProductionCalendar(SQLModel, table=True):
     updated_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
     
     project: Optional[Project] = Relationship()
-    calendar_days: List["CalendarDay"] = Relationship(back_populates="calendar")
+    calendar_days: List["CalendarDay"] = Relationship(back_populates="calendar", sa_relationship_kwargs={"cascade": "all, delete-orphan"})
 
 class CalendarDay(SQLModel, table=True):
     """Individual day in the production calendar"""
@@ -168,6 +194,19 @@ class BudgetTemplate(SQLModel, table=True):
     source_budget_id: Optional[str] = None
     # Store the full budget structure as a JSON blob
     snapshot: Dict[str, Any] = Field(default={}, sa_column=Column(JSON))
-    item_count: int = 0
-    category_count: int = 0
 
+
+
+
+# --- Role Library (Labor V2) ---
+
+class RoleHistory(SQLModel, table=True):
+    """Stores historical rates for auto-completion suggestions"""
+    id: Optional[str] = Field(default_factory=generate_uuid, primary_key=True)
+    role_name: str = Field(index=True)
+    base_rate: float
+    unit: str
+    project_id: str
+    project_name: Optional[str] = None
+    last_used_at: datetime = Field(default_factory=datetime.utcnow)
+    usage_count: int = 1

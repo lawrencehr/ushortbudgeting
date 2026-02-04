@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { Search, Lock, Unlock, Check, Trash, Info, Calendar } from 'lucide-react';
 import { BudgetLineItem, CatalogItem } from '@/lib/api';
@@ -16,14 +17,30 @@ interface Props {
     onDelete: () => void;
     onExpandInspector: () => void;
     // Optional: Trigger parent recalc if needed (though we try to handle it here)
-    onRecalcLabor?: (overrides?: Partial<BudgetLineItem>) => void;
+    onRecalc?: (overrides?: Partial<BudgetLineItem>) => void;
 }
 
-export default function BudgetRow({ item, onChange, onDelete, onExpandInspector, onRecalcLabor }: Props) {
+export default function BudgetRow({ item, onChange, onDelete, onExpandInspector, onRecalc }: Props) {
     const isLabor = item.is_labor;
     const laborContext = useLaborContextSafe();
     const [isLookupOpen, setIsLookupOpen] = useState(false);
     const [isPhaseOverrideOpen, setIsPhaseOverrideOpen] = useState(false);
+
+    // Portal Tooltip State
+    const [tooltipPos, setTooltipPos] = useState<{ top: number, right: number } | null>(null);
+
+    const handleTooltipEnter = (e: React.MouseEvent) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        // Position to the right-bottom of the element
+        setTooltipPos({
+            top: rect.bottom + 5,
+            right: window.innerWidth - rect.right
+        });
+    };
+
+    const handleTooltipLeave = () => {
+        setTooltipPos(null);
+    };
 
     // Derived phase data for the override tool
     const itemPhaseData = React.useMemo<CalendarData>(() => {
@@ -32,7 +49,9 @@ export default function BudgetRow({ item, onChange, onDelete, onExpandInspector,
             const effective = laborContext?.getEffectivePhaseConfig(item.grouping_id, phase);
             return {
                 defaultHours: overrides[phase]?.defaultHours ?? effective?.defaultHours ?? (phase === 'shoot' ? 10 : 8),
-                dates: overrides[phase]?.dates ?? effective?.dates ?? [],
+                // If inheriting (or no override), use effective dates (which cascades to global).
+                // Only use override dates if explicitly not inheriting.
+                dates: (overrides[phase]?.inherit !== false) ? effective?.dates ?? [] : overrides[phase]?.dates ?? [],
                 inherit: overrides[phase]?.inherit ?? true
             };
         };
@@ -42,6 +61,23 @@ export default function BudgetRow({ item, onChange, onDelete, onExpandInspector,
             postProd: getPhaseData('postProd')
         };
     }, [item.phase_details, item.grouping_id, laborContext]);
+
+    // Base defaults for the line item (Group settings or Global if no group override)
+    const defaultPhaseData = React.useMemo<CalendarData>(() => {
+        const getPhaseData = (phase: 'preProd' | 'shoot' | 'postProd') => {
+            const effective = laborContext?.getEffectivePhaseConfig(item.grouping_id, phase);
+            return {
+                defaultHours: effective?.defaultHours ?? (phase === 'shoot' ? 10 : 8),
+                dates: effective?.dates ?? [],
+                inherit: true
+            };
+        };
+        return {
+            preProd: getPhaseData('preProd'),
+            shoot: getPhaseData('shoot'),
+            postProd: getPhaseData('postProd')
+        };
+    }, [item.grouping_id, laborContext]);
 
     // Stateless / Controlled: Derive toggles directly from props
     const phases = {
@@ -60,7 +96,7 @@ export default function BudgetRow({ item, onChange, onDelete, onExpandInspector,
         onChange(updates);
 
         // Pass updates directly to recalc to avoid stale state in timeout
-        if (onRecalcLabor) onRecalcLabor(updates);
+        if (onRecalc) onRecalc(updates);
     };
 
     const handleRateSelect = (rateItem: any) => {
@@ -93,8 +129,8 @@ export default function BudgetRow({ item, onChange, onDelete, onExpandInspector,
         setIsLookupOpen(false);
 
         // Pass updates to recalc handler to prevent race conditions
-        if (onRecalcLabor) {
-            onRecalcLabor(updates);
+        if (onRecalc) {
+            onRecalc(updates);
         } else {
             onChange(updates);
         }
@@ -107,24 +143,22 @@ export default function BudgetRow({ item, onChange, onDelete, onExpandInspector,
     };
 
     // Calculate Breakdown for Tooltip
-    // We use backend data if available, or basic fallback
+    // We use backend data if available
     const tooltipData = React.useMemo(() => {
-        if (!isLabor) return null;
-
         // Backend Data available?
         if (item.breakdown_json) {
             try {
                 const breakdown = JSON.parse(item.breakdown_json);
                 const fringes = item.fringes_json ? JSON.parse(item.fringes_json) : null;
-                return { type: 'backend', breakdown, fringes };
+                // Determine type based on content or item.is_labor
+                const type = item.is_labor ? 'labor' : 'material';
+                return { type, breakdown, fringes };
             } catch (e) {
                 // fall through
             }
         }
-
-        // Fallback to local (should be rare once calc runs)
         return null;
-    }, [item.breakdown_json, item.fringes_json, isLabor]);
+    }, [item.breakdown_json, item.fringes_json, item.is_labor]);
 
 
     return (
@@ -190,13 +224,11 @@ export default function BudgetRow({ item, onChange, onDelete, onExpandInspector,
                             onChange(updates);
                         }}
                         onBlur={() => {
-                            // If base_hourly_rate wasn't set (e.g. non-labor or old data), 
-                            // we pass the current rate as an override to recalclabor
-                            if (onRecalcLabor) {
-                                onRecalcLabor({ base_hourly_rate: parseFloat(item.rate as any) || 0 });
+                            if (onRecalc) {
+                                onRecalc({ base_hourly_rate: parseFloat(item.rate as any) || 0 });
                             }
                         }}
-                        disabled={!!item.award_classification_id} // Disable if locked
+                        disabled={!!item.award_classification_id}
                         className={`
                             w-full pl-3 pr-4 py-1 text-right text-xs font-mono bg-transparent border-b transition-all rounded-sm
                             ${item.award_classification_id
@@ -210,7 +242,11 @@ export default function BudgetRow({ item, onChange, onDelete, onExpandInspector,
                 {/* Unit Selector */}
                 <select
                     value={item.unit || 'day'}
-                    onChange={(e) => onChange({ unit: e.target.value })}
+                    onChange={(e) => {
+                        const updates = { unit: e.target.value };
+                        onChange(updates);
+                        if (onRecalc) onRecalc(updates);
+                    }}
                     disabled={!!item.award_classification_id}
                     className="w-14 text-[9px] text-slate-400 bg-transparent border-none focus:ring-0 cursor-pointer hover:text-indigo-600 text-right pr-0 uppercase tracking-tighter font-bold disabled:opacity-50"
                 >
@@ -231,7 +267,7 @@ export default function BudgetRow({ item, onChange, onDelete, onExpandInspector,
                             const updates = { is_casual: val };
                             onChange(updates);
                             // Pass updates directly to recalc
-                            if (onRecalcLabor) onRecalcLabor(updates);
+                            if (onRecalc) onRecalc(updates);
                         }}
                     />
                 ) : (
@@ -296,14 +332,22 @@ export default function BudgetRow({ item, onChange, onDelete, onExpandInspector,
                         <PhaseOverridePopover
                             title={item.description || "Line Item Override"}
                             initialData={itemPhaseData}
+                            defaultData={defaultPhaseData}
                             onSave={(updated) => {
-                                onChange({
+                                const isDefault =
+                                    updated.preProd?.inherit &&
+                                    updated.shoot?.inherit &&
+                                    updated.postProd?.inherit;
+
+                                const updates = {
                                     phase_details: updated,
-                                    calendar_mode: 'custom'
-                                });
+                                    calendar_mode: (isDefault ? 'inherit' : 'custom') as 'inherit' | 'custom'
+                                };
+
+                                onChange(updates);
                                 setIsPhaseOverrideOpen(false);
-                                // Trigger recalc as calendar changes affect totals
-                                if (onRecalcLabor) setTimeout(onRecalcLabor, 0);
+                                // Trigger recalc explicitly with the new updates
+                                if (onRecalc) onRecalc(updates);
                             }}
                             onClose={() => setIsPhaseOverrideOpen(false)}
                             className="right-0 top-full mt-2"
@@ -313,51 +357,130 @@ export default function BudgetRow({ item, onChange, onDelete, onExpandInspector,
             </div>
 
             {/* 5. Total (Span 1) */}
-            <div className="col-span-1 text-right relative group/total cursor-help">
+            <div
+                className="col-span-1 text-right relative group/total cursor-help"
+                onMouseEnter={handleTooltipEnter}
+                onMouseLeave={handleTooltipLeave}
+            >
                 <span className="font-mono font-bold text-xs text-slate-800">
                     ${(item.total || 0).toLocaleString()}
                 </span>
 
-                {/* NEW Detailed Breakdown Tooltip */}
-                {tooltipData && tooltipData.type === 'backend' && (
-                    <div className="absolute top-full right-0 mt-2 w-64 bg-slate-800 text-white text-[10px] p-3 rounded shadow-lg pointer-events-none opacity-0 group-hover/total:opacity-100 transition-opacity z-50 ring-1 ring-black/5">
-                        <div className="mb-2 font-bold border-b border-slate-600 pb-1">
-                            Total: ${(item.total || 0).toLocaleString()}
-                        </div>
-                        {tooltipData.breakdown.preProd && (
-                            <div className="flex justify-between">
-                                <span className={!phases.pre ? 'text-slate-500 line-through' : 'text-green-300'}>├─ Prep ({tooltipData.breakdown.preProd.days}d)</span>
-                                <span>${tooltipData.breakdown.preProd.cost.toLocaleString()}</span>
-                            </div>
-                        )}
-                        {tooltipData.breakdown.shoot && (
-                            <div className="flex justify-between">
-                                <span className={!phases.shoot ? 'text-slate-500 line-through' : 'text-red-300'}>├─ Shoot ({tooltipData.breakdown.shoot.days}d)</span>
-                                <span>${tooltipData.breakdown.shoot.cost.toLocaleString()}</span>
-                            </div>
-                        )}
-                        {tooltipData.breakdown.postProd && (
-                            <div className="flex justify-between">
-                                <span className={!phases.post ? 'text-slate-500 line-through' : 'text-purple-300'}>└─ Post ({tooltipData.breakdown.postProd.days}d)</span>
-                                <span>${tooltipData.breakdown.postProd.cost.toLocaleString()}</span>
-                            </div>
-                        )}
+                {/* Portal Tooltip */}
+                {tooltipPos && tooltipData && tooltipData.breakdown && createPortal(
+                    <div
+                        className="fixed z-[99999] pointer-events-none bg-slate-800 text-white text-[10px] p-3 rounded shadow-xl border border-white/10 ring-1 ring-black/5 text-left font-mono animate-in fade-in zoom-in-95 duration-100"
+                        style={{ top: tooltipPos.top, right: tooltipPos.right }}
+                    >
+                        {tooltipData.type === 'labor' ? (
+                            <>
+                                <div className="mb-2 font-bold border-b border-slate-600 pb-1 flex justify-between">
+                                    <span>Total</span>
+                                    {/* @ts-ignore */}
+                                    <span>${(item.total || 0).toLocaleString()}</span>
+                                </div>
+                                <div className="space-y-1">
+                                    {tooltipData.breakdown.preProd && (
+                                        <div className="flex justify-between">
+                                            <span className={!phases.pre ? 'text-slate-500 line-through' : 'text-green-300'}>├─ Prep ({tooltipData.breakdown.preProd.days}d)</span>
+                                            {/* @ts-ignore */}
+                                            <span>${tooltipData.breakdown.preProd.cost.toLocaleString()}</span>
+                                        </div>
+                                    )}
+                                    {tooltipData.breakdown.shoot && (
+                                        <div className="flex justify-between">
+                                            <span className={!phases.shoot ? 'text-slate-500 line-through' : 'text-red-300'}>├─ Shoot ({tooltipData.breakdown.shoot.days}d)</span>
+                                            {/* @ts-ignore */}
+                                            <span>${tooltipData.breakdown.shoot.cost.toLocaleString()}</span>
+                                        </div>
+                                    )}
+                                    {tooltipData.breakdown.postProd && (
+                                        <div className="flex justify-between">
+                                            <span className={!phases.post ? 'text-slate-500 line-through' : 'text-purple-300'}>└─ Post ({tooltipData.breakdown.postProd.days}d)</span>
+                                            {/* @ts-ignore */}
+                                            <span>${tooltipData.breakdown.postProd.cost.toLocaleString()}</span>
+                                        </div>
+                                    )}
+                                </div>
 
-                        {tooltipData.fringes && (
-                            <div className="mt-2 pt-2 border-t border-slate-600/50">
-                                <div className="flex justify-between font-bold text-slate-300 mb-1">
-                                    <span>Fringes</span>
-                                    <span>${tooltipData.fringes.total_fringes.toLocaleString()}</span>
+                                {/* Gross Pay Display */}
+                                <div className="mt-2 pt-2 border-t border-slate-600/50">
+                                    <div className="flex justify-between font-bold text-slate-200">
+                                        <span>Gross Pay</span>
+                                        {/* @ts-ignore */}
+                                        <span>${((tooltipData.breakdown.preProd?.cost || 0) + (tooltipData.breakdown.shoot?.cost || 0) + (tooltipData.breakdown.postProd?.cost || 0)).toLocaleString()}</span>
+                                    </div>
                                 </div>
-                                <div className="space-y-0.5 text-slate-400 pl-2">
-                                    <div className="flex justify-between"><span>Super</span> <span>${tooltipData.fringes.super.toLocaleString()}</span></div>
-                                    <div className="flex justify-between"><span>Hol Pay</span> <span>${tooltipData.fringes.holiday_pay.toLocaleString()}</span></div>
-                                    <div className="flex justify-between"><span>Tax</span> <span>${tooltipData.fringes.payroll_tax.toLocaleString()}</span></div>
-                                    <div className="flex justify-between"><span>Comp</span> <span>${tooltipData.fringes.workers_comp.toLocaleString()}</span></div>
+
+                                {tooltipData.fringes && (
+                                    <div className="mt-2 pt-2 border-t border-slate-600/50">
+                                        <div className="flex justify-between font-bold text-slate-300 mb-1">
+                                            <span>Fringes</span>
+                                            {/* @ts-ignore */}
+                                            <span>${tooltipData.fringes.total_fringes.toLocaleString()}</span>
+                                        </div>
+                                        <div className="space-y-0.5 text-slate-400 pl-2">
+                                            <div className="flex justify-between"><span>Super</span> <span>${tooltipData.fringes.super.toLocaleString()}</span></div>
+                                            <div className="flex justify-between"><span>Hol Pay</span> <span>${tooltipData.fringes.holiday_pay.toLocaleString()}</span></div>
+                                            <div className="flex justify-between"><span>Tax</span> <span>${tooltipData.fringes.payroll_tax.toLocaleString()}</span></div>
+                                            <div className="flex justify-between"><span>Comp</span> <span>${tooltipData.fringes.workers_comp.toLocaleString()}</span></div>
+                                        </div>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            // Material Breakdown
+                            <>
+                                <div className="mb-2 font-bold border-b border-slate-600 pb-1 flex justify-between items-center">
+                                    <span className="text-slate-100">Period Cost ({item.unit})</span>
+                                    <span className="text-white">${item.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                                 </div>
-                            </div>
+
+                                <div className="space-y-1">
+                                    {/* Prep - Helper to check 'pre' or 'preProd' for robustness */}
+                                    {(tooltipData.breakdown.pre || tooltipData.breakdown.preProd) && (
+                                        <div className="flex justify-between">
+                                            <span className={!phases.pre ? 'text-slate-600 line-through decoration-slate-600' : 'text-green-300'}>
+                                                {/* @ts-ignore */}
+                                                ├─ Prep ({(tooltipData.breakdown.pre || tooltipData.breakdown.preProd).days}d)
+                                            </span>
+                                            <span className={!phases.pre ? 'text-slate-700' : 'text-slate-200'}>
+                                                {/* @ts-ignore */}
+                                                ${(tooltipData.breakdown.pre || tooltipData.breakdown.preProd).cost.toLocaleString()}
+                                            </span>
+                                        </div>
+                                    )}
+
+                                    {(tooltipData.breakdown.shoot || tooltipData.breakdown.shoot) && (
+                                        <div className="flex justify-between">
+                                            <span className={!phases.shoot ? 'text-slate-600 line-through decoration-slate-600' : 'text-red-300'}>
+                                                {/* @ts-ignore */}
+                                                ├─ Shoot ({(tooltipData.breakdown.shoot).days}d)
+                                            </span>
+                                            <span className={!phases.shoot ? 'text-slate-700' : 'text-slate-200'}>
+                                                {/* @ts-ignore */}
+                                                ${(tooltipData.breakdown.shoot).cost.toLocaleString()}
+                                            </span>
+                                        </div>
+                                    )}
+
+                                    {(tooltipData.breakdown.post || tooltipData.breakdown.postProd) && (
+                                        <div className="flex justify-between">
+                                            <span className={!phases.post ? 'text-slate-600 line-through decoration-slate-600' : 'text-purple-300'}>
+                                                {/* @ts-ignore */}
+                                                └─ Post ({(tooltipData.breakdown.post || tooltipData.breakdown.postProd).days}d)
+                                            </span>
+                                            <span className={!phases.post ? 'text-slate-700' : 'text-slate-200'}>
+                                                {/* @ts-ignore */}
+                                                ${(tooltipData.breakdown.post || tooltipData.breakdown.postProd).cost.toLocaleString()}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            </>
                         )}
-                    </div>
+                    </div>,
+                    document.body
                 )}
             </div>
 
@@ -385,6 +508,6 @@ export default function BudgetRow({ item, onChange, onDelete, onExpandInspector,
                 onClose={() => setIsLookupOpen(false)}
                 onSelect={handleRateSelect}
             />
-        </motion.div>
+        </motion.div >
     );
 }

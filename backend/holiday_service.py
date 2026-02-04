@@ -54,8 +54,7 @@ class NSWHolidayService:
         """Fetch holidays from data.gov.au API"""
         params = {
             "resource_id": self.RESOURCE_ID,
-            "filters": json.dumps({"jurisdiction": "nsw"}),
-            "limit": 1000
+            "limit": 2000
         }
         
         try:
@@ -70,10 +69,10 @@ class NSWHolidayService:
                 {
                     "date": record["Date"],
                     "name": record.get("Holiday Name", "Public Holiday"),
-                    "jurisdiction": record.get("Jurisdiction", "nsw")
+                    "jurisdiction": record.get("Jurisdiction", "nsw").lower()
                 }
                 for record in records
-                if "Date" in record
+                if "Date" in record and record.get("Jurisdiction", "").lower() == "nsw"
             ]
             
             return holidays
@@ -84,24 +83,44 @@ class NSWHolidayService:
     def get_all_holidays(self, force_refresh: bool = False) -> List[Dict]:
         """
         Get all NSW public holidays
-        
-        Args:
-            force_refresh: If True, bypass cache and fetch from API
-        
-        Returns:
-            List of holiday dictionaries with 'date', 'name', 'jurisdiction'
         """
+        holidays = []
         if not force_refresh:
             cache_data = self._load_cache()
             if cache_data:
-                return cache_data.get('holidays', [])
+                holidays = cache_data.get('holidays', [])
         
-        # Fetch from API
-        holidays = self._fetch_from_api()
+        # If no cache or force refresh, fetch from API
+        if not holidays:
+            holidays = self._fetch_from_api()
+            if holidays:
+                self._save_cache(holidays)
         
-        # Save to cache
-        if holidays:
-            self._save_cache(holidays)
+        # Merge with hardcoded 2026 fallback (since API stops at 2025)
+        fallback_2026 = [
+            {"date": "2026-01-01", "name": "New Year's Day", "jurisdiction": "nsw"},
+            {"date": "2026-01-26", "name": "Australia Day", "jurisdiction": "nsw"},
+            {"date": "2026-04-03", "name": "Good Friday", "jurisdiction": "nsw"},
+            {"date": "2026-04-04", "name": "Day after Good Friday", "jurisdiction": "nsw"},
+            {"date": "2026-04-05", "name": "Easter Sunday", "jurisdiction": "nsw"},
+            {"date": "2026-04-06", "name": "Easter Monday", "jurisdiction": "nsw"},
+            {"date": "2026-04-25", "name": "Anzac Day", "jurisdiction": "nsw"},
+            {"date": "2026-06-08", "name": "King's Birthday", "jurisdiction": "nsw"},
+            {"date": "2026-08-03", "name": "Bank Holiday", "jurisdiction": "nsw"},
+            {"date": "2026-10-05", "name": "Labour Day", "jurisdiction": "nsw"},
+            {"date": "2026-12-25", "name": "Christmas Day", "jurisdiction": "nsw"},
+            {"date": "2026-12-26", "name": "Boxing Day", "jurisdiction": "nsw"},
+            {"date": "2026-12-28", "name": "Boxing Day (Observed)", "jurisdiction": "nsw"},
+        ]
+        
+        # Check if we already have 2026 in API (just in case they updated it)
+        api_has_2026 = any("2026" in h["date"] for h in holidays)
+        if not api_has_2026:
+            # Only add holidays that aren't already there (matching by date)
+            existing_dates = {h["date"] for h in holidays}
+            for fallback in fallback_2026:
+                if fallback["date"] not in existing_dates:
+                    holidays.append(fallback)
         
         return holidays
     
@@ -127,13 +146,22 @@ class NSWHolidayService:
         filtered = []
         for holiday in all_holidays:
             try:
-                holiday_date = datetime.strptime(holiday["date"], "%Y-%m-%d").date()
-                if start_date <= holiday_date <= end_date:
+                date_str = holiday["date"]
+                # Try multiple formats
+                holiday_date = None
+                for fmt in ("%Y-%m-%d", "%Y%%m%d", "%Y%m%d"):
+                    try:
+                        holiday_date = datetime.strptime(date_str, fmt).date()
+                        break
+                    except ValueError:
+                        continue
+                
+                if holiday_date and start_date <= holiday_date <= end_date:
                     filtered.append({
                         **holiday,
-                        "date_obj": holiday_date  # Add parsed date object
+                        "date_obj": holiday_date
                     })
-            except (ValueError, KeyError):
+            except (ValueError, KeyError, TypeError):
                 continue
         
         # Sort by date

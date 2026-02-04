@@ -1,0 +1,86 @@
+Category A: Story & Script / Development
+Grouping A.1: Story & Script
+Grouping A.2: Development
+
+Category B: Producers & Directors
+Grouping B.1: Producers
+Grouping B.2: Directors
+
+Category C: Production Unit Fees & Salaries
+Grouping C.1: Production Management
+Grouping C.2: Production Accountancy
+Grouping C.3: Assistant Directors & Script Supervision
+Grouping C.4: Camera Crew
+Grouping C.5: Sound Crew
+Grouping C.6: Lighting Crew
+Grouping C.7: Grips Crew
+Grouping C.8: Costume Crew
+Grouping C.9: Make-up Crew
+Grouping C.11: Art Department Crew
+Grouping C.12: Construction Crew
+Grouping C.13: Occupational Health & Safety Crew
+
+Category D: Fringes & Workers Compensation
+Grouping: General Items
+
+Category E: Cast Below Line
+Grouping E.2: Cast - Principals
+Grouping E.3: Cast - Supports
+Grouping E.4: Standins & Doubles
+Grouping E.6: Extras
+
+Category F: Costumes & Make-Up
+Grouping F.1: Costumes
+Grouping F.2: Make-up & Hairdressing
+
+Category G: Locations
+Grouping G.1: Locations
+
+Category H: Sets & Properties
+Grouping H.1: Construction
+Grouping H.2: Props & Set Dressing
+
+Category J: Digital Video Production
+Grouping: General Items
+
+Category K: Equipment & Stores
+Grouping K.1: Camera Equipment & Stores
+Grouping K.2: Sound Equipment & Stores
+Grouping K.3: Lighting Equipment & Stores
+Grouping K.4: Grips Equipment & Stores
+Grouping K.5: Unit Facilities & Stores
+Grouping K.6: Safety Equipment & Stores
+
+Category L: Rentals & Storage
+Grouping: General Items
+
+Category M: Travel & Transport
+Grouping: General Items
+
+Category N: Accommodation, Living, Catering
+Grouping: General Items
+
+Category O: Insurances
+Grouping: General Items
+
+Category P: Office Expenses
+Grouping: General Items
+
+Category R: Post-Production Crew
+Grouping: General Items
+
+Category S: Post-Production Rentals & Office Expenses
+Grouping: General Items
+
+Category W: Music
+Grouping: General Items
+
+Category X: Publicity & Delivery
+Grouping X.1: Publicity & Stills - Production & Post Production
+Grouping X.2: Delivery Requirements
+
+Category Y: Legal & Business
+Grouping: General Items
+
+Category Z: Overheads
+Grouping: General Items

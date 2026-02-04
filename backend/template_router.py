@@ -118,7 +118,7 @@ def clone_structure_to_budget(
                     total=total,
                     is_labor=item_data.get("is_labor", False),
                     # Labor specifics
-                    base_rate=item_data.get("base_rate", 0.0),
+                    base_hourly_rate=item_data.get("base_hourly_rate", 0.0),
                     days_per_week=item_data.get("days_per_week", 5.0),
                     labor_phases_json=item_data.get("labor_phases_json", "[]"),
                     allowances_json=item_data.get("allowances_json", "[]"),

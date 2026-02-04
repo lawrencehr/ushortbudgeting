@@ -4,9 +4,12 @@ import json
 import os
 import uuid
 
-sqlite_file_name = "shortkings.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
-engine = create_engine(sqlite_url)
+from models import Budget, BudgetCategory, BudgetGrouping, LineItem, Project
+from database import engine
+import json
+import os
+import uuid
+
 
 def seed_real():
     print("Starting REAL seed...")
@@ -83,7 +86,9 @@ def seed_real():
                             prep_qty=float(item_data.get("prep_qty", 0)),
                             shoot_qty=float(item_data.get("shoot_qty", 0)),
                             post_qty=float(item_data.get("post_qty", 0)),
-                            base_rate=float(item_data.get("base_hourly_rate", 0)),
+
+                            base_hourly_rate=float(item_data.get("base_hourly_rate", 0)),
+
                             days_per_week=float(item_data.get("days_per_week", 5)),
                             allowances_json=allows_json,
                             labor_phases_json=item_data.get("labor_phases_json", "[]"),

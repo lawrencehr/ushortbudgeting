@@ -1,0 +1,784 @@
+{
+  "sections": [
+    {
+      "name": "Television broadcasting",
+      "classifications": [
+        {
+          "classification": "Supervising technician A+",
+          "hourly_rate": 38.03,
+          "_meta_source": "Page 1 Row 4"
+        },
+        {
+          "classification": "Supervising technician A",
+          "hourly_rate": 36.43,
+          "_meta_source": "Page 1 Row 5"
+        },
+        {
+          "classification": "Supervising technician B",
+          "hourly_rate": 35.1,
+          "_meta_source": "Page 1 Row 6"
+        },
+        {
+          "classification": "Senior technician A",
+          "hourly_rate": 32.9,
+          "_meta_source": "Page 1 Row 7"
+        },
+        {
+          "classification": "Senior technician B",
+          "hourly_rate": 31.54,
+          "_meta_source": "Page 1 Row 8"
+        },
+        {
+          "classification": "Technician A+",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 1 Row 9"
+        },
+        {
+          "classification": "Technician A",
+          "hourly_rate": 29.88,
+          "_meta_source": "Page 1 Row 10"
+        },
+        {
+          "classification": "Technician B+",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 1 Row 11"
+        },
+        {
+          "classification": "Technician B",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 1 Row 12"
+        },
+        {
+          "classification": "Assistant / trainee technician",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 1 Row 13"
+        },
+        {
+          "classification": "Supervisor audio",
+          "hourly_rate": 34.66,
+          "_meta_source": "Page 1 Row 14"
+        },
+        {
+          "classification": "Senior audio director A",
+          "hourly_rate": 32.9,
+          "_meta_source": "Page 1 Row 15"
+        },
+        {
+          "classification": "Senior audio director B",
+          "hourly_rate": 31.54,
+          "_meta_source": "Page 1 Row 16"
+        },
+        {
+          "classification": "Audio operator A / Audio director",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 1 Row 17"
+        },
+        {
+          "classification": "Audio operator A",
+          "hourly_rate": 29.88,
+          "_meta_source": "Page 1 Row 18"
+        },
+        {
+          "classification": "Audio operator B+",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 1 Row 19"
+        },
+        {
+          "classification": "Audio operator B",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 1 Row 20"
+        },
+        {
+          "classification": "Trainee audio operator",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 1 Row 21"
+        },
+        {
+          "classification": "Supervisor lighting",
+          "hourly_rate": 34.66,
+          "_meta_source": "Page 1 Row 22"
+        },
+        {
+          "classification": "Senior lighting director A",
+          "hourly_rate": 32.9,
+          "_meta_source": "Page 1 Row 23"
+        },
+        {
+          "classification": "Senior lighting director B",
+          "hourly_rate": 31.54,
+          "_meta_source": "Page 1 Row 24"
+        },
+        {
+          "classification": "Lighting operator A / Lighting director",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 2 Row 4"
+        },
+        {
+          "classification": "Lighting operator A",
+          "hourly_rate": 29.88,
+          "_meta_source": "Page 2 Row 5"
+        },
+        {
+          "classification": "Lighting operator B+",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 2 Row 6"
+        },
+        {
+          "classification": "Lighting operator B",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 2 Row 7"
+        },
+        {
+          "classification": "Trainee lighting operator",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 2 Row 8"
+        },
+        {
+          "classification": "MC supervisor",
+          "hourly_rate": 35.1,
+          "_meta_source": "Page 2 Row 9"
+        },
+        {
+          "classification": "Senior MC operator A",
+          "hourly_rate": 32.9,
+          "_meta_source": "Page 2 Row 10"
+        },
+        {
+          "classification": "Senior MC operator B",
+          "hourly_rate": 31.54,
+          "_meta_source": "Page 2 Row 11"
+        },
+        {
+          "classification": "MC operator A+",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 2 Row 12"
+        },
+        {
+          "classification": "MC operator A",
+          "hourly_rate": 29.88,
+          "_meta_source": "Page 2 Row 13"
+        },
+        {
+          "classification": "MC operator B+",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 2 Row 14"
+        },
+        {
+          "classification": "MC operator B",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 2 Row 15"
+        },
+        {
+          "classification": "Trainee MC operator / Assistant MC operator",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 2 Row 16"
+        },
+        {
+          "classification": "Vision switcher - major production",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 2 Row 17"
+        },
+        {
+          "classification": "Vision switcher",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 2 Row 18"
+        },
+        {
+          "classification": "Trainee vision switcher",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 2 Row 19"
+        },
+        {
+          "classification": "Supervising presentation co- ordinator",
+          "hourly_rate": 34.66,
+          "_meta_source": "Page 2 Row 20"
+        },
+        {
+          "classification": "Presentation co-ordinator",
+          "hourly_rate": 32.23,
+          "_meta_source": "Page 2 Row 21"
+        },
+        {
+          "classification": "Assistant presentation co-ordinator",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 2 Row 22"
+        },
+        {
+          "classification": "Trainee presentation co-ordinator",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 2 Row 23"
+        },
+        {
+          "classification": "Videotape supervisor",
+          "hourly_rate": 35.1,
+          "_meta_source": "Page 2 Row 24"
+        },
+        {
+          "classification": "Post-production senior editor",
+          "hourly_rate": 35.1,
+          "_meta_source": "Page 2 Row 25"
+        },
+        {
+          "classification": "Post-production editor A",
+          "hourly_rate": 32.9,
+          "_meta_source": "Page 2 Row 26"
+        },
+        {
+          "classification": "Senior production videotape operator / Post-production editor B",
+          "hourly_rate": 31.54,
+          "_meta_source": "Page 2 Row 27"
+        },
+        {
+          "classification": "Editor A",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 2 Row 28"
+        },
+        {
+          "classification": "Production videotape operator A / Editor B",
+          "hourly_rate": 29.88,
+          "_meta_source": "Page 2 Row 29"
+        },
+        {
+          "classification": "Production videotape operator B",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 2 Row 30"
+        },
+        {
+          "classification": "Videotape operator",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 2 Row 31"
+        },
+        {
+          "classification": "Trainee videotape operator",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 2 Row 32"
+        },
+        {
+          "classification": "Music / video library supervisor",
+          "hourly_rate": 31.54,
+          "_meta_source": "Page 3 Row 4"
+        },
+        {
+          "classification": "Music / video librarian",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 3 Row 5"
+        },
+        {
+          "classification": "Trainee music / video librarian",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 3 Row 6"
+        },
+        {
+          "classification": "Supervisor camera",
+          "hourly_rate": 34.66,
+          "_meta_source": "Page 3 Row 7"
+        },
+        {
+          "classification": "Senior camera operator A",
+          "hourly_rate": 32.9,
+          "_meta_source": "Page 3 Row 8"
+        },
+        {
+          "classification": "Senior camera operator B",
+          "hourly_rate": 31.54,
+          "_meta_source": "Page 3 Row 9"
+        },
+        {
+          "classification": "Camera operator A",
+          "hourly_rate": 29.88,
+          "_meta_source": "Page 3 Row 10"
+        },
+        {
+          "classification": "Camera operator B",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 3 Row 11"
+        },
+        {
+          "classification": "Trainee camera operator",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 3 Row 12"
+        },
+        {
+          "classification": "Supervising ENG camera operator",
+          "hourly_rate": 38.03,
+          "_meta_source": "Page 3 Row 13"
+        },
+        {
+          "classification": "Specialist ENG camera operator",
+          "hourly_rate": 36.43,
+          "_meta_source": "Page 3 Row 14"
+        },
+        {
+          "classification": "Senior ENG camera operator",
+          "hourly_rate": 33.78,
+          "_meta_source": "Page 3 Row 15"
+        },
+        {
+          "classification": "ENG camera operator A",
+          "hourly_rate": 32.9,
+          "_meta_source": "Page 3 Row 16"
+        },
+        {
+          "classification": "ENG camera operator B",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 3 Row 17"
+        },
+        {
+          "classification": "Senior ENG camera assistant",
+          "hourly_rate": 29.88,
+          "_meta_source": "Page 3 Row 18"
+        },
+        {
+          "classification": "ENG camera assistant",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 3 Row 19"
+        },
+        {
+          "classification": "Trainee ENG camera",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 3 Row 20"
+        },
+        {
+          "classification": "Supervising graphic artist",
+          "hourly_rate": 34.66,
+          "_meta_source": "Page 3 Row 21"
+        },
+        {
+          "classification": "Senior / specialist graphic artist",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 3 Row 22"
+        },
+        {
+          "classification": "Graphic artist",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 3 Row 23"
+        },
+        {
+          "classification": "Trainee graphic artist",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 3 Row 24"
+        },
+        {
+          "classification": "Supervising director",
+          "hourly_rate": 38.03,
+          "_meta_source": "Page 3 Row 25"
+        },
+        {
+          "classification": "Director major production / Specialist",
+          "hourly_rate": 35.1,
+          "_meta_source": "Page 3 Row 26"
+        },
+        {
+          "classification": "Senior director",
+          "hourly_rate": 33.78,
+          "_meta_source": "Page 3 Row 27"
+        },
+        {
+          "classification": "Director",
+          "hourly_rate": 31.54,
+          "_meta_source": "Page 3 Row 28"
+        },
+        {
+          "classification": "Trainee director",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 3 Row 29"
+        },
+        {
+          "classification": "Producer / Director's assistant - major production",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 3 Row 30"
+        },
+        {
+          "classification": "VCG operator - major production",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 3 Row 31"
+        },
+        {
+          "classification": "Producer / Director's assistant",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 3 Row 32"
+        },
+        {
+          "classification": "VCG operator",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 3 Row 33"
+        },
+        {
+          "classification": "Trainee producer",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 3 Row 34"
+        },
+        {
+          "classification": "Trainee producer / Director's assistant",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 4 Row 4"
+        },
+        {
+          "classification": "Trainee VCG operator",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 4 Row 5"
+        },
+        {
+          "classification": "Floor manager - major production",
+          "hourly_rate": 31.54,
+          "_meta_source": "Page 4 Row 6"
+        },
+        {
+          "classification": "Floor manager",
+          "hourly_rate": 29.88,
+          "_meta_source": "Page 4 Row 7"
+        },
+        {
+          "classification": "Assistant floor manager",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 4 Row 8"
+        },
+        {
+          "classification": "Trainee floor manager",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 4 Row 9"
+        },
+        {
+          "classification": "Make-up supervisor / Hairdresser supervisor",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 4 Row 10"
+        },
+        {
+          "classification": "Senior make-up artist",
+          "hourly_rate": 29.88,
+          "_meta_source": "Page 4 Row 11"
+        },
+        {
+          "classification": "Hair and make-up artist",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 4 Row 12"
+        },
+        {
+          "classification": "Hair or make-up artist",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 4 Row 13"
+        },
+        {
+          "classification": "Assistant hairdresser",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 4 Row 14"
+        },
+        {
+          "classification": "Assistant make-up artist",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 4 Row 15"
+        },
+        {
+          "classification": "Senior carpenter",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 4 Row 16"
+        },
+        {
+          "classification": "Carpenter trade level - television",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 4 Row 17"
+        },
+        {
+          "classification": "Carpenter trade level",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 4 Row 18"
+        },
+        {
+          "classification": "Carpenter's assistant",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 4 Row 19"
+        },
+        {
+          "classification": "Wardrobe supervisor",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 4 Row 20"
+        },
+        {
+          "classification": "Wardrobe person (Mistress / Master)",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 4 Row 21"
+        },
+        {
+          "classification": "Wardrobe assistant / keeper",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 4 Row 22"
+        },
+        {
+          "classification": "Senior still photographer",
+          "hourly_rate": 32.9,
+          "_meta_source": "Page 4 Row 23"
+        },
+        {
+          "classification": "Still photographer trade level",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 4 Row 24"
+        },
+        {
+          "classification": "Assistant still photographer non- trade",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 4 Row 25"
+        },
+        {
+          "classification": "Set design supervisor",
+          "hourly_rate": 34.66,
+          "_meta_source": "Page 4 Row 26"
+        },
+        {
+          "classification": "Senior set designer",
+          "hourly_rate": 31.54,
+          "_meta_source": "Page 4 Row 27"
+        },
+        {
+          "classification": "Set designer",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 4 Row 28"
+        },
+        {
+          "classification": "Trainee set designer",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 4 Row 29"
+        },
+        {
+          "classification": "Scenic artist",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 4 Row 30"
+        },
+        {
+          "classification": "Set and prop painter trade level",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 4 Row 31"
+        },
+        {
+          "classification": "Set and prop painter non-trade",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 4 Row 32"
+        },
+        {
+          "classification": "Property person / Senior studio hand",
+          "hourly_rate": 29.0,
+          "_meta_source": "Page 5 Row 4"
+        },
+        {
+          "classification": "Studio hand A",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 5 Row 5"
+        },
+        {
+          "classification": "Set dresser A",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 5 Row 6"
+        },
+        {
+          "classification": "Property assistant / Studio hand / Prop and scenery storeperson / Set dresser",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 5 Row 7"
+        },
+        {
+          "classification": "Trainee captioner / Audio describer",
+          "hourly_rate": 26.7,
+          "_meta_source": "Page 5 Row 8"
+        },
+        {
+          "classification": "Trainee subtitler / Subtitling editor",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 5 Row 9"
+        },
+        {
+          "classification": "Captioner / Audio describer",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 5 Row 10"
+        },
+        {
+          "classification": "Multi-skilled captioner / Audio describer",
+          "hourly_rate": 32.9,
+          "_meta_source": "Page 5 Row 11"
+        },
+        {
+          "classification": "Advanced multi-skilled and specialised captioner / Audio describer",
+          "hourly_rate": 35.1,
+          "_meta_source": "Page 5 Row 12"
+        },
+        {
+          "classification": "Subtitler",
+          "hourly_rate": 36.43,
+          "_meta_source": "Page 5 Row 13"
+        },
+        {
+          "classification": "Subtitling editor",
+          "hourly_rate": 36.43,
+          "_meta_source": "Page 5 Row 14"
+        },
+        {
+          "classification": "Captioning / Audio describing supervisor or trainer",
+          "hourly_rate": 36.43,
+          "_meta_source": "Page 5 Row 15"
+        }
+      ]
+    },
+    {
+      "name": "Artists",
+      "classifications": [
+        {
+          "classification": "Stand-In/Double - not in a serial drama or serial comedy",
+          "hourly_rate": 28.12,
+          "_meta_source": "Page 35 Row 7"
+        },
+        {
+          "classification": "Stand-In/Double - in a serial drama or serial comedy - 1 or 2 episodes",
+          "hourly_rate": 33.39,
+          "_meta_source": "Page 35 Row 8"
+        },
+        {
+          "classification": "Stand-In/Double - in a serial drama or serial comedy - 3 episodes",
+          "hourly_rate": 40.42,
+          "_meta_source": "Page 35 Row 9"
+        },
+        {
+          "classification": "Stand-In/Double - in a serial drama or comedy - 4 episodes",
+          "hourly_rate": 52.72,
+          "_meta_source": "Page 35 Row 10"
+        },
+        {
+          "classification": "Stand-In/Double - in a serial drama or comedy - 5 or more episodes",
+          "hourly_rate": 65.02,
+          "_meta_source": "Page 35 Row 11"
+        },
+        {
+          "classification": "Bit Player - not in a serial drama or serial comedy",
+          "hourly_rate": 29.88,
+          "_meta_source": "Page 35 Row 12"
+        },
+        {
+          "classification": "Bit Player - in a serial drama or serial comedy - 1 or 2 episodes",
+          "hourly_rate": 35.48,
+          "_meta_source": "Page 35 Row 13"
+        },
+        {
+          "classification": "Bit Player - in a serial drama or serial comedy - 3 episodes",
+          "hourly_rate": 42.96,
+          "_meta_source": "Page 35 Row 14"
+        },
+        {
+          "classification": "Bit Player - in a serial drama or comedy - 4 episodes",
+          "hourly_rate": 56.03,
+          "_meta_source": "Page 35 Row 15"
+        },
+        {
+          "classification": "Bit Player - in a serial drama or comedy - 5 or more episodes",
+          "hourly_rate": 69.1,
+          "_meta_source": "Page 35 Row 16"
+        },
+        {
+          "classification": "Performer Class 1 - not in a serial drama or serial comedy",
+          "hourly_rate": 30.68,
+          "_meta_source": "Page 35 Row 17"
+        },
+        {
+          "classification": "Performer Class 1 - in a serial drama or serial comedy - 1 or 2 episodes",
+          "hourly_rate": 36.43,
+          "_meta_source": "Page 36 Row 7"
+        },
+        {
+          "classification": "Performer Class 1 - in a serial drama or serial comedy - 3 episodes",
+          "hourly_rate": 44.1,
+          "_meta_source": "Page 36 Row 8"
+        },
+        {
+          "classification": "Performer Class 1 - in a serial drama or comedy - 4 episodes",
+          "hourly_rate": 57.52,
+          "_meta_source": "Page 36 Row 9"
+        },
+        {
+          "classification": "Performer Class 1 - in a serial drama or comedy - 5 or more episodes",
+          "hourly_rate": 70.94,
+          "_meta_source": "Page 36 Row 10"
+        },
+        {
+          "classification": "Performer Class 2 - not in a serial drama or serial comedy",
+          "hourly_rate": 32.23,
+          "_meta_source": "Page 36 Row 11"
+        },
+        {
+          "classification": "Performer Class 2 - in a serial drama or serial comedy - 1 or 2 episodes",
+          "hourly_rate": 38.28,
+          "_meta_source": "Page 36 Row 12"
+        },
+        {
+          "classification": "Performer Class 2 - in a serial drama or serial comedy - 3 episodes",
+          "hourly_rate": 46.34,
+          "_meta_source": "Page 36 Row 13"
+        },
+        {
+          "classification": "Performer Class 2 - in a serial drama or comedy - 4 episodes",
+          "hourly_rate": 60.44,
+          "_meta_source": "Page 36 Row 14"
+        },
+        {
+          "classification": "Performer Class 2 - in a serial drama or comedy - 5 or more episodes",
+          "hourly_rate": 74.54,
+          "_meta_source": "Page 36 Row 15"
+        }
+      ]
+    },
+    {
+      "name": "Artists - Casual",
+      "classifications": [
+        {
+          "classification": "Bit Player - Content other than feature films and advertising films",
+          "hourly_rate": 37.3,
+          "_meta_source": "Page 78 Row 7"
+        },
+        {
+          "classification": "Extra - Advertising",
+          "hourly_rate": 42.9,
+          "_meta_source": "Page 78 Row 8"
+        },
+        {
+          "classification": "Extra - Feature films",
+          "hourly_rate": 38.48,
+          "_meta_source": "Page 78 Row 9"
+        },
+        {
+          "classification": "Extra - Content other than advertising and feature films",
+          "hourly_rate": 35.03,
+          "_meta_source": "Page 78 Row 10"
+        },
+        {
+          "classification": "Performer Class 1 - Advertising",
+          "hourly_rate": 52.03,
+          "_meta_source": "Page 78 Row 11"
+        },
+        {
+          "classification": "Performer Class 1 - Feature films (performer is not required to speak more than two lines of dialogue)",
+          "hourly_rate": 51.43,
+          "_meta_source": "Page 78 Row 12"
+        },
+        {
+          "classification": "Performer Class 2 - Advertising",
+          "hourly_rate": 52.03,
+          "_meta_source": "Page 78 Row 13"
+        },
+        {
+          "classification": "Performer Class 2 - Feature films (performer is not required to speak more than two lines of dialogue)",
+          "hourly_rate": 51.43,
+          "_meta_source": "Page 78 Row 14"
+        },
+        {
+          "classification": "Stand-In/Double - Advertising",
+          "hourly_rate": 35.03,
+          "_meta_source": "Page 78 Row 15"
+        },
+        {
+          "classification": "Stand-In/Double - Feature films",
+          "hourly_rate": 35.03,
+          "_meta_source": "Page 78 Row 16"
+        },
+        {
+          "classification": "Stand-In/Double - Content other than advertising and feature films",
+          "hourly_rate": 35.03,
+          "_meta_source": "Page 78 Row 17"
+        }
+      ]
+    }
+  ]
+}

@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Project, fetchProjects, fetchBudget, BudgetCategory } from "@/lib/api";
+import { Project, fetchBudget, BudgetCategory } from "@/lib/api";
 import ProjectSettings from "@/components/ProjectSettings";
 import { BudgetWizard } from "@/components/BudgetWizard";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Home, ArrowLeft } from "lucide-react";
 
 export default function AppSidebar() {
     const [categories, setCategories] = useState<BudgetCategory[]>([]);
@@ -14,19 +14,18 @@ export default function AppSidebar() {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const pathname = usePathname();
 
+    // Extract project ID from path
+    const pathParts = pathname.split('/');
+    const projectId = pathParts[1] === 'project' ? pathParts[2] : null;
+
     useEffect(() => {
-        fetchBudget()
+        fetchBudget(projectId || undefined)
             .then(data => setCategories(data || []))
             .catch(err => {
                 console.error('Failed to fetch budget:', err);
                 setCategories([]);
             });
-        fetchProjects()
-            .then(projects => {
-                if (projects.length > 0) setProject(projects[0]);
-            })
-            .catch(console.error);
-    }, []);
+    }, [pathname, projectId]);
 
     const [isWizardOpen, setIsWizardOpen] = useState(false);
 
@@ -36,57 +35,45 @@ export default function AppSidebar() {
         window.location.href = `/budget/${id}`;
     };
 
+    const homeLink = projectId ? `/project/${projectId}` : "/";
+    const homeText = projectId ? "Project Home" : "All Projects";
+
     return (
         <>
             <aside className="w-64 bg-slate-100 border-r border-gray-200 flex-shrink-0 h-full flex flex-col">
                 <div className="p-4 flex-1 overflow-y-auto">
-                    <div className="mb-6">
-                        <button
-                            onClick={() => setIsWizardOpen(true)}
-                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 transition-colors shadow-sm"
-                        >
-                            <span className="text-lg leading-none">+</span>
-                            New Budget
-                        </button>
-                    </div>
-
-                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Departments</h2>
+                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Navigation</h2>
                     <nav className="space-y-1">
                         <Link
-                            href="/budget"
-                            className={`block px-3 py-2 text-sm font-medium rounded-md ${pathname === "/budget"
-                                ? "bg-indigo-50 text-indigo-700"
-                                : "text-gray-700 hover:bg-gray-200"
-                                }`}
+                            href={homeLink}
+                            className={`flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md mb-6 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition-colors`}
                         >
-                            All Departments
+                            {projectId ? <Home size={16} /> : <ArrowLeft size={16} />}
+                            <span className="font-bold">{homeText}</span>
                         </Link>
 
-                        <Link
-                            href="/templates"
-                            className={`block px-3 py-2 text-sm font-medium rounded-md ${pathname === "/templates"
-                                ? "bg-indigo-50 text-indigo-700"
-                                : "text-gray-700 hover:bg-gray-200"
-                                }`}
-                        >
-                            Templates
-                        </Link>
-
-                        <div className="pt-2" />
+                        {categories.length > 0 && (
+                            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Departments</h2>
+                        )}
 
                         {categories.map((cat) => {
-                            const isActive = pathname === `/budget/${cat.id}`;
+                            const href = projectId
+                                ? `/project/${projectId}/budget/${cat.id}`
+                                : `/budget/${cat.id}`;
+
+                            const isActive = pathname.includes(`/budget/${cat.id}`);
+
                             return (
                                 <Link
                                     key={cat.id}
-                                    href={`/budget/${cat.id}`}
+                                    href={href}
                                     className={`block px-3 py-2 text-sm font-medium rounded-md truncate ${isActive
-                                        ? "bg-indigo-50 text-indigo-700"
-                                        : "text-gray-700 hover:bg-gray-200"
+                                        ? "bg-white text-indigo-700 shadow-sm ring-1 ring-slate-200"
+                                        : "text-gray-600 hover:bg-gray-200 hover:text-gray-900"
                                         }`}
                                     title={cat.name}
                                 >
-                                    <span className="font-bold mr-2">{cat.code}</span>
+                                    <span className="font-bold mr-2 text-xs opacity-70">{cat.code}</span>
                                     {cat.name.replace(/^\d+\.\s*/, "")}
                                 </Link>
                             );
@@ -105,9 +92,6 @@ export default function AppSidebar() {
                     >
                         <CalendarIcon size={16} className={pathname === '/settings/calendar' ? "text-white" : "text-indigo-600"} />
                         <span>Project Calendar</span>
-                        {pathname !== '/settings/calendar' && (
-                            <span className="ml-auto text-[10px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded-full uppercase font-bold tracking-tight">New</span>
-                        )}
                     </Link>
                 </div>
             </aside>

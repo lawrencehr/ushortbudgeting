@@ -1,151 +1,239 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchSummary, fetchBudget, BudgetSummary, BudgetCategory } from "@/lib/api";
 import { useRouter } from "next/navigation";
-import { ChevronRight, LayoutGrid, BarChart3, Receipt } from "lucide-react";
+import { fetchProjects, createProject, Project, fetchTemplates, BudgetTemplate } from "@/lib/api";
+import { Plus, FolderOpen, Calendar, User, Search, FileText } from "lucide-react";
+import Link from "next/link";
+import { TemplateManager } from "@/components/TemplateManager";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [summary, setSummary] = useState<BudgetSummary | null>(null);
-  const [categories, setCategories] = useState<BudgetCategory[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // Template State
+  const [isTemplateManagerOpen, setIsTemplateManagerOpen] = useState(false);
+  const [templates, setTemplates] = useState<BudgetTemplate[]>([]);
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
+
+  // Create Modal State
+  const [newProjectName, setNewProjectName] = useState("");
+  const [newClientName, setNewClientName] = useState("");
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
-    Promise.all([fetchSummary(), fetchBudget()])
-      .then(([summaryData, catData]) => {
-        setSummary(summaryData);
-        setCategories(catData);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
+    loadProjects();
+    loadTemplates(); // Pre-load templates for the modal
   }, []);
 
-  if (loading) return <div className="p-8 text-center text-gray-500 animate-pulse">Loading Intelligence...</div>;
-  if (!summary) return <div className="p-4 text-center text-red-500 bg-red-50 rounded-lg">Error loading financial data.</div>;
-
-  return (
-    <div className="space-y-8 max-w-6xl mx-auto py-8">
-      <header className="flex justify-between items-end border-b border-slate-200 pb-6">
-        <div>
-          <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight">Main Budget Summary</h2>
-          <p className="text-slate-500 mt-2 font-medium">Overview of all active accounts and departmental drill-downs.</p>
-        </div>
-        <div className="text-right">
-          <span className="text-[10px] uppercase font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100 mb-2 inline-block">Live Projection</span>
-          <div className="text-4xl font-black text-emerald-600 font-mono tracking-tighter">
-            ${summary.grand_total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-          </div>
-        </div>
-      </header>
-
-      {/* High Level Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <SummaryCard
-          title="Above The Line (ATL)"
-          amount={summary.atl_total}
-          icon={<LayoutGrid size={20} />}
-          subtitle="Developer, Producers, Cast"
-          color="indigo"
-        />
-        <SummaryCard
-          title="Below The Line (BTL)"
-          amount={summary.btl_total}
-          icon={<BarChart3 size={20} />}
-          subtitle="Crew, Equipment, Post"
-          color="slate"
-        />
-        <SummaryCard
-          title="Fringes & Contingency"
-          amount={summary.fringes_total + summary.contingency_total}
-          icon={<Receipt size={20} />}
-          subtitle="Taxes, Super, 10% Accrual"
-          color="amber"
-        />
-      </div>
-
-      {/* Detailed Account Ledger */}
-      <section className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden">
-        <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-          <h3 className="font-bold text-slate-800 flex items-center gap-2">
-            <BarChart3 size={18} className="text-indigo-600" /> Account Ledger (1-14)
-          </h3>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200">
-            <thead className="bg-slate-50/50">
-              <tr>
-                <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest w-24">ID</th>
-                <th className="px-6 py-3 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">Department Name</th>
-                <th className="px-6 py-3 text-right text-[10px] font-bold text-slate-400 uppercase tracking-widest w-40">Total Amount</th>
-                <th className="px-6 py-3 w-10"></th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-slate-100">
-              {(categories || []).map((cat) => (
-                <tr
-                  key={cat.id}
-                  onClick={() => router.push(`/budget/${cat.id}`)}
-                  className="group hover:bg-indigo-50/30 transition-all cursor-pointer"
-                >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-mono font-bold text-indigo-600">
-                    {cat.code}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-700">
-                    {cat.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-mono font-bold text-slate-900">
-                    ${cat.total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <ChevronRight size={16} className="text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all" />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* Fringe Breakdown */}
-      <section className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-        <h3 className="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
-          <Receipt size={18} className="text-amber-600" /> Fringe Allocations
-        </h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {Object.entries(summary.fringe_breakdown || {}).map(([key, value]) => (
-            <div key={key} className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-              <div className="text-[10px] uppercase font-bold text-slate-400 mb-1">{key.replace(/_/g, " ")}</div>
-              <div className="text-sm font-bold text-slate-700">${value.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function SummaryCard({ title, amount, subtitle, icon, color }: { title: string, amount: number, subtitle: string, icon: any, color: "indigo" | "slate" | "amber" }) {
-  const colorClasses = {
-    indigo: "border-indigo-100 bg-indigo-50/50 text-indigo-700 icon:text-indigo-600",
-    slate: "border-slate-200 bg-slate-50 text-slate-700 icon:text-slate-600",
-    amber: "border-amber-100 bg-amber-50/50 text-amber-700 icon:text-amber-600",
+  const loadProjects = () => {
+    setLoading(true);
+    fetchProjects()
+      .then(data => setProjects(data))
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
   };
 
+  const loadTemplates = () => {
+    fetchTemplates()
+      .then(data => setTemplates(data))
+      .catch(err => console.error("Failed to load templates", err));
+  };
+
+  const handleCreateProject = async () => {
+    if (!newProjectName) return;
+    setCreating(true);
+    try {
+      await createProject({
+        name: newProjectName,
+        client: newClientName,
+        template_id: selectedTemplateId || undefined
+      });
+      setIsCreateModalOpen(false);
+      setNewProjectName("");
+      setNewClientName("");
+      setSelectedTemplateId("");
+      loadProjects(); // Reload list
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create project");
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const filteredProjects = projects.filter(p =>
+    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (p.client || "").toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className={`p-6 rounded-2xl border shadow-sm transition-all hover:shadow-md ${colorClasses[color]}`}>
-      <div className="flex justify-between items-start mb-4">
-        <div className="p-2 bg-white rounded-lg shadow-sm">{icon}</div>
-        <div className="text-[10px] font-bold uppercase tracking-widest opacity-60">Metric View</div>
+    <div className="min-h-screen bg-slate-50 p-8">
+      <div className="max-w-6xl mx-auto space-y-8">
+
+        {/* Header */}
+        <div className="flex justify-between items-end">
+          <div>
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight">Projects</h1>
+            <p className="text-slate-500 font-medium mt-2">Manage your budget versions and productions.</p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setIsTemplateManagerOpen(true)}
+              className="bg-white text-slate-600 hover:text-indigo-600 px-4 py-3 rounded-lg font-bold shadow-sm border border-slate-200 flex items-center gap-2 transition-all hover:border-indigo-200"
+            >
+              <FileText size={18} /> Manage Templates
+            </button>
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-bold shadow-lg shadow-indigo-200 flex items-center gap-2 transition-all transform hover:-translate-y-1"
+            >
+              <Plus size={20} /> New Project
+            </button>
+          </div>
+        </div>
+
+        {/* Search & Filter */}
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center gap-4">
+          <Search className="text-slate-400" size={20} />
+          <input
+            type="text"
+            placeholder="Search projects by name or client..."
+            className="flex-1 outline-none text-slate-700 font-medium placeholder:text-slate-400"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        {/* Grid */}
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+            {[1, 2, 3].map(i => <div key={i} className="h-48 bg-slate-200 rounded-xl"></div>)}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProjects.map(project => (
+              <Link
+                key={project.id}
+                href={`/project/${project.id}/budget`}
+                className="block"
+              >
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 cursor-pointer hover:shadow-xl hover:border-indigo-200 transition-all group relative overflow-hidden h-full">
+                  <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <FolderOpen size={64} className="text-indigo-600" />
+                  </div>
+
+                  <div className="mb-4">
+                    <h3 className="text-xl font-bold text-slate-800 group-hover:text-indigo-700 transition-colors">{project.name}</h3>
+                    {project.client && (
+                      <div className="flex items-center gap-1 text-slate-500 text-sm mt-1 font-medium">
+                        <User size={14} /> {project.client}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-4 text-xs font-bold text-slate-400 uppercase tracking-wider mt-8 pt-4 border-t border-slate-100">
+                    <span className="flex items-center gap-1">
+                      <Calendar size={14} />
+                      {project.start_date ? new Date(project.start_date).toLocaleDateString() : "No Date"}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {filteredProjects.length === 0 && !loading && (
+          <div className="text-center py-20 opacity-50">
+            <FolderOpen size={48} className="mx-auto mb-4 text-slate-300" />
+            <p className="text-lg font-bold text-slate-400">No projects found.</p>
+          </div>
+        )}
       </div>
-      <h3 className="text-sm font-bold opacity-80">{title}</h3>
-      <p className="text-2xl font-black mt-1 font-mono tracking-tight">
-        ${amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-      </p>
-      <p className="text-[10px] mt-2 opacity-60 font-medium italic">{subtitle}</p>
+
+      {/* Create Modal */}
+      {isCreateModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md p-8" onClick={e => e.stopPropagation()}>
+            <h2 className="text-2xl font-bold text-slate-800 mb-6">Create New Project</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-1">Project Name</label>
+                <input
+                  type="text"
+                  value={newProjectName}
+                  onChange={e => setNewProjectName(e.target.value)}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 font-medium"
+                  placeholder="e.g. TVC Campaign 2024"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-1">Client (Optional)</label>
+                <input
+                  type="text"
+                  value={newClientName}
+                  onChange={e => setNewClientName(e.target.value)}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 font-medium"
+                  placeholder="e.g. Acme Corp"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-1">Start from Template</label>
+                <select
+                  value={selectedTemplateId}
+                  onChange={e => setSelectedTemplateId(e.target.value)}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 font-medium bg-white"
+                >
+                  <option value="">(None) Empty Project</option>
+                  {templates.map(t => (
+                    <option key={t.id} value={t.id}>{t.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 mt-8">
+              <button
+                onClick={() => setIsCreateModalOpen(false)}
+                className="px-5 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-bold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCreateProject}
+                disabled={!newProjectName || creating}
+                className="px-5 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2"
+              >
+                {creating && <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>}
+                Create Project
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Template Manager Modal */}
+      {isTemplateManagerOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
+              <h2 className="text-xl font-bold text-slate-800">Manage Templates</h2>
+              <button onClick={() => setIsTemplateManagerOpen(false)} className="text-slate-400 hover:text-slate-600">
+                Close
+              </button>
+            </div>
+            <div className="p-6">
+              <TemplateManager
+                currentBudgetId="dashboard-mode"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

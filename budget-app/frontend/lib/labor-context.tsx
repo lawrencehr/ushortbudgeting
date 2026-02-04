@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { ProjectPhase, fetchProjectPhases, fetchBudget, BudgetGrouping } from '@/lib/api';
+import { ProjectPhase, fetchProjectPhases, fetchBudget, BudgetGrouping, updateBudgetGrouping } from '@/lib/api';
 
 // --- Types ---
 
@@ -28,7 +28,7 @@ interface LaborContextType {
 
     // Grouping Overrides
     groupingOverrides: Record<string, Partial<CalendarData>>;
-    updateGroupingOverride: (groupingId: string, phase: keyof CalendarData, updates: Partial<PhaseConfig>) => void;
+    updateGroupingOverride: (groupingId: string, updates: Partial<CalendarData>) => void;
 
     // Helper: Get effective configuration for a specific grouping & phase
     getEffectivePhaseConfig: (groupingId: string | undefined, phase: keyof CalendarData) => PhaseConfig;
@@ -54,19 +54,16 @@ export function LaborProvider({ children, projectId }: { children: ReactNode, pr
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // 1. Fetch Global Calendar
+    // 1. Fetch Global Calendar & Overrides
     useEffect(() => {
         if (!projectId) return;
 
-        const loadCalendar = async () => {
+        const loadData = async () => {
             try {
-                // In a real app we'd fetch from specific calendar endpoint.
-                // For now, re-using the structure found in settings page
-                // fetch(`http://localhost:8000/api/projects/${projectId}/calendar`)
-
-                const res = await fetch(`http://localhost:8000/api/projects/${projectId}/calendar`);
-                if (res.ok) {
-                    const data = await res.json();
+                // A. Fetch Global Calendar
+                const calRes = await fetch(`http://localhost:8000/api/projects/${projectId}/calendar`);
+                if (calRes.ok) {
+                    const data = await calRes.json();
                     // Map Backend Response to Context State
                     setProjectCalendar({
                         preProd: {
@@ -83,6 +80,20 @@ export function LaborProvider({ children, projectId }: { children: ReactNode, pr
                         }
                     });
                 }
+
+                // B. Fetch Budget to Extract Overrides
+                const budgetCats = await fetchBudget();
+                const overridesMap: Record<string, Partial<CalendarData>> = {};
+
+                budgetCats.forEach(cat => {
+                    cat.groupings.forEach(grp => {
+                        if (grp.calendar_overrides && Object.keys(grp.calendar_overrides).length > 0) {
+                            overridesMap[grp.id] = grp.calendar_overrides;
+                        }
+                    });
+                });
+                setGroupingOverrides(overridesMap);
+
             } catch (err) {
                 console.error("Failed to load labor context:", err);
                 setError("Failed to load calendar data");
@@ -91,24 +102,60 @@ export function LaborProvider({ children, projectId }: { children: ReactNode, pr
             }
         };
 
-        loadCalendar();
+        loadData();
     }, [projectId]);
 
     // 2. Override Manager
-    const updateGroupingOverride = (groupingId: string, phase: keyof CalendarData, updates: Partial<PhaseConfig>) => {
+    const updateGroupingOverride = async (groupingId: string, updates: Partial<CalendarData>) => {
+        let newGroupOverrides: Partial<CalendarData> = {};
+
         setGroupingOverrides(prev => {
             const currentGroup = prev[groupingId] || {};
-            const currentPhase = currentGroup[phase] || {};
+
+            // Merge existing overrides with new updates
+            const updatedGroup = {
+                ...currentGroup,
+                ...updates
+            };
+
+            newGroupOverrides = updatedGroup;
 
             return {
                 ...prev,
-                [groupingId]: {
-                    ...currentGroup,
-                    [phase]: { ...currentPhase, ...updates }
-                }
+                [groupingId]: updatedGroup
             };
         });
-        // TODO: Persist to backend
+
+        // Persist to backend
+        // Note: newGroupOverrides calculated above captures the *intent* of the new state,
+        // even if 'prev' in setGroupingOverrides might be slightly different in race conditions,
+        // effectively we are saving the 'merged' result of what we know + what we just changed.
+        // Ideally we should use the functional update pattern truly, but for persistence we need the value.
+        // Given we are replacing the *whole* override object for this grouping in the DB patch,
+        // we should try to construct the 'complete' merged object.
+
+        // Better approach for Async Persistence:
+        // Use the current 'groupingOverrides' from closure (which might be stale if called rapidly)
+        // BUT since we are now doing a SINGLE call from the UI, we avoid the 3-call race.
+        // So 'groupingOverrides' + 'updates' is roughly accurate.
+
+        // Use functional set param to ensure React state is correct.
+        // But for DB, we use the merged result. 
+
+        // Actually, 'newGroupOverrides' captured inside the render phase or effect is risky.
+        // But here we are inside the event handler triggered by UI. 
+        // We will trust 'groupingOverrides' (current state) + 'updates'.
+
+        const mergedOverrides = {
+            ...(groupingOverrides[groupingId] || {}),
+            ...updates
+        };
+
+        try {
+            await updateBudgetGrouping(groupingId, { calendar_overrides: mergedOverrides });
+        } catch (e) {
+            console.error("Failed to save grouping override:", e);
+        }
     };
 
     // 3. Resolution Logic (The Cascade)

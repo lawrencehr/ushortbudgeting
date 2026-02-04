@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { fetchBudget, BudgetCategory, BudgetGrouping, BudgetLineItem, addBudgetLineItem, deleteBudgetLineItem, CatalogItem, calculateLaborRate, createTemplate } from "@/lib/api";
+import { useLaborContext } from "@/lib/labor-context";
 import { motion, AnimatePresence } from "framer-motion";
 import CatalogSearch from "@/components/CatalogSearch";
 import InspectorPanel from "@/components/InspectorPanel";
@@ -45,8 +46,16 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
     const [unsavedChangesCount, setUnsavedChangesCount] = useState(0);
     const [lastSavedAt, setLastSavedAt] = useState<Date>();
 
+    // Deletion Tracking
+    const [deletedItemIds, setDeletedItemIds] = useState<string[]>([]);
+    const [deletedGroupingIds, setDeletedGroupingIds] = useState<string[]>([]);
+    const [deletedCategoryIds, setDeletedCategoryIds] = useState<string[]>([]);
+
     // Collapsed Categories State
     const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
+
+    // Context for hierarchical overrides
+    const { groupingOverrides } = useLaborContext();
 
     const toggleCollapse = (catId: string) => {
         setCollapsedCategories(prev => ({ ...prev, [catId]: !prev[catId] }));
@@ -54,15 +63,18 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
 
     useEffect(() => {
         loadBudget();
-    }, []);
+    }, [projectId]); // Add projectId dependency
 
     const loadBudget = () => {
         setLoading(true);
-        fetchBudget()
+        fetchBudget(projectId) // Pass projectId
             .then((data) => {
                 const cats = data || [];
                 setCategories(cats);
                 setUnsavedChangesCount(0);
+                setDeletedItemIds([]); // Reset deletions
+                setDeletedGroupingIds([]);
+                setDeletedCategoryIds([]);
 
                 // Initialize collapsed state: Empty categories (total == 0) collapsed by default
                 const initialCollapsed: Record<string, boolean> = {};
@@ -81,6 +93,25 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
                 setLoading(false);
             });
     };
+
+    // Reactivity: Trigger recalculation for items in a grouping when its overrides change
+    useEffect(() => {
+        if (!groupingOverrides || Object.keys(groupingOverrides).length === 0) return;
+
+        // Find items that are in 'inherit' mode and belong to a group with active overrides
+        categories.forEach((cat, catIdx) => {
+            cat.groupings.forEach((grp, grpIdx) => {
+                if (groupingOverrides[grp.id]) {
+                    grp.items.forEach((item, itemIdx) => {
+                        // If item is inheriting, it should be recalculated when its parent group changes
+                        if (item.calendar_mode === 'inherit') {
+                            handleItemRecalc(catIdx, grpIdx, itemIdx);
+                        }
+                    });
+                }
+            });
+        });
+    }, [groupingOverrides]);
 
     const handleInitiateAdd = (groupingId: string) => {
         setAddingToGroupingId(groupingId);
@@ -125,7 +156,8 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
             role_history_id: data.role_history_id,
             labor_phases_json: JSON.stringify(data.phase_details?.active_phases || []),
             allowances: [],
-            fringes_json: undefined
+            fringes_json: undefined,
+            breakdown_json: data.breakdown_json
         };
 
         // Insert into local state
@@ -231,6 +263,11 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
                     grp.sub_total -= removed.total;
                     cat.total -= removed.total;
                     found = true;
+
+                    // Track deletion if it's not a temp item
+                    if (!itemId.startsWith("temp-")) {
+                        setDeletedItemIds(prev => [...prev, itemId]);
+                    }
                     break;
                 }
             }
@@ -246,20 +283,23 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
     const handleSave = async () => {
         setSaving(true);
         try {
-            const res = await fetch(`${API_URL}/budget`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(categories),
+            const { saveBudget } = await import('@/lib/api');
+
+            await saveBudget({
+                categories,
+                deleted_item_ids: deletedItemIds,
+                deleted_grouping_ids: deletedGroupingIds,
+                deleted_category_ids: deletedCategoryIds
             });
-            if (res.ok) {
-                setUnsavedChangesCount(0);
-                setLastSavedAt(new Date());
-                // Optional: Reload to align state with backend (ids etc)
-                // But only if we want to confirm structure.
-                loadBudget();
-            } else {
-                alert("Error saving budget");
-            }
+
+            setUnsavedChangesCount(0);
+            setLastSavedAt(new Date());
+            setDeletedItemIds([]);
+            setDeletedGroupingIds([]);
+            setDeletedCategoryIds([]);
+
+            // Optional: Reload to align state with backend (ids etc)
+            loadBudget();
         } catch (err) {
             console.error(err);
             alert("Error saving budget");
@@ -270,12 +310,22 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
 
     const handleCreateTemplate = async () => {
         if (!newTemplateName) return;
+
+        // Auto-save before creating template if there are changes
+        if (unsavedChangesCount > 0) {
+            const confirmed = confirm("There are unsaved changes. The system will save the budget first. Continue?");
+            if (!confirmed) return;
+
+            await handleSave();
+            // Note: handleSave async might not block loadBudget inside it correctly if loadBudget is fire-and-forget promise.
+            // But await handleSave() waits for the network call. loadBudget() starts after.
+            // We should ideally wait for loadBudget to finish too before creating template to ensure IDs are synced.
+            // For now, let's assume save puts data in DB, so createTemplate reading DB will see it.
+        }
+
         const budgetId = categories.length > 0 ? (categories[0] as any).budget_id : null;
 
         if (!budgetId) {
-            // Fallback or alert?
-            // If new budget, maybe no budget_id yet? But fetchBudget returns categories which usually have budget_id attached if normalized.
-            // If not check categories[0].groupings[0].items[0]... a bit risky.
             alert("Cannot create template: Budget ID not found.");
             return;
         }
@@ -326,13 +376,13 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
 
                 // If it's a "Calendar Based" Hourly item, do NOT auto-recalculate total blindly using old weekly logic.
                 // We should assume the backend total is still valid *unless* rate/qty changed, 
-                // in which case handleLaborRecalc usually triggers properly.
+                // in which case handleItemRecalc usually triggers properly.
                 // But updateItemLocal runs synchronously on keystrokes.
 
                 if (item.is_labor && item.unit === 'hour') {
                     // For "Hourly" items (which are effectively Calendar Based now),
                     // we avoid overwriting total with legacy "Weekly Rate" logic.
-                    // If rate changed, we trust onRecalcLabor to fix the total in a moment.
+                    // If rate changed, we trust onRecalc to fix the total in a moment.
                     // So we do NOTHING here for Total, preserving the last known valid total.
                     // Exception: If quantity multiplier logic is desired (e.g. 2 x Camera Ops), 
                     // we might need to multiply the "breakdown cost" by quantity-multiplier?
@@ -343,18 +393,15 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
                     // So Total is Total. We skip local legacy recalc.
 
                 } else {
-                    // Standard / Materials / Flat Rates / Weekly Legacy
-                    // Legacy Weekly logic:
-                    if (item.unit === 'week' && item.is_labor) {
-                        const dailyHours = parseFloat(item.daily_hours as any) || 10;
-                        const daysPerWeek = parseFloat(item.days_per_week as any) || 5;
-                        const rate = parseFloat(item.rate as any) || 0;
-                        // If rate is weekly rate, just rate * (qty / 5)? 
-                        // Or rate is hourly?
-                        // Let's stick to simple: Total = Rate * Qty for non-hourly.
-                        item.total = rate * (qty || 0); // If qty 0, total 0
+                    // Standard / Materials / Flat Rates
+                    if (item.unit === 'week') {
+                        const dpw = parseFloat(item.days_per_week as any) || 5;
+                        item.total = rate * (qty / dpw);
                     } else {
-                        item.total = rate * (qty || (item.is_labor ? 0 : 1));
+                        // For 'day', 'hour', 'flat', etc
+                        // If qty is 0 and it's a material item, we might want 1 * rate? 
+                        // But usually users want 0 if they haven't set phases.
+                        item.total = rate * (qty || (item.is_labor ? 0 : 0));
                     }
                 }
             }
@@ -371,7 +418,7 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
         setUnsavedChangesCount(prev => prev + 1);
     };
 
-    const handleLaborRecalc = async (catIdx: number, grpIdx: number, itemIdx: number, overrides?: Partial<BudgetLineItem>) => {
+    const handleItemRecalc = async (catIdx: number, grpIdx: number, itemIdx: number, overrides?: Partial<BudgetLineItem>) => {
         // Use current state to get baseline, but apply overrides for calc
         const item = categories[catIdx].groupings[grpIdx].items[itemIdx];
         if (!item && !overrides) return;
@@ -379,93 +426,145 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
         // Merge current item with overrides for calculation parameters
         const effectiveItem = { ...item, ...overrides };
 
-        if (!effectiveItem.is_labor) {
-            // Material items will be handled later or simple calc
-            // For now, if non-labor, just strict update
-            if (overrides) updateItemLocal(catIdx, grpIdx, itemIdx, overrides);
-            return;
-        }
-
-        try {
-            // Construct Request for New API
-            const req = {
-                line_item_id: effectiveItem.id.startsWith('temp') ? undefined : effectiveItem.id,
-                base_hourly_rate: effectiveItem.base_hourly_rate || effectiveItem.rate || 0,
-                is_casual: effectiveItem.is_casual || false,
-                is_artist: (categories[catIdx].name.includes('Artist') || categories[catIdx].name.includes('Cast')),
-                calendar_mode: effectiveItem.calendar_mode || 'inherit',
-                phase_details: effectiveItem.phase_details,
-                grouping_id: effectiveItem.grouping_id,
-                project_id: projectId,
-                award_classification_id: effectiveItem.award_classification_id
-            };
-
-            // Call API
-            const { calculateLaborCost } = await import('@/lib/api');
-
-            const res = await calculateLaborCost(req as any);
-
-            // Calculate active total based on enabled phases (qty > 0)
-            let activeGross = 0;
-            const prepQty = Number(effectiveItem.prep_qty) || 0;
-            const shootQty = Number(effectiveItem.shoot_qty) || 0;
-            const postQty = Number(effectiveItem.post_qty) || 0;
-
-            if (prepQty > 0 && res.breakdown.preProd) {
-                activeGross += res.breakdown.preProd.cost;
-            }
-            if (shootQty > 0 && res.breakdown.shoot) {
-                activeGross += res.breakdown.shoot.cost;
-            }
-            if (postQty > 0 && res.breakdown.postProd) {
-                activeGross += res.breakdown.postProd.cost;
-            }
-
-            // Calculate Fringes proportional to ActiveGross
-            // (Backend returns fringes for Total Calendar, we need to scale it if only partial phases are active)
-            let activeFringesObj = res.fringes;
-            let activeFringeAmount = res.fringes.total_fringes || 0;
-
-            if (res.total_cost > 0 && activeGross !== res.total_cost) {
-                const ratio = activeGross / res.total_cost;
-                activeFringeAmount = activeFringeAmount * ratio;
-
-                // Scale the detail object
-                activeFringesObj = {
-                    super: (res.fringes.super || 0) * ratio,
-                    holiday_pay: (res.fringes.holiday_pay || 0) * ratio,
-                    payroll_tax: (res.fringes.payroll_tax || 0) * ratio,
-                    workers_comp: (res.fringes.workers_comp || 0) * ratio,
-                    total_fringes: activeFringeAmount
+        // 1. Labor Items (Full Recalculation via Backend)
+        if (effectiveItem.is_labor) {
+            try {
+                // Construct Request for New API
+                const req = {
+                    line_item_id: effectiveItem.id.startsWith('temp') ? undefined : effectiveItem.id,
+                    base_hourly_rate: effectiveItem.base_hourly_rate || effectiveItem.rate || 0,
+                    is_casual: effectiveItem.is_casual || false,
+                    is_artist: (categories[catIdx].code === 'E'), // Sync with backend logic
+                    calendar_mode: effectiveItem.calendar_mode || 'inherit',
+                    phase_details: effectiveItem.phase_details,
+                    grouping_id: effectiveItem.grouping_id,
+                    project_id: projectId,
+                    award_classification_id: effectiveItem.award_classification_id
                 };
+
+                // Call API
+                const { calculateLaborCost } = await import('@/lib/api');
+
+                const res = await calculateLaborCost(req as any);
+
+                // Calculate active total based on enabled phases (qty > 0)
+                let activeGross = 0;
+                const prepQty = Number(effectiveItem.prep_qty) || 0;
+                const shootQty = Number(effectiveItem.shoot_qty) || 0;
+                const postQty = Number(effectiveItem.post_qty) || 0;
+
+                // Sync quantities from backend resolution if in inherit mode
+                const updates: any = {
+                    ...overrides,
+                };
+
+                if (res.breakdown.preProd) {
+                    updates.prep_qty = prepQty > 0 ? res.breakdown.preProd.days : 0;
+                    if (prepQty > 0) activeGross += res.breakdown.preProd.cost;
+                }
+                if (res.breakdown.shoot) {
+                    updates.shoot_qty = shootQty > 0 ? res.breakdown.shoot.days : 0;
+                    if (shootQty > 0) activeGross += res.breakdown.shoot.cost;
+                }
+                if (res.breakdown.postProd) {
+                    updates.post_qty = postQty > 0 ? res.breakdown.postProd.days : 0;
+                    if (postQty > 0) activeGross += res.breakdown.postProd.cost;
+                }
+
+                // Calculate Fringes proportional to ActiveGross
+                let activeFringesObj = res.fringes;
+                let activeFringeAmount = res.fringes.total_fringes || 0;
+
+                if (res.total_cost > 0 && activeGross !== res.total_cost) {
+                    const ratio = activeGross / res.total_cost;
+                    activeFringeAmount = activeFringeAmount * ratio;
+
+                    activeFringesObj = {
+                        super: (res.fringes.super || 0) * ratio,
+                        holiday_pay: (res.fringes.holiday_pay || 0) * ratio,
+                        payroll_tax: (res.fringes.payroll_tax || 0) * ratio,
+                        workers_comp: (res.fringes.workers_comp || 0) * ratio,
+                        total_fringes: activeFringeAmount
+                    };
+                }
+
+                updates.total = activeGross + activeFringeAmount; // INCLUSIVE TOTAL
+                updates.fringes_json = JSON.stringify(activeFringesObj);
+                updates.breakdown_json = JSON.stringify(res.breakdown);
+
+                // For hourly units, maintain rate column as base hourly
+                if (effectiveItem.unit === 'hour') {
+                    if (overrides?.base_hourly_rate) updates.rate = overrides.base_hourly_rate;
+                }
+
+                updateItemLocal(catIdx, grpIdx, itemIdx, updates);
+            } catch (err) {
+                console.error("Error calculating labor rate", err);
+                if (overrides) updateItemLocal(catIdx, grpIdx, itemIdx, overrides);
             }
+        }
+        // 2. Material Items (Quantity Sync via Backend)
+        else if (effectiveItem.unit === 'day' || effectiveItem.unit === 'week') {
+            try {
+                // Reuse the same backend logic but ignore cost specifics
+                const req = {
+                    line_item_id: effectiveItem.id.startsWith('temp') ? undefined : effectiveItem.id,
+                    base_hourly_rate: 0,
+                    is_casual: false,
+                    is_artist: false,
+                    calendar_mode: effectiveItem.calendar_mode || 'inherit',
+                    phase_details: effectiveItem.phase_details,
+                    grouping_id: effectiveItem.grouping_id,
+                    project_id: projectId
+                };
 
-            const updates: any = {
-                ...overrides,
-                total: activeGross + activeFringeAmount, // INCLUSIVE TOTAL
-                fringes_json: JSON.stringify(activeFringesObj),
-                breakdown_json: JSON.stringify(res.breakdown)
-            };
+                const { calculateLaborCost } = await import('@/lib/api');
+                const res = await calculateLaborCost(req as any);
 
-            // Update Total
-            // Note: We ignore "Unit" multiplier logic because "Hourly" is now "Calendar based".
-            // If Unit is "Week", we might display "Rate" differently, but Total is Total.
-            updates.total = activeGross + activeFringeAmount;
+                const updates: any = { ...overrides };
+                if (res.breakdown.preProd) {
+                    updates.prep_qty = (effectiveItem.prep_qty || 0) > 0 ? res.breakdown.preProd.days : 0;
+                }
+                if (res.breakdown.shoot) {
+                    updates.shoot_qty = (effectiveItem.shoot_qty || 0) > 0 ? res.breakdown.shoot.days : 0;
+                }
+                if (res.breakdown.postProd) {
+                    updates.post_qty = (effectiveItem.post_qty || 0) > 0 ? res.breakdown.postProd.days : 0;
+                }
 
-            // If Unit is Hour, Rate field shows Base Hourly.
-            // If Unit is Week, Rate field *could* show Weekly Rate.
-            // Backend res doesn't purely return "Weekly Rate".
-            // Implementation Decision: Maintain Base Hourly in "Rate" column for consistency in Hourly Mode.
-            if (effectiveItem.unit === 'hour') {
-                if (overrides?.base_hourly_rate) updates.rate = overrides.base_hourly_rate;
-                // If no override, rate remains as is (base hourly)
-            } else if (effectiveItem.unit === 'day') {
-                // If daily, maybe show daily rate.
+                // Local Recalc for Materials
+                const totalDays = (updates.prep_qty || 0) + (updates.shoot_qty || 0) + (updates.post_qty || 0);
+                if (effectiveItem.unit === 'day') {
+                    updates.total = effectiveItem.rate * totalDays;
+                } else {
+                    const dpw = effectiveItem.days_per_week || 5.0;
+                    updates.total = effectiveItem.rate * (totalDays / dpw);
+                }
+
+                // Construct Breakdown for persistence
+                const mat_breakdown = {
+                    preProd: {
+                        days: res.breakdown.preProd ? res.breakdown.preProd.days : 0,
+                        cost: (res.breakdown.preProd ? res.breakdown.preProd.days : 0) * effectiveItem.rate
+                    },
+                    shoot: {
+                        days: res.breakdown.shoot ? res.breakdown.shoot.days : 0,
+                        cost: (res.breakdown.shoot ? res.breakdown.shoot.days : 0) * effectiveItem.rate
+                    },
+                    postProd: {
+                        days: res.breakdown.postProd ? res.breakdown.postProd.days : 0,
+                        cost: (res.breakdown.postProd ? res.breakdown.postProd.days : 0) * effectiveItem.rate
+                    }
+                };
+                updates.breakdown_json = JSON.stringify(mat_breakdown);
+
+                updateItemLocal(catIdx, grpIdx, itemIdx, updates);
+            } catch (err) {
+                console.error("Error syncing material calendar", err);
+                if (overrides) updateItemLocal(catIdx, grpIdx, itemIdx, overrides);
             }
-
-            updateItemLocal(catIdx, grpIdx, itemIdx, updates);
-        } catch (err) {
-            console.error("Error calculating labor rate", err);
+        } else {
+            // Passthrough for flat rates etc
             if (overrides) updateItemLocal(catIdx, grpIdx, itemIdx, overrides);
         }
     };
@@ -629,9 +728,15 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
                                                                 animate={{ height: "auto", opacity: 1, y: 0, transitionEnd: { overflow: "visible" } }}
                                                                 exit={{ height: 0, opacity: 0, y: -10, overflow: "hidden" }}
                                                                 transition={{ duration: 0.2 }}
-                                                                className="bg-slate-50 p-2 border-b border-indigo-100"
+                                                                className="bg-slate-50 p-2 border-b border-indigo-100 relative z-20 !overflow-visible"
                                                             >
-                                                                <InlineItemEditor isLabor={addingType === 'labor'} groupingId={grp.id} onSave={handleSaveNewItem} onCancel={handleCancelAdd} />
+                                                                <InlineItemEditor
+                                                                    isLabor={addingType === 'labor'}
+                                                                    groupingId={grp.id}
+                                                                    categoryType={cat.code === 'E' ? 'artist' : 'crew'}
+                                                                    onSave={handleSaveNewItem}
+                                                                    onCancel={handleCancelAdd}
+                                                                />
                                                             </motion.div>
                                                         )}
                                                     </AnimatePresence>
@@ -647,7 +752,7 @@ export default function BudgetSheet({ projectId, activeTab: propActiveTab, categ
                                                                         onChange={(updates) => updateItemLocal(catGlobalIdx, grpIdx, itemIdx, updates)}
                                                                         onDelete={() => handleDelete(item.id)}
                                                                         onExpandInspector={() => setInspectorItem({ catIdx: catGlobalIdx, grpIdx, itemIdx })}
-                                                                        onRecalcLabor={(overrides) => handleLaborRecalc(catGlobalIdx, grpIdx, itemIdx, overrides)}
+                                                                        onRecalc={(overrides) => handleItemRecalc(catGlobalIdx, grpIdx, itemIdx, overrides)}
                                                                     />
                                                                 ))}
                                                             </AnimatePresence>

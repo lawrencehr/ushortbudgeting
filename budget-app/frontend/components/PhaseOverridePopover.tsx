@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { CalendarPicker } from "./CalendarPicker"
-import { Loader2, Save, X, Clock, Check, Calendar as CalendarIcon } from "lucide-react"
+import { Loader2, Save, X, Clock, Check, Calendar as CalendarIcon, RotateCcw } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { useLaborContext, PhaseConfig, CalendarData } from "@/lib/labor-context"
@@ -10,6 +10,7 @@ import { useLaborContext, PhaseConfig, CalendarData } from "@/lib/labor-context"
 interface PhaseOverridePopoverProps {
     title: string;
     initialData: CalendarData;
+    defaultData: CalendarData; // The settings to revert to on Reset
     onSave: (data: CalendarData) => void;
     onClose: () => void;
     className?: string; // Flexible positioning
@@ -17,7 +18,7 @@ interface PhaseOverridePopoverProps {
 
 type PhaseType = 'preProd' | 'shoot' | 'postProd'
 
-export function PhaseOverridePopover({ title, initialData, onSave, onClose, className }: PhaseOverridePopoverProps) {
+export function PhaseOverridePopover({ title, initialData, defaultData, onSave, onClose, className }: PhaseOverridePopoverProps) {
     const { projectCalendar } = useLaborContext()
 
     // State for phases
@@ -170,16 +171,19 @@ export function PhaseOverridePopover({ title, initialData, onSave, onClose, clas
                             globalPre: getGlobalDates('preProd'),
                             globalShoot: getGlobalDates('shoot'),
                             globalPost: getGlobalDates('postProd'),
-                            // Current Active Phase Override
-                            active: getPhaseDates(activePhase)
+                            // Explicitly show all assigned dates as solid
+                            assignedPre: getPhaseDates('preProd'),
+                            assignedShoot: getPhaseDates('shoot'),
+                            assignedPost: getPhaseDates('postProd')
                         }}
                         modifiersClassNames={{
                             globalPre: "bg-green-100 text-green-800 opacity-60 rounded-full",
                             globalShoot: "bg-red-100 text-red-800 opacity-60 rounded-full",
                             globalPost: "bg-purple-100 text-purple-800 opacity-60 rounded-full",
-                            active: activePhase === 'preProd' ? "bg-green-500 text-white rounded-full !opacity-100 !ring-2 !ring-green-100" :
-                                activePhase === 'shoot' ? "bg-red-500 text-white rounded-full !opacity-100 !ring-2 !ring-red-100" :
-                                    "bg-purple-500 text-white rounded-full !opacity-100 !ring-2 !ring-purple-100"
+                            // Solid colors for assigned dates (overrides global faded)
+                            assignedPre: "bg-green-500 text-white rounded-full !opacity-100 shadow-sm",
+                            assignedShoot: "bg-red-500 text-white rounded-full !opacity-100 shadow-sm",
+                            assignedPost: "bg-purple-500 text-white rounded-full !opacity-100 shadow-sm"
                         }}
                     />
                 </div>
@@ -201,20 +205,36 @@ export function PhaseOverridePopover({ title, initialData, onSave, onClose, clas
                 </div>
 
                 {/* Footer Actions */}
-                <div className="pt-2 flex justify-end gap-2 border-t border-slate-100">
+                <div className="pt-2 flex items-center justify-between border-t border-slate-100">
                     <button
-                        onClick={onClose}
-                        className="px-3 py-1.5 text-[10px] font-bold text-slate-500 hover:bg-slate-50 rounded-md transition-all uppercase tracking-wider"
+                        onClick={() => {
+                            setPhases({
+                                preProd: { ...defaultData.preProd, inherit: true },
+                                shoot: { ...defaultData.shoot, inherit: true },
+                                postProd: { ...defaultData.postProd, inherit: true },
+                            })
+                        }}
+                        className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-all"
+                        title="Reset to Defaults"
                     >
-                        Cancel
+                        <RotateCcw className="w-3.5 h-3.5" />
                     </button>
-                    <button
-                        onClick={handleSave}
-                        className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md font-bold text-[10px] transition-all shadow-md shadow-indigo-100 uppercase tracking-wider"
-                    >
-                        <Save className="w-3 h-3" />
-                        Save & Close
-                    </button>
+
+                    <div className="flex gap-2">
+                        <button
+                            onClick={onClose}
+                            className="px-3 py-1.5 text-[10px] font-bold text-slate-500 hover:bg-slate-50 rounded-md transition-all uppercase tracking-wider"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handleSave}
+                            className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md font-bold text-[10px] transition-all shadow-md shadow-indigo-100 uppercase tracking-wider"
+                        >
+                            <Save className="w-3 h-3" />
+                            Save
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

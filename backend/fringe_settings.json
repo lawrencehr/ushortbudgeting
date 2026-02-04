@@ -1,7 +1,7 @@
 {
     "superannuation": 12.5,
-    "holiday_pay": 5.0,
-    "payroll_tax": 4.5,
-    "workers_comp": 2.0,
-    "contingency": 15.0
+    "workers_comp": 1.0,
+    "holiday_pay": 0.0,
+    "payroll_tax": 0.0,
+    "contingency": 0.0
 }

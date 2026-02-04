@@ -7,14 +7,14 @@
             {
                 "id": "A_A.1",
                 "code": "A.1",
-                "name": "STORY & SCRIPT",
+                "name": "Story & Script",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "A_A.2",
                 "code": "A.2",
-                "name": "DEVELOPMENT",
+                "name": "Development",
                 "items": [],
                 "sub_total": 0
             }
@@ -29,14 +29,14 @@
             {
                 "id": "B_B.1",
                 "code": "B.1",
-                "name": "PRODUCERS",
+                "name": "Producers",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "B_B.2",
                 "code": "B.2",
-                "name": "DIRECTORS",
+                "name": "Directors",
                 "items": [],
                 "sub_total": 0
             }
@@ -46,96 +46,89 @@
     {
         "id": "C",
         "code": "C",
-        "name": "PRODUCTION UNIT FEES & SALARIES",
+        "name": "Production Unit Fees & Salaries",
         "groupings": [
             {
                 "id": "C_C.1",
                 "code": "C.1",
-                "name": "PRODUCTION MANAGEMENT",
+                "name": "Production Management",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "C_C.2",
                 "code": "C.2",
-                "name": "PRODUCTION ACCOUNTANCY",
+                "name": "Production Accountancy",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "C_C.3",
                 "code": "C.3",
-                "name": "ASSISTANT DIRECTORS & SCRIPT SUPERVISION",
+                "name": "Assistant Directors & Script Supervision",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "C_C.4",
                 "code": "C.4",
-                "name": "CAMERA CREW",
+                "name": "Camera Crew",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "C_C.5",
                 "code": "C.5",
-                "name": "SOUND CREW",
+                "name": "Sound Crew",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "C_C.6",
                 "code": "C.6",
-                "name": "LIGHTING CREW",
+                "name": "Lighting Crew",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "C_C.7",
                 "code": "C.7",
-                "name": "GRIPS CREW",
+                "name": "Grips Crew",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "C_C.8",
                 "code": "C.8",
-                "name": "COSTUME CREW",
+                "name": "Costume Crew",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "C_C.9",
                 "code": "C.9",
-                "name": "MAKE-UP CREW",
+                "name": "Make-up Crew",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "C_C.11",
                 "code": "C.11",
-                "name": "ART DEPARTMENT CREW",
+                "name": "Art Department Crew",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "C_C.12",
                 "code": "C.12",
-                "name": "CONSTRUCTION CREW",
+                "name": "Construction Crew",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "C_C.13",
                 "code": "C.13",
-                "name": "OCCUPATIONAL HEALTH & SAFETY CREW",
-                "items": [],
-                "sub_total": 0
-            },
-            {
-                "id": "C_C.14",
-                "code": "C.14",
-                "name": "OVERTIME & LOADINGS",
+                "name": "Occupational Health & Safety Crew",
                 "items": [],
                 "sub_total": 0
             }
@@ -145,7 +138,7 @@
     {
         "id": "D",
         "code": "D",
-        "name": "FRINGES & WORKERS COMPENSATION",
+        "name": "Fringes & Workers Compensation",
         "groupings": [
             {
                 "id": "D_General",
@@ -165,28 +158,28 @@
             {
                 "id": "E_E.2",
                 "code": "E.2",
-                "name": "CAST - PRINCIPALS",
+                "name": "Cast - Principals",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "E_E.3",
                 "code": "E.3",
-                "name": "CAST - SUPPORTS",
+                "name": "Cast - Supports",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "E_E.4",
                 "code": "E.4",
-                "name": "STANDINS & DOUBLES",
+                "name": "Standins & Doubles",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "E_E.6",
                 "code": "E.6",
-                "name": "EXTRAS",
+                "name": "Extras",
                 "items": [],
                 "sub_total": 0
             }
@@ -201,14 +194,14 @@
             {
                 "id": "F_F.1",
                 "code": "F.1",
-                "name": "COSTUMES",
+                "name": "Costumes",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "F_F.2",
                 "code": "F.2",
-                "name": "MAKE-UP & HAIRDRESSING",
+                "name": "Make-up & Hairdressing",
                 "items": [],
                 "sub_total": 0
             }
@@ -223,7 +216,7 @@
             {
                 "id": "G_G.1",
                 "code": "G.1",
-                "name": "LOCATIONS",
+                "name": "Locations",
                 "items": [],
                 "sub_total": 0
             }
@@ -233,19 +226,19 @@
     {
         "id": "H",
         "code": "H",
-        "name": "SETS & PROPERTIES",
+        "name": "Sets & Properties",
         "groupings": [
             {
                 "id": "H_H.1",
                 "code": "H.1",
-                "name": "CONSTRUCTION",
+                "name": "Construction",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "H_H.2",
                 "code": "H.2",
-                "name": "PROPS & SET DRESSING",
+                "name": "Props & Set Dressing",
                 "items": [],
                 "sub_total": 0
             }
@@ -255,12 +248,12 @@
     {
         "id": "J",
         "code": "J",
-        "name": "DIGITAL VIDEO PRODUCTION",
+        "name": "Digital Video Production",
         "groupings": [
             {
                 "id": "J_General",
                 "code": "",
-                "name": "General",
+                "name": "General Items",
                 "items": [],
                 "sub_total": 0
             }
@@ -270,47 +263,47 @@
     {
         "id": "K",
         "code": "K",
-        "name": "EQUIPMENT & STORES",
+        "name": "Equipment & Stores",
         "groupings": [
             {
                 "id": "K_K.1",
                 "code": "K.1",
-                "name": "CAMERA EQUIPMENT & STORES",
+                "name": "Camera Equipment & Stores",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "K_K.2",
                 "code": "K.2",
-                "name": "SOUND EQUIPMENT & STORES",
+                "name": "Sound Equipment & Stores",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "K_K.3",
                 "code": "K.3",
-                "name": "LIGHTING EQUIPMENT & STORES",
+                "name": "Lighting Equipment & Stores",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "K_K.4",
                 "code": "K.4",
-                "name": "GRIPS EQUIPMENT & STORES",
+                "name": "Grips Equipment & Stores",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "K_K.5",
                 "code": "K.5",
-                "name": "UNIT FACILITIES & STORES",
+                "name": "Unit Facilities & Stores",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "K_K.6",
                 "code": "K.6",
-                "name": "SAFETY EQUIPMENT & STORES",
+                "name": "Safety Equipment & Stores",
                 "items": [],
                 "sub_total": 0
             }
@@ -320,7 +313,7 @@
     {
         "id": "L",
         "code": "L",
-        "name": "RENTALS & STORAGE",
+        "name": "Rentals & Storage",
         "groupings": [
             {
                 "id": "L_General",
@@ -335,7 +328,7 @@
     {
         "id": "M",
         "code": "M",
-        "name": "TRAVEL & TRANSPORT",
+        "name": "Travel & Transport",
         "groupings": [
             {
                 "id": "M_General",
@@ -350,7 +343,7 @@
     {
         "id": "N",
         "code": "N",
-        "name": "ACCOMMODATION, LIVING, CATERING",
+        "name": "Accommodation, Living, Catering",
         "groupings": [
             {
                 "id": "N_General",
@@ -365,7 +358,7 @@
     {
         "id": "O",
         "code": "O",
-        "name": "INSURANCES",
+        "name": "Insurances",
         "groupings": [
             {
                 "id": "O_General",
@@ -380,7 +373,7 @@
     {
         "id": "P",
         "code": "P",
-        "name": "OFFICE EXPENSES",
+        "name": "Office Expenses",
         "groupings": [
             {
                 "id": "P_General",
@@ -395,7 +388,7 @@
     {
         "id": "R",
         "code": "R",
-        "name": "POST-PRODUCTION CREW",
+        "name": "Post-Production Crew",
         "groupings": [
             {
                 "id": "R_General",
@@ -410,7 +403,7 @@
     {
         "id": "S",
         "code": "S",
-        "name": "POST-PRODN. RENTALS & OFFICE EXPENSES",
+        "name": "Post-Production Rentals & Office Expenses",
         "groupings": [
             {
                 "id": "S_General",
@@ -425,7 +418,7 @@
     {
         "id": "W",
         "code": "W",
-        "name": "MUSIC",
+        "name": "Music",
         "groupings": [
             {
                 "id": "W_General",
@@ -445,14 +438,14 @@
             {
                 "id": "X_X.1",
                 "code": "X.1",
-                "name": "PUBLICITY & STILLS - PRODUCTION & POST PRODN.",
+                "name": "Publicity & Stills - Production & Post Production",
                 "items": [],
                 "sub_total": 0
             },
             {
                 "id": "X_X.2",
                 "code": "X.2",
-                "name": "DELIVERY REQUIREMENTS",
+                "name": "Delivery Requirements",
                 "items": [],
                 "sub_total": 0
             }
@@ -462,7 +455,7 @@
     {
         "id": "Y",
         "code": "Y",
-        "name": "LEGAL & BUSINESS",
+        "name": "Legal & Business",
         "groupings": [
             {
                 "id": "Y_General",
@@ -477,7 +470,7 @@
     {
         "id": "Z",
         "code": "Z",
-        "name": "OVERHEADS",
+        "name": "Overheads",
         "groupings": [
             {
                 "id": "Z_General",
